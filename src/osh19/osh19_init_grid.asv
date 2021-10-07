@@ -1,0 +1,65 @@
+function grid = osh19_init_grid(params)
+
+grid = struct();
+
+% Set spatial grids
+planet_eq_circ = 2 * pi * params.P_E;
+
+dx = planet_eq_circ / params.nx;
+dy = 2 * params.P_Y / params.ny;
+dz = params.H / params.nz;
+
+xx  = 0:dx:planet_eq_circ-dx;
+yy  = -params.P_Y+dy/2:dy:params.P_Y-dy/2;
+zzU = -dz/2:dz:params.H;
+zzW = 0:dz:params.H;
+
+[XX, YY]           = meshgrid(xx, yy);
+[XX3U, YY3U, ZZ3U] = meshgrid(xx, yy, zzU);
+[XX3W, YY3W, ZZ3W] = meshgrid(xx, yy, zzW);
+
+grid.dx = dx;
+grid.dy = dy;
+grid.dz = dz;
+
+grid.xx  = xx;
+grid.yy  = yy;
+grid.zzU = zzU;
+grid.zzW = zzW;
+
+grid.XX = XX;
+grid.YY = YY;
+
+grid.XX3U = XX3U;
+grid.YY3U = YY3U;
+grid.ZZ3U = ZZ3U;
+
+grid.XX3W = XX3W;
+grid.YY3W = YY3W;
+grid.ZZ3W = ZZ3W;
+
+% Set time-step size
+alpha_bar = (params.H / pi) * params.B;          % (K)
+Q         = params.c_p * alpha_bar / params.L_v; % (Unitless)
+F_scale   = (params.H / pi) * (params.B ...
+    + params.L_v / params.c_p * params.B_vs ...
+    - params.theta_0 * params.B_vs);             % (K)
+F_tilde=F_scale/alpha_bar;
+G=H/(pi*Q)*Bvsdim/F_tilde;
+Fsat=F_tilde;
+cmoist=c*sqrt(F_tilde);
+L = sqrt(c/beta);         % km
+
+% Choose time interval for marching
+CFL_constant=0.15/40; % 0.15?  Not necessary?  
+dt_x=CFL_constant*dx/cmoist; % Calculates dt in seconds
+dt_temp=dt_x;
+
+% Round down to nearest fraction of a day
+dt_day=dt_temp/3600/24;
+dt_day_round=ceil(1/dt_day);
+dt=1/dt_day_round*3600*24;
+dtstart=dt;
+
+end
+
