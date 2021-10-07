@@ -1,0 +1,8 @@
+function ierror = main(osh19_input_fname)
+
+ierror = 1;
+
+osh19_params = struct()
+osh19_grid   = struct()
+
+end
