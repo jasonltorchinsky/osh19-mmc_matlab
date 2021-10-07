@@ -247,6 +247,11 @@ Zzij = 1i*kbar*Fmat*Dyf*Fmatinv*invLap+1/tau_u*eye(numy);
 
 A(1+(J-1)*4*M:end,1+(J-1)*4*M:end)=Zzij;
 
+% block_row = 3;
+% block_col = 3;
+% disp(A(block_row*numy+1:(block_row+1)*numy,block_col*numy+1:(block_col+1)*numy));
+% pause(inf);
+
 % Find eigenvalues of A
 [evecsFsp evalsmat]=eig(A);
 % clear A Uuij Uvij Utij Uqij Vuij Vvij Vtij Vqij Tuij Tvij Ttij Tqij Quij Qvij Qtij Qqij;

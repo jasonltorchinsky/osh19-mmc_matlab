@@ -16,16 +16,16 @@ printyes = 1;
 
 %%%%%%%%%% CURRENTLY IN CASE 5 %%%%%%%%%%%
 
-numx=32;                  % Number of x gridpoints
-numy=32;                  % Number of y gridpoints
-numlevs=8;                % Number of nontrivial levels for (u,v,p)  
+numx=4;                  % Number of x gridpoints
+numy=4;                  % Number of y gridpoints
+numlevs=2;                % Number of nontrivial levels for (u,v,p)  
 tend=100;                 % Number of simulation days
 pY=6000;                  % Domain width in y (km)                                       DEFAULT = 6000
 Bvsdim=-0.00134;%-0.00134;          % (kg kg^{-1} km^{-1}) From HSS15 - range of -1 to -1.5
 tau_u=25;%25;                 % Damping timescale in days - u, v, zeta
 tau_theta=25;%25;             % Damping timescale in days - q
 tautop=1;                 % days    
-taubottom=3/24;%2/24;           % days    
+taubottom=2/24;%2/24;           % days    
 btop=0.8*76;%0.8*76;              % bmid=0.8 in SH17 - multiply by ~3 to make dimensional??  
 bbottom=0.1*76;%0.1*76;           % blow=0.1 in SH17 - multiply by ~3 to make dimensional??
 Dvtop=0.0001;%0.0001;       
@@ -38,7 +38,7 @@ use_2BCConvAdj=2;
 fnameIC='Stan';
 expscale=120000;%120000; 
 Lscale=2000;%2000;
-BvsYvecamp=0.5;%0.25; 
+BvsYvecamp=0.25;%0.25; 
 
 IC_type=3;                % Choose your initial condition
                           % 1 = Single mode, single wavenumber
@@ -77,6 +77,7 @@ btemp=-atemp*exp(-H/expscale);
 QBGvec=atemp*exp(-zvec/expscale)+btemp;
 QBGvecwithBC=[QBCbottom; QBGvec; QBCtop];
 Bvsvec=1/(2*dz)*(QBGvecwithBC(3:end)-QBGvecwithBC(1:end-2));
+
 
 tau_upper=tautop;
 tau_lower=taubottom;

@@ -59,6 +59,7 @@ D_v_vec = params.D_v + (params.D_v - params.D_v) ...
 theta_bg_vec = params.B * grid.zzW;
 [~, ~, theta_bg_mat] = meshgrid(grid.xx, grid.yy, theta_bg_vec);
 
+% Save background profiles to bg_profs
 bg_profs.zz       = zz;
 
 bg_profs.sinz     = sinz;

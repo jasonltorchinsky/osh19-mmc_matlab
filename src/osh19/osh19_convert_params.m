@@ -9,5 +9,8 @@ params_out.tau_theta = params_in.tau_theta * days_to_secs;
 params_out.tau_up    = params_in.tau_up    * days_to_secs;
 params_out.tau_mid   = params_in.tau_mid   * days_to_secs;
 
+params_out.sim_days  = params_in.sim_days  * days_to_secs;
+params_out.out_freq  = params_in.out_freq  * days_to_secs;
+
 end
 

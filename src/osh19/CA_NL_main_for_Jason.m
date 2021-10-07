@@ -24,6 +24,7 @@ disp('------------------------------------------------');
 disp('Marching forward in time');
 disp('------------------------------------------------');
 
+
 % Setup saved solution matrices
 % This version keeps track of baroclinic winds at all levels (except the
 % top level) and barotropic winds, rather than total winds at each level.

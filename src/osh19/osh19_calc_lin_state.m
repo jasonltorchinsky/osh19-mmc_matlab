@@ -2,6 +2,8 @@ function lin_state = osh19_calc_lin_state(params, grid, bg_profs, mode, wavenum)
 
 lin_state = struct();
 
+disp(strcat(['Calculating linear mode #',int2str(mode),', k=',int2str(wavenum)]));
+
 % Extract some variables from structs to clean up later code
 nx = params.nx;
 ny = params.ny;
@@ -108,12 +110,13 @@ for ii = 1:nz-1
         if ii == jj
             Vvij = Vvij + (1/tau_u) * eye(ny);
         end
+        
         if ii > jj
             Vtij =  g * dz * jj        ...
                 / (theta_0 * nz) * spec_ddy;
         else
             Vtij = -g * dz * (nz - jj) ...
-                / (theta_0 * nx) * spec_ddy;
+                / (theta_0 * nz) * spec_ddy;
         end
         
         Vqij = zeros(ny,ny);
@@ -258,10 +261,6 @@ end
 A(1 + (nz - 1) * 4 * ny:end, ...
     1:(nz - 1) * 4 * ny) = zeros(ny, 4 * ny * (nz - 1));
 
-
-phatbar = spec_inv_lapl * F_mat ...
-    * (ddy_beta_y * ddy * F_mat_inv * spec_inv_lapl * F_mat + beta * Y) * F_mat_inv;
-
 % Last block column (not including last block row)
 for ii = 1:nz-1
     Uzij = zeros(ny,ny); 
@@ -286,6 +285,11 @@ Zzij = 1i * k_x_dim * F_mat * ddy_beta_y * F_mat_inv * spec_inv_lapl ...
     + 1/tau_u * eye(ny);
 
 A(1 + (nz-1) * 4 * ny:end, 1 + (nz - 1) * 4 * ny:end) = Zzij;
+
+% block_row = 3;
+% block_col = 3;
+% disp(A(block_row*ny+1:(block_row+1)*ny,block_col*ny+1:(block_col+1)*ny));
+% pause(inf);
 
 % Find eigenvalues of A
 [evecsFsp, evalsmat] = eig(A);
