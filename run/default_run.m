@@ -17,12 +17,20 @@ osh19_params.tau_up = 1; % Moisture damping time-scale in upper-troposphere (d)
 osh19_params.tau_mid = 2/24; % Moisture damping time-scale in mid-troposphere (d)
 osh19_params.B_vs = -1.34 * 10^(-3); % Mean vertical q_bg gradient (kg kg^(-1) km^(-1)
 osh19_params.a = 0.25; % 1--pole-to-equator q_bg ratio
-osh19_params.L_tilde = 2000; % q_bg meridional decay lengthscale (km)
-osh19_params.s_tilde = 12 * 10^(4); % q_bg vertical decay lengthscale (km)
+osh19_params.L_tilde = 2000; % q_bg meridional decay length scale (km)
+osh19_params.s_tilde = 12 * 10^(4); % q_bg vertical decay length scale (km)
 osh19_params.D_hUp = 60.8; % Horizontal q diffusion in upper-troposphere (km^(2) s^(-1))
 osh19_params.D_hMid = 7.6; % Horizontal q diffusion in mid-troposphere (km^(2) s^(-1))
 osh19_params.D_v = 1 * 10^(-4); % Vertical q diffusion (km^(2) s^(-1))
+osh19_params.IC_type = 3; % Initial condition type:
+                          % 1 = get modes, wavenumbers from linear solution
+                          % 4 = load state from file
+osh19_params.IC_modes = [1, 2, 3, 4]; % Modes to use for initial condition (IC)
+osh19_params.IC_wavenums = [1]; % Zonal wavenumber to use for IC
+osh19_params.IC_amp = 1; % Amplification factor for IC
+osh19_params.clin_conv_adj = 2; % Options for baroclinic modes in IC
 osh19_params.sim_days = 100; % Number of days to simulate (d)
 osh19_params.out_freq = 1; % How often to output data (d)
+
     
 error = main(osh19_params);

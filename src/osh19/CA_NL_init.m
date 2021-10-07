@@ -21,22 +21,22 @@ numy=32;                  % Number of y gridpoints
 numlevs=8;                % Number of nontrivial levels for (u,v,p)  
 tend=100;                 % Number of simulation days
 pY=6000;                  % Domain width in y (km)                                       DEFAULT = 6000
-Bvsdim=-0.00128;%-0.00134;          % (kg kg^{-1} km^{-1}) From HSS15 - range of -1 to -1.5
-tau_u=16;%25;                 % Damping timescale in days - u, v, zeta
-tau_theta=16;%25;             % Damping timescale in days - q
+Bvsdim=-0.00134;%-0.00134;          % (kg kg^{-1} km^{-1}) From HSS15 - range of -1 to -1.5
+tau_u=25;%25;                 % Damping timescale in days - u, v, zeta
+tau_theta=25;%25;             % Damping timescale in days - q
 tautop=1;                 % days    
-taubottom=4/24;%2/24;           % days    
-btop=1.6*76;%0.8*76;              % bmid=0.8 in SH17 - multiply by ~3 to make dimensional??  
-bbottom=0.2*76;%0.1*76;           % blow=0.1 in SH17 - multiply by ~3 to make dimensional??
-Dvtop=0.0005;%0.0001;       
-Dvbottom=0.0005;%0.0001;
+taubottom=3/24;%2/24;           % days    
+btop=0.8*76;%0.8*76;              % bmid=0.8 in SH17 - multiply by ~3 to make dimensional??  
+bbottom=0.1*76;%0.1*76;           % blow=0.1 in SH17 - multiply by ~3 to make dimensional??
+Dvtop=0.0001;%0.0001;       
+Dvbottom=0.0001;%0.0001;
 QBGvecversion=2;
 tauvecversion=0;
 bvecversion=0;
 Dvversion=0;
 use_2BCConvAdj=2;
 fnameIC='Stan';
-expscale=12;%120000; 
+expscale=120000;%120000; 
 Lscale=2000;%2000;
 BvsYvecamp=0.5;%0.25; 
 
