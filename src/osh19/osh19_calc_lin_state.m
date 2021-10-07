@@ -2,16 +2,14 @@ function lin_state = osh19_calc_lin_state(params, grid, bg_profs, mode, wavenum)
 
 lin_state = struct();
 
-disp(strcat(['Calculating linear mode #',int2str(mode),', k=',int2str(wavenum)]));
-
 % Extract some variables from structs to clean up later code
 nx = params.nx;
 ny = params.ny;
 nz = params.nz;
 
 lin_state.zeta_tau = zeros([ny, nx]);
-lin_state.u_clin   = zeros([ny, nx, nz + 1]);
-lin_state.v_clin   = zeros([ny, nx, nz + 1]);
+lin_state.u_psi    = zeros([ny, nx, nz + 1]);
+lin_state.v_psi    = zeros([ny, nx, nz + 1]);
 lin_state.theta    = zeros([ny, nx, nz + 1]);
 lin_state.q        = zeros([ny, nx, nz + 1]);
 lin_state.tau_z    = zeros([ny, nx]);
@@ -286,11 +284,6 @@ Zzij = 1i * k_x_dim * F_mat * ddy_beta_y * F_mat_inv * spec_inv_lapl ...
 
 A(1 + (nz-1) * 4 * ny:end, 1 + (nz - 1) * 4 * ny:end) = Zzij;
 
-% block_row = 3;
-% block_col = 3;
-% disp(A(block_row*ny+1:(block_row+1)*ny,block_col*ny+1:(block_col+1)*ny));
-% pause(inf);
-
 % Find eigenvalues of A
 [evecsFsp, evalsmat] = eig(A);
 days_to_secs = 3600*24;
@@ -338,8 +331,8 @@ end
 % Construct linear solution in physical space, diagnostic variables only
 lin_state.zeta_tau = evectoshow(ny * 4 * (nz - 1) + 1:ny * 4 * (nz - 1) + ny, :);
 for z_idx = 2:nz
-    lin_state.u_clin(:,:,z_idx) = evectoshow(          1 + 4 * ny * (z_idx - 2):    ny + 4 * ny * (z_idx - 2), :);
-    lin_state.v_clin(:,:,z_idx) = evectoshow(     ny + 1 + 4 * ny * (z_idx - 2):2 * ny + 4 * ny * (z_idx - 2), :);
+    lin_state.u_psi(:,:,z_idx) = evectoshow(          1 + 4 * ny * (z_idx - 2):    ny + 4 * ny * (z_idx - 2), :);
+    lin_state.v_psi(:,:,z_idx) = evectoshow(     ny + 1 + 4 * ny * (z_idx - 2):2 * ny + 4 * ny * (z_idx - 2), :);
     lin_state.theta(:,:,z_idx)  = evectoshow( 2 * ny + 1 + 4 * ny * (z_idx - 2):3 * ny + 4 * ny * (z_idx - 2), :);
     lin_state.q(:,:,z_idx)      = evectoshow( 3 * ny + 1 + 4 * ny * (z_idx - 2):4 * ny + 4 * ny * (z_idx - 2), :);
 end

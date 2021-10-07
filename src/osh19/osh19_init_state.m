@@ -9,8 +9,8 @@ nz = params.nz;
 
 % Diagnostic variables
 state.zeta_tau = zeros([ny, nx]);
-state.u_clin   = zeros([ny, nx, nz + 1]);
-state.v_clin   = zeros([ny, nx, nz + 1]);
+state.u_psi    = zeros([ny, nx, nz + 1]);
+state.v_psi    = zeros([ny, nx, nz + 1]);
 state.theta    = zeros([ny, nx, nz + 1]);
 state.q        = zeros([ny, nx, nz + 1]);
 % Prognostic variables

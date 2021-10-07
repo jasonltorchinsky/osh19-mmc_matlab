@@ -1,7 +1,7 @@
 osh19_params = struct();
-osh19_params.nx = 4; % Number of points zonally
-osh19_params.ny = 4; % Number of points meridionally
-osh19_params.nz = 2;  % Number of non-trivial levels for u, v, p
+osh19_params.nx = 32; % Number of points zonally
+osh19_params.ny = 32; % Number of points meridionally
+osh19_params.nz = 8;  % Number of non-trivial levels for u, v, p
 osh19_params.H = 16;  % Height of troposphere (km)
 osh19_params.P_Y = 6000; % Distance from equator to channel wall (km)
 osh19_params.P_E = 40000/(2*pi); % Radius of planet (km)

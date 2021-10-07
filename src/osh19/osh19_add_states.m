@@ -2,8 +2,8 @@ function state = osh19_add_states(a, b, state_a, state_b)
 
 state = struct();
 state.zeta_tau = a * state_a.zeta_tau + b * state_b.zeta_tau;
-state.u_clin   = a * state_a.u_clin   + b * state_b.u_clin;
-state.v_clin   = a * state_a.v_clin   + b * state_b.v_clin;
+state.u_psi    = a * state_a.u_psi    + b * state_b.u_psi;
+state.v_psi    = a * state_a.v_psi    + b * state_b.v_psi;
 state.theta    = a * state_a.theta    + b * state_b.theta;
 state.q        = a * state_a.q        + b * state_b.q;
 state.tau_z    = a * state_a.tau_z    + b * state_b.tau_z;

@@ -16,9 +16,9 @@ printyes = 1;
 
 %%%%%%%%%% CURRENTLY IN CASE 5 %%%%%%%%%%%
 
-numx=4;                  % Number of x gridpoints
-numy=4;                  % Number of y gridpoints
-numlevs=2;                % Number of nontrivial levels for (u,v,p)  
+numx=32;                  % Number of x gridpoints
+numy=32;                  % Number of y gridpoints
+numlevs=8;                % Number of nontrivial levels for (u,v,p)  
 tend=100;                 % Number of simulation days
 pY=6000;                  % Domain width in y (km)                                       DEFAULT = 6000
 Bvsdim=-0.00134;%-0.00134;          % (kg kg^{-1} km^{-1}) From HSS15 - range of -1 to -1.5
