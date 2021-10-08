@@ -29,7 +29,7 @@ osh19_params.IC_modes = [1]; % Modes to use for initial condition (IC)
 osh19_params.IC_wavenums = [1, 2, 3]; % Zonal wavenumber to use for IC
 osh19_params.IC_amp = 1; % Amplification factor for IC
 osh19_params.clin_conv_adj = 2; % Options for baroclinic modes in IC
-osh19_params.sim_days = 2; % Number of days to simulate (d)
+osh19_params.sim_days = 100; % Number of days to simulate (d)
 osh19_params.out_freq = 1; % How often to output data (d)
 
 osh19_params.out_path = 'output';
@@ -37,7 +37,7 @@ osh19_params.exp_name = 'default';
 osh19_params.component_name = 'truth';
 
 osh19_params.run_simulation = true;
-osh19_params.create_plots = false;
+osh19_params.create_plots = true;
 
 if osh19_params.run_simulation
     error = main(osh19_params);

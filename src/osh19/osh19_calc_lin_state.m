@@ -302,7 +302,7 @@ end
 evalssort = evals(Index_Sorted);
 
 Growthrates = imag(evalssort);
-disp(strcat(['Calculating linear mode #',int2str(mode),', k=',int2str(wavenumber)]));
+disp(strcat(['Calculating linear mode #',int2str(mode),', k=',int2str(wavenum)]));
 disp('Growthrates');
 disp(num2str(Growthrates(1:5)));
 
@@ -335,8 +335,10 @@ lin_state.zeta_tau = evectoshow(ny * 4 * (nz - 1) + 1:ny * 4 * (nz - 1) + ny, :)
 for z_idx = 2:nz
     lin_state.u_psi(:,:,z_idx) = evectoshow(          1 + 4 * ny * (z_idx - 2):    ny + 4 * ny * (z_idx - 2), :);
     lin_state.v_psi(:,:,z_idx) = evectoshow(     ny + 1 + 4 * ny * (z_idx - 2):2 * ny + 4 * ny * (z_idx - 2), :);
-    lin_state.theta(:,:,z_idx)  = evectoshow( 2 * ny + 1 + 4 * ny * (z_idx - 2):3 * ny + 4 * ny * (z_idx - 2), :);
-    lin_state.q(:,:,z_idx)      = evectoshow( 3 * ny + 1 + 4 * ny * (z_idx - 2):4 * ny + 4 * ny * (z_idx - 2), :);
+    lin_state.theta(:,:,z_idx) = evectoshow( 2 * ny + 1 + 4 * ny * (z_idx - 2):3 * ny + 4 * ny * (z_idx - 2), :);
+    lin_state.q(:,:,z_idx)     = evectoshow( 3 * ny + 1 + 4 * ny * (z_idx - 2):4 * ny + 4 * ny * (z_idx - 2), :);
 end
+
+lin_state = osh19_prognose_state(params, grid, lin_state);
 
 end

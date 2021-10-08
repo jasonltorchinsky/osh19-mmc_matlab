@@ -38,8 +38,8 @@ for kk = 2:nz
 end 
 
 % Calculate top-level total winds from barotropic winds
-state.u(:,:,nz+1) = nz * state.u_tau - squeeze(sum(state.u(:,:,2:end), 3));
-state.v(:,:,nz+1) = nz * state.v_tau - squeeze(sum(state.v(:,:,2:end), 3));
+state.u(:,:,nz+1) = nz * state.u_tau - squeeze(sum(state.u(:,:,2:nz), 3));
+state.v(:,:,nz+1) = nz * state.v_tau - squeeze(sum(state.v(:,:,2:nz), 3));
 
 % Calculate total vertical winds
 for kk = 2:nz

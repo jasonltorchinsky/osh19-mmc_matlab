@@ -18,7 +18,7 @@ fY2        = osh19_calc_RK4_stage(params, grid, bg_profs, stage_temp);
 stage_temp = osh19_add_states(1.0, dt/2.0, state_in, fY2); %Y3
 
 fY3        = osh19_calc_RK4_stage(params, grid, bg_profs, stage_temp);
-stage_temp = osh19_add_states(1.0, dt/2.0, state_in, fY3); %Y4
+stage_temp = osh19_add_states(1.0, dt, state_in, fY3); %Y4
 
 fY4        = osh19_calc_RK4_stage(params, grid, bg_profs, stage_temp);
 
