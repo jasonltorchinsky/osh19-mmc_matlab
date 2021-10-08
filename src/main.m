@@ -1,6 +1,6 @@
 function ierror = main(osh19_params)
 
-ierror = 1;
+ierror = 0; % 0 is no errors
 
 % Initialize parameters
 msg = sprintf(['Converting input parameter time units to (s)...\n']);
@@ -26,13 +26,20 @@ osh19_bg_profs = osh19_init_bg_profs(osh19_params, osh19_grid);
 
 osh19_output_bg_profs(osh19_params, osh19_bg_profs);
 
-pause(inf);
-
 % Initialize state
 msg = sprintf(['Initializing state...\n']);
 disp(msg);
 
 osh19_state = osh19_init_state(osh19_params, osh19_grid, osh19_bg_profs);
+
+
+msg  = sprintf(['Output file at %.2f days,\n'...
+            '   closest to desired output time %.2f days.\n' ...
+            '   Max zonal wind speed: %.4f m s^(-1).\n'], ...
+            round(0.0, 2), ...
+            round(0.0, 2), ...
+            1000*max(osh19_state.u,[],'all'));
+disp(msg);
 
 osh19_output_state(osh19_params, osh19_bg_profs, osh19_state, ...
             0, 0.0);
@@ -49,6 +56,9 @@ out_idx      = 1;                         % Output file number
 out_time     = out_idx * out_freq;        % Output file time
 days_to_secs = 3600*24;
 
+msg = sprintf(['Beginning time-stepping...\n']);
+disp(msg);
+
 while time < sim_days 
     osh19_state = osh19_advance_state(osh19_params, osh19_grid, ...
         osh19_bg_profs, osh19_state);
@@ -60,6 +70,10 @@ while time < sim_days
         if any(isnan(osh19_state.u))
             msg = sprintf(['ERROR: NaNs detected in solution!']);
             disp(msg);
+            
+            ierror = 1;
+            
+            return
         end
         
         % write state to file
@@ -68,9 +82,11 @@ while time < sim_days
         
         % Output message to update user on execution status
         msg  = sprintf(['Output file at %.2f days,\n'...
-            '   closest to desired output time %.2f days.'], ...
+            '   closest to desired output time %.2f days.\n' ...
+            '   Max zonal wind speed: %.4f m s^(-1).\n'], ...
             round(time/days_to_secs, 2), ...
-            round(out_time/days_to_secs, 2));
+            round(out_time/days_to_secs, 2), ...
+            1000*max(osh19_state.u,[],'all'));
         disp(msg);
         
         out_idx  = out_idx + 1;

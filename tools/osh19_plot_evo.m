@@ -1,4 +1,4 @@
-function osh19_plot_evo(params)
+function osh19_plot_evo(params, alt, lat)
 
 % Get path to output data.
 out_path       = params.out_path;
@@ -19,6 +19,8 @@ addpath(plot_path);
 
 % Read in run parameters
 params_file = fullfile(component_path, 'params.nc');
+
+H        = ncread(params_file, 'H');
 sim_days = ncread(params_file, 'sim_days');
 out_freq = ncread(params_file, 'out_freq');
 
@@ -29,16 +31,17 @@ yy  = ncread(grid_file, 'yy');
 zzU = ncread(grid_file, 'zzU');
 zzW = ncread(grid_file, 'zzW');
 
-lons = 360 * (xx - xx(1) / (xx(end) - xx(1));
+lons = 360 * (xx - xx(1)) / (xx(end) - xx(1));
 lats = yy / 110.567;
 
 % Calculate indices for desired altitude, latitude
-lat = 0.0;
-alt = 9.0;
+[~, lat_idx]   = min(abs(lats-lat));
+[~, altU_idx] = min(abs(zzU-alt));
+[~, altW_idx] = min(abs(zzW-alt));
 
-[lat_true, lat_idx]   = min(lats);
-[altU_true, altU_idx] = min(zzU);
-[altW_true, altW_idx] = min(zzW);
+lat_true  = lats(lat_idx);
+altU_true = zzU(altU_idx);
+altW_true = zzW(altU_idx);
 
 % Calculate output indices for times
 % 0*sim_days, 1/3*sim_days, 2/3*sim_days, sim_days
@@ -63,25 +66,33 @@ for out_idx = out_idxs
     q = ncread(state_file, 'q');
     
     % Horizontal profile at desired altitude
-    u_horz = u(:, :, altU_idx);
-    v_horz = v(:, :, altU_idx);
-    q_horz = u(:, :, altW_idx);
+    u_horz = squeeze(u(:, :, altU_idx));
+    v_horz = squeeze(v(:, :, altU_idx));
+    q_horz = squeeze(q(:, :, altW_idx));
     
     hold on;
-    quiver(lons, lats, u_horz, v_horz);
-    contourf(lons, lats, q_horz);
+    contourf(lons, lats, q_horz', ...
+        'edgecolor', 'none');
+    quiver(lons, lats, u_horz', v_horz');
+    
+    xlim([0, 360]);
+    ylim([-45, 45]);
     hold off;
     
     nexttile;
     
     % Vertical profile at desired altitude
-    u_vert = u(lat_idx, :, :);
-    w_vert = w(lat_idx, :, :);
-    q_vert = q(lat_idx, :, :);
+    u_vert = squeeze(u(lat_idx, :, :));
+    w_vert = squeeze(w(lat_idx, :, :));
+    q_vert = squeeze(q(lat_idx, :, :));
     
     hold on;
-    quiver(lons, zzU, u_vert, w_vert);
-    contourf(lons, zzW, q_vert);
+    contourf(lons, zzW, q_vert', ...
+        'edgecolor', 'none');
+    quiver(lons, zzU, u_vert', w_vert');
+    
+    xlim([0, 360]);
+    ylim([0, H]);
     hold off;
     
 end

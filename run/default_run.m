@@ -25,24 +25,24 @@ osh19_params.D_v = 1 * 10^(-4); % Vertical q diffusion (km^(2) s^(-1))
 osh19_params.IC_type = 1; % Initial condition type:
                           % 1 = get modes, wavenumbers from linear solution
                           % 2 = load state from file
-osh19_params.IC_modes = [1, 2, 3, 4]; % Modes to use for initial condition (IC)
-osh19_params.IC_wavenums = [1]; % Zonal wavenumber to use for IC
+osh19_params.IC_modes = [1]; % Modes to use for initial condition (IC)
+osh19_params.IC_wavenums = [1, 2, 3]; % Zonal wavenumber to use for IC
 osh19_params.IC_amp = 1; % Amplification factor for IC
 osh19_params.clin_conv_adj = 2; % Options for baroclinic modes in IC
-osh19_params.sim_days = 100; % Number of days to simulate (d)
+osh19_params.sim_days = 2; % Number of days to simulate (d)
 osh19_params.out_freq = 1; % How often to output data (d)
 
 osh19_params.out_path = 'output';
 osh19_params.exp_name = 'default';
 osh19_params.component_name = 'truth';
 
-osh19_params.run_simulation = false;
-osh19_params.create_plots = true;
+osh19_params.run_simulation = true;
+osh19_params.create_plots = false;
 
 if osh19_params.run_simulation
     error = main(osh19_params);
 end
 
 if osh19_params.create_plots
-    osh19_plot_evo(osh19_params)
+    osh19_plot_evo(osh19_params, 9.0, 0.0)
 end

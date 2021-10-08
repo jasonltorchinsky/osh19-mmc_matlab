@@ -19,7 +19,7 @@ printyes = 1;
 numx=32;                  % Number of x gridpoints
 numy=32;                  % Number of y gridpoints
 numlevs=8;                % Number of nontrivial levels for (u,v,p)  
-tend=100;                 % Number of simulation days
+tend=2;                 % Number of simulation days
 pY=6000;                  % Domain width in y (km)                                       DEFAULT = 6000
 Bvsdim=-0.00134;%-0.00134;          % (kg kg^{-1} km^{-1}) From HSS15 - range of -1 to -1.5
 tau_u=25;%25;                 % Damping timescale in days - u, v, zeta
@@ -146,7 +146,7 @@ elseif IC_type==2          % Use for combining multiple wavenumbers, single mode
 elseif IC_type==3          % Use for combining multiple modes and multiple wavenumbers
     % Pick an initial condition from the linear solutions
     % Number of the mode you want to use - (sorted by growthrates, largest to smallest)
-    num_damped_vec = [1 2 3 4]; % 2 3 4];        % Which modes do you want?  1=most unstable, 6=most damped.  DEFAULT = 1!!  
+    num_damped_vec = [1]; % 2 3 4];        % Which modes do you want?  1=most unstable, 6=most damped.  DEFAULT = 1!!  
     st_wave_number = 1;    % What zonal wavenumber do you want?  DEFAULT = 2
     amp_factor=1*10^(0);    % How large do you want the initial condition?  
     numwaves_in_IC=3;      % How many wavenumbers do you want to add together in the initial condition?
@@ -273,6 +273,7 @@ elseif IC_type==3
     end
     q=qanom+qbg;
     th=thanom+thetatildemat; %+Lv/cp*qv;
+    pause(inf);
 elseif IC_type==4
     restart_day=100;
     u=usol(:,:,:,restart_day+1);
