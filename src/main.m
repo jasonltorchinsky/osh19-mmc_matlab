@@ -2,12 +2,40 @@ function ierror = main(osh19_params)
 
 ierror = 1;
 
+% Initialize parameters
+msg = sprintf(['Converting input parameters to time units (s)...\n']);
+disp(msg);
+
 osh19_params   = osh19_convert_params(osh19_params);
+
+% Initialize grid
+msg = sprintf(['Initializing grid...\n']);
+disp(msg);
+
 osh19_grid     = osh19_init_grid(osh19_params);
+
+msg = sprintf(['Writing grid to file...\n']);
+disp(msg);
+
+osh19_output_grid(osh19_params, osh19_grid);
+
+% Initialize bacgkround profiles
+msg = sprintf(['Initializing background profiles...\n']);
+disp(msg);
+
 osh19_bg_profs = osh19_init_bg_profs(osh19_params, osh19_grid);
+
+pause(inf);
+
+% Initialize state
+msg = sprintf(['Initializing state...\n']);
+disp(msg);
+
 osh19_state    = osh19_init_state(osh19_params, osh19_grid, osh19_bg_profs);
 
-% Output initial condition to file
+msg = sprintf(['Writing initial condition to file...\n']);
+disp(msg);
+
 osh19_output_state(osh19_params, osh19_bg_profs, osh19_state, ...
             0, 0.0);
 
@@ -32,7 +60,8 @@ while time < sim_days
     if abs(out_time - time) < dt/2 % Closest time to desired output time
         % check state to ensure validity
         if any(isnan(osh19_state.u))
-            out_msg = sprintf(['ERROR: NaNs detected in solution!']);
+            msg = sprintf(['ERROR: NaNs detected in solution!']);
+            disp(msg);
         end
         
         % write state to file
@@ -40,11 +69,11 @@ while time < sim_days
             out_idx, time);
         
         % Output message to update user on execution status
-        out_msg  = sprintf(['Output file at %.2f days, closest to desired ' ...
-            'output time %.2f days.'], ...
+        msg  = sprintf(['Output file at %.2f days,\n'...
+            '   closest to desired output time %.2f days.'], ...
             round(time/days_to_secs, 2), ...
             round(out_time/days_to_secs, 2));
-        disp(out_msg);
+        disp(msg);
         
         out_idx  = out_idx + 1;
         out_time = out_idx * out_freq;
