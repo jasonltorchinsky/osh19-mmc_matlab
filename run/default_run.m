@@ -32,5 +32,9 @@ osh19_params.clin_conv_adj = 2; % Options for baroclinic modes in IC
 osh19_params.sim_days = 100; % Number of days to simulate (d)
 osh19_params.out_freq = 1; % How often to output data (d)
 
+osh19_params.out_path = 'output';
+osh19_params.exp_name = 'default';
+osh19_params.component_name = 'truth';
+
     
 error = main(osh19_params);

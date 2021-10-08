@@ -1,1 +1,13 @@
+# Ignore image and data files
+*.png
+*.nc
+*.pdf
+## But not the VERIFIED_DATA subdirectory or the documentation
+!output_data/VERIFIED_DATA/*
+!doc/*
+
+# Ignore temporary MATLAB files
 *.asv
+
+# Ignore other analysis files
+*.xlsx

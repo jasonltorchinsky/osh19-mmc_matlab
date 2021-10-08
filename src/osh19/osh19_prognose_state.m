@@ -28,8 +28,8 @@ wavenum_mat(1,1) = 10^10;  % THIS NUMBER SHOULD BE IRRELEVANT, AS LONG AS IT'S N
 % Calculate *barotropic* winds from barotropic relative vorticity
 state.tau_z  = ifft2(fft2(state.zeta_tau)./wavenum_mat);
 state.tau_z  = dealias(state.tau_z, 2.0/3.0);
-state.u_tau  = -D1(tau_z,'y',scale_y);
-state.v_tau  = D1(tau_z,'x',scale_x);
+state.u_tau  = -D1(state_in.tau_z,'y',scale_y);
+state.v_tau  = D1(state_in.tau_z,'x',scale_x);
 
 % Calculate total horizontal winds at each level
 for kk = 2:nz
@@ -44,7 +44,8 @@ state.v(:,:,nz+1) = nz * state.v_tau - squeeze(sum(state.v(:,:,2:end), 3));
 % Calculate total vertical winds
 for kk = 2:nz
     state.w(:,:,kk) = state.w(:,:,kk-1) ...
-        - dz * (D1(state.u(:,:,kk),'x',scalex) + D1(state.v(:,:,kk),'y',scaley));
+        - dz * (D1(state.u(:,:,kk),'x',scale_x) ...
+        + D1(state.v(:,:,kk),'y',scale_y));
 end
 
 % Calculate pressure

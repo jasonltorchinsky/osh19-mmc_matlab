@@ -302,8 +302,8 @@ end
 evalssort = evals(Index_Sorted);
 
 Growthrates = imag(evalssort);
-disp('Growthrates');
-disp(num2str(Growthrates(1:5)));
+%disp('Growthrates');
+%disp(num2str(Growthrates(1:5)));
  
 % Set sorted frequencies
 Frequencies = real(evalssort) / (2*pi);
