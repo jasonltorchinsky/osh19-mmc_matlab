@@ -36,5 +36,13 @@ osh19_params.out_path = 'output';
 osh19_params.exp_name = 'default';
 osh19_params.component_name = 'truth';
 
-    
-error = main(osh19_params);
+osh19_params.run_simulation = false;
+osh19_params.create_plots = true;
+
+if osh19_params.run_simulation
+    error = main(osh19_params);
+end
+
+if osh19_params.create_plots
+    osh19_plot_evo(osh19_params)
+end

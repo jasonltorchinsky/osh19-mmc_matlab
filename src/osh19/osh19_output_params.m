@@ -210,6 +210,24 @@ ncwriteatt(params_file, 'D_v', 'description', ...
 ncwriteatt(params_file, 'D_v', 'units', 'km^(2) s^(-1)');
 ncwrite(params_file, 'D_v', params.D_v);
 
+days_to_secs = 3600*24;
+
+nccreate(params_file, 'sim_days',...
+    'Datatype', 'double',...
+    'Format', 'netcdf4');
+ncwriteatt(params_file, 'sim_days', 'description', ...
+    'Number of days in simulation');
+ncwriteatt(params_file, 'sim_days', 'units', 'd');
+ncwrite(params_file, 'sim_days', params.sim_days/days_to_secs);
+
+nccreate(params_file, 'out_freq',...
+    'Datatype', 'double',...
+    'Format', 'netcdf4');
+ncwriteatt(params_file, 'out_freq', 'description', ...
+    'Number of days between output files');
+ncwriteatt(params_file, 'out_freq', 'units', 'd');
+ncwrite(params_file, 'out_freq', params.out_freq/days_to_secs);
+
 
 end
 
