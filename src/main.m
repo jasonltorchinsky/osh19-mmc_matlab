@@ -3,19 +3,18 @@ function ierror = main(osh19_params)
 ierror = 1;
 
 % Initialize parameters
-msg = sprintf(['Converting input parameters to time units (s)...\n']);
+msg = sprintf(['Converting input parameter time units to (s)...\n']);
 disp(msg);
 
 osh19_params   = osh19_convert_params(osh19_params);
+
+osh19_output_params(osh19_params);
 
 % Initialize grid
 msg = sprintf(['Initializing grid...\n']);
 disp(msg);
 
-osh19_grid     = osh19_init_grid(osh19_params);
-
-msg = sprintf(['Writing grid to file...\n']);
-disp(msg);
+osh19_grid = osh19_init_grid(osh19_params);
 
 osh19_output_grid(osh19_params, osh19_grid);
 
@@ -25,16 +24,15 @@ disp(msg);
 
 osh19_bg_profs = osh19_init_bg_profs(osh19_params, osh19_grid);
 
+osh19_output_bg_profs(osh19_params, osh19_bg_profs);
+
 pause(inf);
 
 % Initialize state
 msg = sprintf(['Initializing state...\n']);
 disp(msg);
 
-osh19_state    = osh19_init_state(osh19_params, osh19_grid, osh19_bg_profs);
-
-msg = sprintf(['Writing initial condition to file...\n']);
-disp(msg);
+osh19_state = osh19_init_state(osh19_params, osh19_grid, osh19_bg_profs);
 
 osh19_output_state(osh19_params, osh19_bg_profs, osh19_state, ...
             0, 0.0);
