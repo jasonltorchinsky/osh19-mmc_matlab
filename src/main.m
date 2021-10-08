@@ -18,9 +18,10 @@ out_freq = osh19_params.out_freq;
 dt = osh19_grid.dt;
 
 % Set up time-related variables
-time     = 0.0;                       % Current time in seconds
-out_idx  = 1;                         % Output file number
-out_time = out_idx * out_freq;        % Output file time
+time         = 0.0;                       % Current time in seconds
+out_idx      = 1;                         % Output file number
+out_time     = out_idx * out_freq;        % Output file time
+days_to_secs = 3600*24;
 
 while time < sim_days 
     osh19_state = osh19_advance_state(osh19_params, osh19_grid, ...
@@ -39,8 +40,10 @@ while time < sim_days
             out_idx, time);
         
         % Output message to update user on execution status
-        out_msg  = sprintf(['Output file at %.4f, closest to desired ' ...
-            'output time %.4f.'], time, out_time);
+        out_msg  = sprintf(['Output file at %.2f days, closest to desired ' ...
+            'output time %.2f days.'], ...
+            round(time/days_to_secs, 2), ...
+            round(out_time/days_to_secs, 2));
         disp(out_msg);
         
         out_idx  = out_idx + 1;
