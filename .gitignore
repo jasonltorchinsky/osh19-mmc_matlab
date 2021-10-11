@@ -1,6 +1,7 @@
 # Ignore image and data files
 *.png
 *.nc
+*.mat
 *.pdf
 ## But not the VERIFIED_DATA subdirectory or the documentation
 !run/verified_data/*
