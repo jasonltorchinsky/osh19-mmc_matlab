@@ -8,6 +8,7 @@
 
 % Predictor step 1 (Y2)
 utemp=u; vtemp=v; ztemp=z; qtemp=q; ptemp=p; wtemp=w; qanomtemp=qanom; thanomtemp=thanom; % thtemp=th??
+
 % CA_NL_RHS_2BCCAsw;
 CA_NL_RHS_2BCCA;
 % CA_NL_RHS_2BCCA_sw_12_18;
@@ -42,6 +43,8 @@ CA_NL_RHS_2BCCA;
 % CA_NL_RHS_2BCCA_sw_12_18;
 uRHS2=uRHS; vRHS2=vRHS; zRHS2=zRHS; thetaRHS2=thetaRHS; qRHS2=qRHS;
 
+
+
 utemp=u+dt/2*uRHS2;      
 vtemp=v+dt/2*vRHS2;
 ztemp=z+dt/2*zRHS2;
@@ -50,6 +53,7 @@ ztemp=z+dt/2*zRHS2;
 qanomtemp=qanom+dt/2*qRHS2;
 thanomtemp=thanom+dt/2*thetaRHS2;
 [wtemp,ptemp]=CA_NL_calc_wp(utemp,vtemp,g,theta0,dz,scalex,scaley,qbgmat,dafrac,qanomtemp,thanomtemp);
+
 
 % Predictor step 3 (Y4)
 % CA_NL_RHS_2BCCAsw;

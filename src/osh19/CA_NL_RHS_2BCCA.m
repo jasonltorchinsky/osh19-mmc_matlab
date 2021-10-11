@@ -54,6 +54,7 @@ zRHS(:,:,1)=zRHS(:,:,1)...
         -D1(beta*YY,'y',scaley).*vbar-1/tau_u*ztemp(:,:,1)...   
         -D2(uvbar(:,:,1),'x','x',scalex,scalex)+D2(uvbar(:,:,1),'y','y',scaley,scaley)...
         -D2(v2bar(:,:,1),'x','y',scalex,scaley)+D2(u2bar(:,:,1),'x','y',scalex,scaley); %...
+   
 
 for jcount=2:numlevs   
 
@@ -68,7 +69,8 @@ for jcount=2:numlevs
         -D1(squeeze(u2tot(:,:,jcount)),'x',scalex)...   
         -D1(squeeze(uvtot(:,:,jcount)),'y',scaley)...   
         -1/dz*(wtemp(:,:,jcount).*utotavg1-wtemp(:,:,jcount-1).*utotavg2); 
-
+    
+    
     % Calculate v RHS
     vtotavg1=mean(vtot(:,:,jcount:jcount+1),3);
     vtotavg2=mean(vtot(:,:,jcount-1:jcount),3);
@@ -80,7 +82,7 @@ for jcount=2:numlevs
         -D1(squeeze(uvtot(:,:,jcount)),'x',scalex)...   
         -D1(squeeze(v2tot(:,:,jcount)),'y',scaley)...
         -1/dz*(wtemp(:,:,jcount).*vtotavg1-wtemp(:,:,jcount-1).*vtotavg2); %...
-
+    
     % Calculate theta RHS
     thetaRHS(:,:,jcount)=thetaRHS(:,:,jcount)...
         -1/(2*dz)*wtemp(:,:,jcount).*(thetatildemat(:,:,jcount+1)-thetatildemat(:,:,jcount-1))...
@@ -104,6 +106,8 @@ for jcount=2:numlevs
         thetaRHS(:,:,jcount)=thetaRHS(:,:,jcount)+Lv/cp/tauvec(jcount-1)*qanomtemp(:,:,jcount);
     end
 
+    
+    
     %%%%% MAKE SURE YOU CHECK ANOMALIES VS BACKGROUND STATE HERE %%%%%
     % Calculate q RHS
     qRHS(:,:,jcount)=qRHS(:,:,jcount)...
@@ -129,7 +133,9 @@ for jcount=2:numlevs
     else
         qRHS(:,:,jcount)=qRHS(:,:,jcount)-1/tauvec(jcount-1)*qanomtemp(:,:,jcount);
     end
+    
 end
+
 
 % Dealias output
 uRHS=dealias(uRHS,dafrac);

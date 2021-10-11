@@ -10,7 +10,7 @@
 % Get 1D linear solution in Fourier space. - Need to move this to the right
 % folder.
 
-disp(strcat(['Calculating linear mode #',int2str(num_damped),', k=',int2str(wave_number)]));
+% disp(strcat(['Calculating linear mode #',int2str(num_damped),', k=',int2str(wave_number)]));
 
 % disp(strcat(['tauvec=',num2str(tauvec)]));
 % disp(strcat(['Bvsdim=',num2str(Bvsdim)]));
@@ -268,8 +268,8 @@ evalssort=evals(Index_Sorted);
 
 % Set sorted growthrates
 Growthrates = imag(evalssort);
-disp('Growthrates');
-disp(num2str(Growthrates(1:5)));
+% disp('Growthrates');
+% disp(num2str(Growthrates(1:5)));
  
 % Set sorted frequencies
 Frequencies = real(evalssort)/(2*pi);

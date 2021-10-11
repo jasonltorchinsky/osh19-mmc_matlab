@@ -302,9 +302,9 @@ end
 evalssort = evals(Index_Sorted);
 
 Growthrates = imag(evalssort);
-disp(strcat(['Calculating linear mode #',int2str(mode),', k=',int2str(wavenum)]));
-disp('Growthrates');
-disp(num2str(Growthrates(1:5)));
+% disp(strcat(['Calculating linear mode #',int2str(mode),', k=',int2str(wavenum)]));
+% disp('Growthrates');
+% disp(num2str(Growthrates(1:5)));
 
  
 % Set sorted frequencies
@@ -338,7 +338,5 @@ for z_idx = 2:nz
     lin_state.theta(:,:,z_idx) = evectoshow( 2 * ny + 1 + 4 * ny * (z_idx - 2):3 * ny + 4 * ny * (z_idx - 2), :);
     lin_state.q(:,:,z_idx)     = evectoshow( 3 * ny + 1 + 4 * ny * (z_idx - 2):4 * ny + 4 * ny * (z_idx - 2), :);
 end
-
-lin_state = osh19_prognose_state(params, grid, lin_state);
 
 end

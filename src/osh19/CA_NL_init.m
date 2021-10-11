@@ -19,7 +19,7 @@ printyes = 1;
 numx=32;                  % Number of x gridpoints
 numy=32;                  % Number of y gridpoints
 numlevs=8;                % Number of nontrivial levels for (u,v,p)  
-tend=2;                 % Number of simulation days
+tend=100;                 % Number of simulation days
 pY=6000;                  % Domain width in y (km)                                       DEFAULT = 6000
 Bvsdim=-0.00134;%-0.00134;          % (kg kg^{-1} km^{-1}) From HSS15 - range of -1 to -1.5
 tau_u=25;%25;                 % Damping timescale in days - u, v, zeta
@@ -268,12 +268,12 @@ elseif IC_type==3
         v=v+vmatini*amp_factor_by_k;
         z=z+zmatini*amp_factor_by_k;
         thanom=thanom+thetamatini*amp_factor_by_k;
-        qanom=qanom+qmatini*amp_factor_by_k; % NOT ACTUALLY USED IN THE CODE...
+        qanom=qanom+qmatini*amp_factor_by_k; % NOT ACTUALLY USED IN THE CODE...  
     end
     end
     q=qanom+qbg;
     th=thanom+thetatildemat; %+Lv/cp*qv;
-    pause(inf);
+    
 elseif IC_type==4
     restart_day=100;
     u=usol(:,:,:,restart_day+1);

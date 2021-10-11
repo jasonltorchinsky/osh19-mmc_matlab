@@ -44,5 +44,5 @@ if osh19_params.run_simulation
 end
 
 if osh19_params.create_plots
-    osh19_plot_evo(osh19_params, 9.0, 0.0)
+    osh19_plot_evo(osh19_params, 9.0, 0.0);
 end

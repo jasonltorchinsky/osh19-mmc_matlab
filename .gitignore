@@ -3,7 +3,7 @@
 *.nc
 *.pdf
 ## But not the VERIFIED_DATA subdirectory or the documentation
-!output_data/VERIFIED_DATA/*
+!run/verified_data/*
 !doc/*
 
 # Ignore temporary MATLAB files
