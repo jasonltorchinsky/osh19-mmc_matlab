@@ -52,10 +52,11 @@ out_idxs(3) = floor((2.0 / 3.0) * sim_days / out_freq);
 out_idxs(4) = floor(sim_days / out_freq);
 
 % Create tiled layout of plots of evolution
-tiledlayout(4,2);
+tlo = tiledlayout(4,2);
+tile_idx = 1;
 
 for out_idx = out_idxs
-    nexttile;
+    h(tile_idx) = nexttile(tlo);
     state_file_name = strcat(['state_', num2str(out_idx,'%04u'), '.nc']);
     state_file = fullfile(component_path, state_file_name);
     
@@ -79,7 +80,9 @@ for out_idx = out_idxs
     ylim([-45, 45]);
     hold off;
     
-    nexttile;
+    tile_idx = tile_idx + 1;
+    
+    h(tile_idx) = nexttile(tlo);
     
     % Vertical profile at desired altitude
     u_vert = squeeze(u(lat_idx, :, :));
@@ -95,7 +98,33 @@ for out_idx = out_idxs
     ylim([0, H]);
     hold off;
     
+    tile_idx = tile_idx + 1;
 end
+
+% Set elements common across tiled layout
+max_q = max(abs([q_horz, q_vert]), [], 'all'); % Assume maximum is in last time-step
+min_q = -max_q;
+cmap = load('rb.mat').rb;
+set(h, ...
+    'Colormap', cmap, ...
+    'CLim', [min_q, max_q])
+
+cbh = colorbar(h(end));
+cbh.Layout.Tile = 'east';
+
+if lat_true < 0
+    lat_str = sprintf(['%f.2 ' char(176) 'S'], ...
+        round(lat_true, 2));
+elseif lat_true > 0
+    lat_str = sprintf(['%f.2 ' char(176) 'N'], ...
+        round(lat_true, 2));
+else
+    lat_str = sprintf(['EQ']);
+end
+
+title_str = sprintf(['State Evolution at ' lat_str ' and %f.2 (km)'], ...
+    round(H, 2));
+title(tlo, title_str)
 
 %~ Figure size
 set(gcf, 'Units', 'inches');

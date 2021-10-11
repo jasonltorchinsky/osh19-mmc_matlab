@@ -36,7 +36,7 @@ osh19_params.out_path = 'output';
 osh19_params.exp_name = 'default';
 osh19_params.component_name = 'truth';
 
-osh19_params.run_simulation = true;
+osh19_params.run_simulation = false;
 osh19_params.create_plots = true;
 
 if osh19_params.run_simulation
