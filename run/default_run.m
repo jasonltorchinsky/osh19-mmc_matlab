@@ -44,13 +44,15 @@ if osh19_params.run_simulation
 end
 
 if osh19_params.create_plots
-    osh19_plot_evo(osh19_params, 10.0, 0.0);
+    clf('reset');
     
-    clf;
+    %osh19_plot_evo(osh19_params, 10.0, 0.0);
     
-    osh19_plot_hovmoller(osh19_params, 10.0, 0.0);
+    clf('reset');
     
-    clf;
+    %osh19_plot_hovmoller(osh19_params, 10.0, 0.0);
+    
+    clf('reset');
     
     osh19_plot_wheeler_kiladis(osh19_params, 128, 38, 0.1, 12);
 end

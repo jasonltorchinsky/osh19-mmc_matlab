@@ -23,9 +23,9 @@ addpath(plot_path);
 params_file = fullfile(component_path, 'params.nc');
 
 nx       = ncread(params_file, 'nx');
-P_E      = ncread(params_file, 'P_E');
 P_Y      = ncread(params_file, 'P_Y');
-beta     = ncread(params_file, 'beta');
+P_E      = ncread(params_file, 'P_E');
+beta     = ncread(params_file, 'beta')*(3600*24);
 g        = ncread(params_file, 'g')*((3600*24).^2); % convert to km day^(-2)
 
 sim_days = ncread(params_file, 'sim_days');
@@ -74,7 +74,7 @@ for day = days
     state_file = fullfile(component_path, state_file_name);
     q_day = ncread(state_file, 'q');
     qanom(:, :, day + 1) = q_day(min_yy_idx:max_yy_idx, :, altW_idx)/1000;
-    % Convert to g kg^(-1).
+    % Units? Want g kg^(-1).
 end
 
 % Get symmetric and anti-symmetric parts of qanom
@@ -233,7 +233,7 @@ roots = zeros(3, nwvs);
 for ii = 1:nwvs
     roots(:,ii) = vpasolve(eqns(ii), disp_omega);
 end
-kelv25 = roots(1, :); % Index 1 is Kelvin Waves
+kelv25 = roots(1, :); % Index 3 is Kelvin Waves
 
 n    = 0; % Mixed Rossby-Gravity Waves
 eqns = sqrt(g * h_e) / beta ...
@@ -257,7 +257,7 @@ for ii = 1:nwvs
     roots(:,ii) = vpasolve(eqns(ii), disp_omega);
 end
 rossby25  = roots(2, :); % Index 2 is Equatorial Rossby Waves
-inertio25 = roots(3, :); % Index 3 is Inertio-Gracity Waves
+inertio25 = roots(3, :); % Index 3 is Inertio-Gravity Waves
 
 
 % h_e = 50 m
@@ -468,6 +468,8 @@ text(-8, 0.425, 'WIG',...
     'LineWidth', 0.25,...
     'Margin', 1);
 
+title('Symmetric Part');
+
 hold off;
 
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -477,6 +479,7 @@ hold off;
 h(2) = nexttile(tlo, 2);
 
 hold on;
+
 [~, asymplt] = contourf(wavenums, freqs, qanom_asym_power);
 
 % Contour style
@@ -628,6 +631,8 @@ text(-8, 0.425, 'WIG',...
     'LineWidth', 0.25,...
     'Margin', 1);
 
+title('Asymmetric Part');
+
 hold off;
 
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -643,8 +648,8 @@ set(gcf,...
     'PaperSize', [figWidth, figHeight])
 
 %Colorbar
-set(h, 'Colormap', spring)
-%,...'CLim', [power_min, power_max]
+set(h, 'Colormap', spring, ...
+    'CLim', [power_min, power_max])
 cbh = colorbar(h(end));
 cbh.Layout.Tile = 'east';
 
@@ -677,8 +682,6 @@ file_name = strcat([params.component_name, '_wheeler_kiladis_', ...
     alt_str, '.pdf']);
 plot_file = fullfile(plot_path, file_name);
 print(plot_file, '-dpdf', '-painters');
-disp(strcat(['Saved Wheeler-Kiladis diagram at altitude ',...
-    num2str(altW_true, '%3.1f'), ' km!']));
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 
