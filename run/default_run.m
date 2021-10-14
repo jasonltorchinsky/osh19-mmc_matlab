@@ -1,4 +1,9 @@
+out_path = 'output';
+exp_name = 'long_default';
+
+% Parameters for the true OSH19 system
 osh19_params = struct();
+
 osh19_params.nx = 32; % Number of points zonally
 osh19_params.ny = 32; % Number of points meridionally
 osh19_params.nz = 8;  % Number of non-trivial levels for u, v, p
@@ -29,19 +34,32 @@ osh19_params.IC_modes = [1]; % Modes to use for initial condition (IC)
 osh19_params.IC_wavenums = [1, 2, 3]; % Zonal wavenumber to use for IC
 osh19_params.IC_amp = 1; % Amplification factor for IC
 osh19_params.clin_conv_adj = 2; % Options for baroclinic modes in IC
-osh19_params.sim_days = 100; % Number of days to simulate (d)
+osh19_params.sim_days = 400; % Number of days to simulate (d)
 osh19_params.out_freq = 1; % How often to output data (d)
 
-osh19_params.out_path = 'output';
-osh19_params.exp_name = 'default';
+osh19_params.out_path = out_path;
+osh19_params.exp_name = exp_name;
 osh19_params.component_name = 'truth';
 
+osh19_params.init_simulation = false;
 osh19_params.run_simulation = false;
 osh19_params.create_plots = true;
 
-if osh19_params.run_simulation
-    error = main(osh19_params);
-end
+% Parameters for the Empirical orthogonal function calculation
+eof_params = struct();
+
+eof_params.Q_mode = 'mid'; % Use Q_mid ('mid') or Q_up ('up')
+
+eof_params.out_path = out_path;
+eof_params.exp_name = exp_name;
+eof_params.component_name = osh19_params.component_name;
+
+eof_params.calc_eofs = true;
+eof_params.create_plots = true;
+
+% Run the simulation and plotting
+
+error = main(osh19_params, eof_params);
 
 if osh19_params.create_plots
     clf('reset');
@@ -50,13 +68,20 @@ if osh19_params.create_plots
     
     clf('reset');
     
-    %osh19_plot_evo(osh19_params, 10.0, 0.0);
+    osh19_plot_evo(osh19_params, 10.0, 0.0);
     
     clf('reset');
     
-    %osh19_plot_hovmoller(osh19_params, 10.0, 0.0);
+    osh19_plot_hovmoller(osh19_params, 10.0, 0.0);
     
     clf('reset');
     
-    %osh19_plot_wheeler_kiladis(osh19_params, 128, 38, 0.1, 12);
+    osh19_plot_wheeler_kiladis(osh19_params, 128, 38, 0.1, 12);
 end
+
+if eof_params.create_plots
+    clf('reset');
+    
+    eof_plot_eofs(osh19_params, eof_params, 10.0, 0.0);
+end
+    

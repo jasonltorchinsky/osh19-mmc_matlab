@@ -202,8 +202,7 @@ ylabel(tlo_vert, 'Altitude (km)');
 
 % Ticks
 xticks(h, 0:45:360);
-xticklabels(h, {'0', '45W', '90W', '135W', '180', ...
-    '135E', '90E', '45E', '0'});
+xticklabels(h, {'180', '135W', '90W', '45W', '0', '45E', '90E', '135E', '180'});
 
 yticks(h(1,:), -30:30:30);
 yticklabels(h(1,:), {'30S', 'EQ', '30N'});

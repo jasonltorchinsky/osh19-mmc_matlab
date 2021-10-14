@@ -23,8 +23,6 @@ addpath(component_path);
 n_wavenums = growths_freqs.n_wavenums;
 n_modes    = growths_freqs.n_modes;
 
-disp(growths_freqs.growth_rates);
-
 % Create output file, delete the current one if present
 growths_freqs_file_name = 'growths_freqs.nc';
 growths_freqs_file = fullfile(component_path, growths_freqs_file_name);

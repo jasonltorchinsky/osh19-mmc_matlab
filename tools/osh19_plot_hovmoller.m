@@ -122,8 +122,7 @@ ylabel('Time (d)');
 
 % Ticks
 xticks(0:45:360);
-xticklabels({'0', '45W', '90W', '135W', '180', ...
-    '135E', '90E', '45E', '0'});
+xticklabels({'180', '135W', '90W', '45W', '0', '45E', '90E', '135E', '180'});
 
 % Example zonal windspeeds
 speed_3 = 3.1 * (1 / 1000) * (360 / (2 * pi * P_E)) * days_to_secs;
