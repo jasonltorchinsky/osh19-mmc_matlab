@@ -10,21 +10,21 @@ function state_out = osh19_advance_state(params, grid, bg_profs, state_in)
 dt = grid.dt;
 
 % Dealias the input state
-stage_temp = dealias_state(state_in, 2.0/3.0); % Holds intermediate states
+stage_temp = osh19_dealias_state(state_in, 2.0/3.0); % Holds intermediate states
 
 % Perform the RK4 update
 fY1        = osh19_calc_RK4_stage(params, grid, bg_profs, stage_temp);
 stage_temp = osh19_add_states(1.0, dt/2.0, state_in, fY1); %Y2
 
-stage_temp = dealias_state(stage_temp, 2.0/3.0);
+stage_temp = osh19_dealias_state(stage_temp, 2.0/3.0);
 fY2        = osh19_calc_RK4_stage(params, grid, bg_profs, stage_temp);
 stage_temp = osh19_add_states(1.0, dt/2.0, state_in, fY2); %Y3
 
-stage_temp = dealias_state(stage_temp, 2.0/3.0);
+stage_temp = osh19_dealias_state(stage_temp, 2.0/3.0);
 fY3        = osh19_calc_RK4_stage(params, grid, bg_profs, stage_temp);
 stage_temp = osh19_add_states(1.0, dt, state_in, fY3); %Y4
 
-stage_temp = dealias_state(stage_temp, 2.0/3.0);
+stage_temp = osh19_dealias_state(stage_temp, 2.0/3.0);
 fY4        = osh19_calc_RK4_stage(params, grid, bg_profs, stage_temp);
 
 state_out = osh19_add_states(1.0, dt/6.0, state_in,  fY1);

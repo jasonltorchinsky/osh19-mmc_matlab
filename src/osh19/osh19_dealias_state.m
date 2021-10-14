@@ -1,4 +1,4 @@
-function state_out = dealias_state(state_in, fraction)
+function state_out = osh19_dealias_state(state_in, fraction)
 
 state_out = state_in;
 

@@ -1,4 +1,4 @@
-function lin_state = osh19_calc_lin_state(params, grid, bg_profs, mode, wavenum)
+function [lin_state, growthrates, frequencies] = osh19_calc_lin_state(params, grid, bg_profs, mode, wavenum)
 
 lin_state = struct();
 
@@ -301,14 +301,9 @@ end
 
 evalssort = evals(Index_Sorted);
 
-Growthrates = imag(evalssort);
-% disp(strcat(['Calculating linear mode #',int2str(mode),', k=',int2str(wavenum)]));
-% disp('Growthrates');
-% disp(num2str(Growthrates(1:5)));
-
- 
-% Set sorted frequencies
-Frequencies = real(evalssort) / (2*pi);
+% Set sorted growth rates, frequencies
+growthrates = imag(evalssort);
+frequencies = real(evalssort) / (2*pi);
 
 % Set sorted Right Evecs
 evecsFspsort = evecsFsp(:, Index_Sorted);

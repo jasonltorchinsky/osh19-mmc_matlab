@@ -29,11 +29,11 @@ osh19_params.IC_modes = [1]; % Modes to use for initial condition (IC)
 osh19_params.IC_wavenums = [1, 2, 3]; % Zonal wavenumber to use for IC
 osh19_params.IC_amp = 1; % Amplification factor for IC
 osh19_params.clin_conv_adj = 2; % Options for baroclinic modes in IC
-osh19_params.sim_days = 400; % Number of days to simulate (d)
+osh19_params.sim_days = 100; % Number of days to simulate (d)
 osh19_params.out_freq = 1; % How often to output data (d)
 
 osh19_params.out_path = 'output';
-osh19_params.exp_name = 'long_default';
+osh19_params.exp_name = 'default';
 osh19_params.component_name = 'truth';
 
 osh19_params.run_simulation = false;
@@ -46,6 +46,10 @@ end
 if osh19_params.create_plots
     clf('reset');
     
+    osh19_plot_growths_freqs(osh19_params, 1);
+    
+    clf('reset');
+    
     %osh19_plot_evo(osh19_params, 10.0, 0.0);
     
     clf('reset');
@@ -54,5 +58,5 @@ if osh19_params.create_plots
     
     clf('reset');
     
-    osh19_plot_wheeler_kiladis(osh19_params, 128, 38, 0.1, 12);
+    %osh19_plot_wheeler_kiladis(osh19_params, 128, 38, 0.1, 12);
 end

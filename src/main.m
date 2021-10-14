@@ -30,7 +30,10 @@ osh19_output_bg_profs(osh19_params, osh19_bg_profs);
 msg = sprintf(['Initializing state...\n']);
 disp(msg);
 
-osh19_state = osh19_init_state(osh19_params, osh19_grid, osh19_bg_profs);
+[osh19_state, osh19_growths_freqs] = osh19_init_state(osh19_params, ...
+    osh19_grid, osh19_bg_profs);
+
+osh19_output_growths_freqs(osh19_params, osh19_growths_freqs);
 
 % Extract parameters to neaten equations
 sim_days = osh19_params.sim_days; % "sim_days" is in seconds
