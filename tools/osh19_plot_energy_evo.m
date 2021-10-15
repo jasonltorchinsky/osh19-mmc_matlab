@@ -23,9 +23,6 @@ params_file = fullfile(component_path, 'params.nc');
 
 nx       = ncread(params_file, 'nx');
 P_Y      = ncread(params_file, 'P_Y');
-P_E      = ncread(params_file, 'P_E');
-beta     = ncread(params_file, 'beta')*(3600*24);
-g        = ncread(params_file, 'g')*((3600*24).^2); % convert to km day^(-2)
 
 sim_days = ncread(params_file, 'sim_days');
 out_freq = ncread(params_file, 'out_freq');

@@ -1,48 +1,54 @@
-function ierror = main(osh19_params, eof_params)
+function ierror = main(truth_params, eof_params)
+
+% Truth is OSH19 system
+% EOFs are determined from OSH19 system
+% DCM is OSH19 system with modified parameters
+% MJOO is modified CMG14 system
 
 ierror = 0; % 0 is no errors
 
-if osh19_params.init_simulation
+% Truth simulation
+if truth_params.init_simulation
     
     % Initialize parameters
     msg = sprintf(['Converting input parameter time units to (s)...\n']);
     disp(msg);
     
-    osh19_params = osh19_convert_params(osh19_params);
+    truth_params = osh19_convert_params(truth_params);
     
-    osh19_output_params(osh19_params);
+    osh19_output_params(truth_params);
     
     % Initialize grid
     msg = sprintf(['Initializing grid...\n']);
     disp(msg);
     
-    osh19_grid = osh19_init_grid(osh19_params);
+    osh19_grid = osh19_init_grid(truth_params);
     
-    osh19_output_grid(osh19_params, osh19_grid);
+    osh19_output_grid(truth_params, osh19_grid);
     
     % Initialize bacgkround profiles
     msg = sprintf(['Initializing background profiles...\n']);
     disp(msg);
     
-    osh19_bg_profs = osh19_init_bg_profs(osh19_params, osh19_grid);
+    osh19_bg_profs = osh19_init_bg_profs(truth_params, osh19_grid);
     
-    osh19_output_bg_profs(osh19_params, osh19_bg_profs);
+    osh19_output_bg_profs(truth_params, osh19_bg_profs);
     
     % Initialize state
     msg = sprintf(['Initializing state...\n']);
     disp(msg);
     
-    [osh19_state, osh19_growths_freqs] = osh19_init_state(osh19_params, ...
+    [osh19_state, osh19_growths_freqs] = osh19_init_state(truth_params, ...
         osh19_grid, osh19_bg_profs);
     
-    osh19_output_growths_freqs(osh19_params, osh19_growths_freqs);
+    osh19_output_growths_freqs(truth_params, osh19_growths_freqs);
     
     
-    if osh19_params.run_simulation
+    if truth_params.run_simulation
         
         % Extract parameters to neaten equations
-        sim_days = osh19_params.sim_days; % "sim_days" is in seconds
-        out_freq = osh19_params.out_freq;
+        sim_days = truth_params.sim_days; % "sim_days" is in seconds
+        out_freq = truth_params.out_freq;
         
         dt = osh19_grid.dt;
         
@@ -61,14 +67,14 @@ if osh19_params.init_simulation
             1000*max(osh19_state.u,[],'all'));
         disp(msg);
         
-        osh19_output_state(osh19_params, osh19_bg_profs, osh19_state, ...
+        osh19_output_state(truth_params, osh19_bg_profs, osh19_state, ...
             0, 0.0);
         
         msg = sprintf(['Beginning time-stepping...\n']);
         disp(msg);
         
         while time < sim_days
-            osh19_state = osh19_advance_state(osh19_params, osh19_grid, ...
+            osh19_state = osh19_advance_state(truth_params, osh19_grid, ...
                 osh19_bg_profs, osh19_state);
             
             time = time + dt;
@@ -85,7 +91,7 @@ if osh19_params.init_simulation
                 end
                 
                 % write state to file
-                osh19_output_state(osh19_params, osh19_bg_profs, ...
+                osh19_output_state(truth_params, osh19_bg_profs, ...
                     osh19_state, out_idx, time);
                 
                 % Output message to update user on execution status
@@ -107,6 +113,7 @@ if osh19_params.init_simulation
     
 end
 
+% EOF calculation
 if eof_params.calc_eofs
     
     msg = sprintf(['Calculating EOFs...\n']);
@@ -117,5 +124,7 @@ if eof_params.calc_eofs
     eof_output_eofs(eof_params, eofs);
     
 end
+
+% Run ensemble
 
 end

@@ -1,9 +1,9 @@
-function eof_plot_eofs(osh19_params, eof_params, alt, lat)
+function eof_plot_eofs(eof_params, alt)
 
 % Get path to output data.
-out_path       = osh19_params.out_path;
-exp_path       = fullfile(out_path, osh19_params.exp_name);
-component_path = fullfile(exp_path, osh19_params.component_name);
+out_path       = eof_params.out_path;
+exp_path       = fullfile(out_path, eof_params.exp_name);
+component_path = fullfile(exp_path, eof_params.component_name);
 eof_path       = fullfile(exp_path, 'eofs');
 
 addpath(out_path);
@@ -19,13 +19,6 @@ end
 
 addpath(plot_path);
 
-% Read in run parameters
-params_file = fullfile(component_path, 'params.nc');
-
-H        = ncread(params_file, 'H');
-sim_days = ncread(params_file, 'sim_days');
-out_freq = ncread(params_file, 'out_freq');
-
 % Read in grids
 grid_file = fullfile(component_path, 'grid.nc');
 
@@ -38,11 +31,9 @@ lons = 360 * (xx - xx(1)) / (xx(end) - xx(1));
 lats = yy / 110.567;
 
 % Calculate indices for desired altitude, latitude
-[~, lat_idx]  = min(abs(lats-lat));
 [~, altU_idx] = min(abs(zzU-alt));
 [~, altW_idx] = min(abs(zzW-alt));
 
-lat_true  = lats(lat_idx);
 altU_true = zzU(altU_idx);
 altW_true = zzW(altW_idx);
 
@@ -209,7 +200,7 @@ set(gcf,...
     'PaperOrientation', 'portrait');
 
 % Save plot.
-file_name = strcat([osh19_params.component_name, '_eofs.pdf']);
+file_name = strcat([eof_params.component_name, '_eofs.pdf']);
 plot_file = fullfile(plot_path, file_name);
 print(plot_file, '-dpdf', '-painters', '-fillpage');
 

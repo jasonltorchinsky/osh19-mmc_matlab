@@ -22,19 +22,40 @@ comb_proj = [u_proj q_proj]; % Combined projection matrix
 cov = transpose(comb_proj) * comb_proj;
 [eof_mtx, L] = eig(cov);
 
-% Get the first two EOFs, and expansion coefficients
+% Get "raw" EOFs, xpansion coefficients of combined system
+eofs.raw_eof1 = transpose(eof_mtx(:, end));
+eofs.raw_eof2 = transpose(eof_mtx(:, end-1));
+
 [nt, nx] = size(u_proj);
+
+exp_coeffs = comb_proj * eof_mtx(:, [end end-1]);
+eofs.raw_exp1 = transpose(exp_coeffs(1:nt, end));
+eofs.raw_exp2 = transpose(exp_coeffs(1:nt, end-1));
+
+% Get the first two EOFs, and expansion coefficients
+
 
 eofs.u_eof1 = transpose(eof_mtx(1:nx, end)) * u_proj_var;
 eofs.u_eof2 = transpose(eof_mtx(1:nx, end-1)) * u_proj_var;
 eofs.q_eof1 = transpose(eof_mtx(nx+1:end, end)) * q_proj_var;
 eofs.q_eof2 = transpose(eof_mtx(nx+1:end, end-1)) * q_proj_var;
 
-exp_coeffs = comb_proj * eof_mtx(:, [end end-1]);
-eofs.exp1 = transpose(exp_coeffs(1:nt, end));
-eofs.exp2 = transpose(exp_coeffs(1:nt, end-1));
 
 eofs.scf = sort(diag(L) / trace(L), 'descend'); % Scaled covariance fraction
+
+% Scale EOFs, expansion coefficientsso EOFs have unit norm
+eof1_norm = norm([eofs.u_eof1
+    eofs.q_eof1])^2;
+eof2_norm = norm([eofs.u_eof2
+    eofs.q_eof2])^2;
+
+eofs.u_eof1 = eofs.u_eof1 / eof1_norm;
+eofs.u_eof2 = eofs.u_eof2 / eof2_norm;
+eofs.q_eof1 = eofs.q_eof1 / eof1_norm;
+eofs.q_eof2 = eofs.q_eof2 / eof2_norm;
+
+eofs.exp1 = eofs.raw_exp1 * eof1_norm;
+eofs.exp2 = eofs.raw_exp2 * eof2_norm;
 
 eofs = eof_recon_mjo(params, eofs);
 
