@@ -1,5 +1,5 @@
 out_path = 'output';
-exp_name = 'long_default';
+exp_name = 'default';
 
 % Parameters for the true OSH19 system
 osh19_params = struct();
@@ -34,7 +34,7 @@ osh19_params.IC_modes = [1]; % Modes to use for initial condition (IC)
 osh19_params.IC_wavenums = [1, 2, 3]; % Zonal wavenumber to use for IC
 osh19_params.IC_amp = 1; % Amplification factor for IC
 osh19_params.clin_conv_adj = 2; % Options for baroclinic modes in IC
-osh19_params.sim_days = 400; % Number of days to simulate (d)
+osh19_params.sim_days = 100; % Number of days to simulate (d)
 osh19_params.out_freq = 1; % How often to output data (d)
 
 osh19_params.out_path = out_path;
@@ -54,8 +54,8 @@ eof_params.out_path = out_path;
 eof_params.exp_name = exp_name;
 eof_params.component_name = osh19_params.component_name;
 
-eof_params.calc_eofs = true;
-eof_params.create_plots = true;
+eof_params.calc_eofs = false;
+eof_params.create_plots = false;
 
 % Run the simulation and plotting
 
@@ -64,19 +64,25 @@ error = main(osh19_params, eof_params);
 if osh19_params.create_plots
     clf('reset');
     
-    osh19_plot_growths_freqs(osh19_params, 1);
+    %osh19_plot_growths_freqs(osh19_params, 1);
     
     clf('reset');
     
-    osh19_plot_evo(osh19_params, 10.0, 0.0);
+    %osh19_plot_evo(osh19_params, 10.0, 0.0);
     
     clf('reset');
     
-    osh19_plot_hovmoller(osh19_params, 10.0, 0.0);
+    %osh19_plot_hovmoller(osh19_params, 10.0, 0.0);
+    
+    if osh19_params.sim_days > 256
+        clf('reset');
+    
+        osh19_plot_wheeler_kiladis(osh19_params, 128, 38, 0.1, 12);
+    end
     
     clf('reset');
     
-    osh19_plot_wheeler_kiladis(osh19_params, 128, 38, 0.1, 12);
+    osh19_plot_energy_evo(osh19_params, 12);
 end
 
 if eof_params.create_plots
