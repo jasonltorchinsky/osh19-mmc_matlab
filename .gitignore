@@ -3,9 +3,10 @@
 *.nc
 *.mat
 *.pdf
-## But not the VERIFIED_DATA subdirectory or the documentation
+## But not the VERIFIED_DATA subdirectory, the documentation, or colormap file
 !run/verified_data/*
 !doc/*
+!tools/rb.mat
 
 # Ignore temporary MATLAB files
 *.asv
