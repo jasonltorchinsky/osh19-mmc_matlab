@@ -75,6 +75,8 @@ end
 % Vertical line at wavenumber 0
 plot([0,0], [0,10], 'k--');
 
+ylim([0, 1.1*max(growth_rates, [], 'all')]);
+
 hold off;
 
 ylabel('Growth Rate (d^{-1})');
@@ -103,9 +105,11 @@ end
 % Vertical line at wavenumber 0
 plot([0,0], [0,10], 'k--');
 
+ylim([0, 0.05]);
+
 hold off;
 
-ylabel('Frquency (d^{-1})');
+ylabel('Frequency (d^{-1})');
 
 % Common elements across all plots
 xlabel(tlo, 'Zonal Wavenumber');
@@ -114,7 +118,6 @@ for plt = h
     xticks(plt, ext_wavenums);
     
     xlim(plt, [min(ext_wavenums), max(ext_wavenums)]);
-    ylim(plt, [0, 0.05]);
 end
 
     

@@ -96,12 +96,15 @@ for day = days
     qanom_asym_fft(:,day+1) = fftshift(fft(qanom_asym(:,day+1)));
 end
 
-qanom_sym_power   = abs(qanom_sym_fft).^2;
-qanom_asym_power  = abs(qanom_asym_fft).^2;
+qanom_sym_power   = log(abs(qanom_sym_fft).^2);
+qanom_asym_power  = log(abs(qanom_asym_fft).^2);
 
 power_min = min([qanom_sym_power, qanom_asym_power], [], 'all');
 power_max = max([qanom_sym_power, qanom_asym_power], [], 'all');
 
+if power_min == -Inf
+    power_min = power_max * 4;
+end
 
 % Create master tiled layout
 tlo = tiledlayout(1, 2);
