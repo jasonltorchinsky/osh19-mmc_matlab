@@ -29,7 +29,7 @@ out_freq = ncread(params_file, 'out_freq');
 % Get arrays for each state variable
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-out_idxs = 0:out_freq:sim_days;
+out_idxs = 0:out_freq:floor(sim_days/out_freq);
 t    = zeros(size(out_idxs));
 u_1  = zeros(size(out_idxs));
 u_2  = zeros(size(out_idxs));

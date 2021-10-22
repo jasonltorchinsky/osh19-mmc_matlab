@@ -12,7 +12,7 @@ sigma_w = params.sigma_w;
 
 dt      = params.dt;
 
-% IMEX Euler Scheme x_k+1 = (I - dt*A) * (x_k + dt*(B + F) + sqrt(dt) W)
+% IMEX Euler Scheme x_k+1 = (I - dt*A)^(-1) * (x_k + dt*(B + F) + sqrt(dt) W)
 % Put into matrices for easier equations
 
 state_vec = [state_out.u_1
@@ -40,6 +40,8 @@ stoch = normrnd(0, 1, [4,1]);
 state_vec = opers.A * (state_vec ...
     + dt * (opers.B + opers.F) ...
     + sqrt(dt) * Sigma * stoch);
+
+disp(state_vec);
 
 % Unpack state vector
 state_out.u_1 = state_vec(1);

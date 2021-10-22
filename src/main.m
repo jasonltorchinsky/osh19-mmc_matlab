@@ -84,6 +84,7 @@ if truth_params.init_simulation
         msg = sprintf(['Beginning time-stepping...\n']);
         disp(msg);
         
+        
         while time < sim_days
             truth_state = osh19_advance_state(truth_params, truth_grid, ...
                 truth_bg_profs, truth_state);
