@@ -46,6 +46,12 @@ for out_idx = out_idxs
     w_u(out_idx + 1) = ncread(state_file, 'w_u');
 end
 
+% Convert seconds to days
+days_to_secs = 3600 * 24;
+t = t / days_to_secs;
+w_u = w_u * days_to_secs;
+
+
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 % Make plots
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -61,6 +67,8 @@ hold on;
 plot(t, u_1, 'k-');
 plot(t, u_2, 'k--');
 
+legend(h(1), 'u_{1}', 'u_{2}');
+
 hold off;
 
 % Second plot - stochastic damping
@@ -69,6 +77,8 @@ h(2) = nexttile(tlo, 2);
 
 hold on;
 plot(t, v, 'k-');
+
+legend(h(2), 'v');
 
 hold off;
 
@@ -79,7 +89,15 @@ h(3) = nexttile(tlo, 3);
 hold on;
 plot(t, w_u, 'k-');
 
+ylabel(h(3), '(d^{-1})');
+
+legend(h(3), '\omega');
+
 hold off;
+
+
+% Common across all tiles
+xlabel(tlo, 'Time (d)');
 
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 % General figure styling.

@@ -56,7 +56,7 @@ q_mjo2 = ncread(eof_file, 'q_mjo2');
 exp1 = ncread(eof_file, 'exp1');
 exp2 = ncread(eof_file, 'exp2');
 
-% Normalize EOFs, MJOs to have physical units
+% Normalize EOFs, MJOs to have physical units ~ SCALE BY VARIANCE OR SOMETHING
 u_eof1 = u_eof1 * max(abs(exp1), [], 'all');
 u_eof2 = u_eof2 * max(abs(exp2), [], 'all');
 

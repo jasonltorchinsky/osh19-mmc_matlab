@@ -1,7 +1,7 @@
 out_path = 'output';
-exp_name = 'default';
+exp_name = 'long_default';
 
-sim_days = 100;
+sim_days = 400;
 
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 % Parameters for the truth (OSH19) [Default]
@@ -133,7 +133,7 @@ mjoo_params.f_t     = 4.9; % Amplitude of time-periodic damping (m^(-1))
 mjoo_params.w_f     = 2 * pi / 12; % Frequency of time-periodic damping (m^(-1))
 mjoo_params.phi     = -1; % Phase-shift of time-periodic damping
 
-mjoo_params.dt      = 0.01; % Time-step size (m)
+mjoo_params.dt      = 1/30 * 10^(0); % Time-step size (m)
 
 mjoo_params.IC_type = 1; % Initial condition type:
                          % 1 = zero
@@ -146,8 +146,8 @@ mjoo_params.out_path = out_path;
 mjoo_params.exp_name = exp_name;
 mjoo_params.component_name = 'mjoo';
 
-mjoo_params.init_simulation = true;
-mjoo_params.run_simulation = true;
+mjoo_params.init_simulation = false;
+mjoo_params.run_simulation = false;
 mjoo_params.create_plots = true;
 
 

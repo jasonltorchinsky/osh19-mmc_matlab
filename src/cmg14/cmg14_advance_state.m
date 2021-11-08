@@ -3,6 +3,7 @@ function state_out = cmg14_advance_state(params, opers, time, state_in)
 state_out = state_in;
 
 % Unpack some common parameters to clean up equations
+d_w     = params.d_w;
 gamma   = params.gamma;
 w_u_hat = params.w_u_hat;
 
@@ -28,7 +29,7 @@ opers.B = [gamma * state_out.v * state_out.u_1 - state_out.w_u * state_out.u_2
 opers.F = [0
     0
     det_force(params, time + dt)
-    w_u_hat];
+    d_w * w_u_hat];
 
 Sigma = [[sigma_u 0 0 0]
     [0 sigma_u 0 0]
@@ -40,8 +41,6 @@ stoch = normrnd(0, 1, [4,1]);
 state_vec = opers.A * (state_vec ...
     + dt * (opers.B + opers.F) ...
     + sqrt(dt) * Sigma * stoch);
-
-disp(state_vec);
 
 % Unpack state vector
 state_out.u_1 = state_vec(1);
