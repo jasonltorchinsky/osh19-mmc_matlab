@@ -1,7 +1,7 @@
 out_path = 'output';
 exp_name = 'long_default';
 
-sim_days = 400;
+sim_days = 800;
 
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 % Parameters for the truth (OSH19) [Default]
@@ -133,14 +133,16 @@ mjoo_params.f_t     = 4.9; % Amplitude of time-periodic damping (m^(-1))
 mjoo_params.w_f     = 2 * pi / 12; % Frequency of time-periodic damping (m^(-1))
 mjoo_params.phi     = -1; % Phase-shift of time-periodic damping
 
-mjoo_params.dt      = 1/30 * 10^(0); % Time-step size (m)
+mjoo_params.dt      = 1/30*2; % Time-step size (m) !! WATCH THIS WITH OUTPUT FREQUENCY !!
+                              %                    !! MUST BE LESS THAN OUTPUT
+                              %                       FREQUENCY !!
 
 mjoo_params.IC_type = 1; % Initial condition type:
                          % 1 = zero
                          % 2 = load state from file
 
 mjoo_params.sim_days = sim_days; % Number of days to simulate (d)
-mjoo_params.out_freq = 1; % How often to output data (d)
+mjoo_params.out_freq = 2; % How often to output data (d)
 
 mjoo_params.out_path = out_path;
 mjoo_params.exp_name = exp_name;
@@ -235,6 +237,10 @@ if mjoo_params.create_plots
     clf('reset');
     
     cmg14_plot_evo(mjoo_params);
+    
+    clf('reset');
+    
+    cmg14_plot_pdfs(mjoo_params);
     
 end
     

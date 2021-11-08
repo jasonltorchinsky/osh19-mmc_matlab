@@ -43,7 +43,7 @@ u_clin_mode_1 = u_clin_mode(zzU_norm, 1);
 % Set up u_proj, and begin calculating it
 u_proj = zeros([n_outfiles, nx]);
 
-out_idxs = 0:out_freq:n_outfiles;
+out_idxs = 0:n_outfiles;
 
 for out_idx = out_idxs
     state_file_name = strcat(['state_', num2str(out_idx,'%04u'),'.nc']);

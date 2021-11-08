@@ -15,7 +15,8 @@ params_file = fullfile(component_path, 'params.nc');
 sim_days = ncread(params_file, 'sim_days');
 out_freq = ncread(params_file, 'out_freq');
 
-out_idxs = 0:1:floor(sim_days / out_freq);
+n_outfiles = floor(sim_days / out_freq);
+out_idxs = 0:n_outfiles;
 
 % Read in the data from the verified run
 u_ver = load('utot_verified.mat').utot_verified;

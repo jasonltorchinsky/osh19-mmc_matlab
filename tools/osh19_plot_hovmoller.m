@@ -46,7 +46,9 @@ altW_true = zzW(altW_idx);
 q     = zeros(nx, floor(sim_days/out_freq) + 1);
 theta = zeros(nx, floor(sim_days/out_freq) + 1);
 t     = zeros(1, floor(sim_days/out_freq) + 1);
-out_idxs  = 0:out_freq:sim_days;
+
+n_outfiles = floor(sim_days/outfreq);
+out_idxs  = 0:n_outfiles;
 
 for out_idx = out_idxs
     state_file_name = strcat(['state_', num2str(out_idx,'%04u'), '.nc']);

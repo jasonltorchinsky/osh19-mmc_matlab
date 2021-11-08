@@ -29,7 +29,8 @@ out_freq = ncread(params_file, 'out_freq');
 % Get arrays for each state variable
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-out_idxs = 0:out_freq:floor(sim_days/out_freq);
+n_outfiles = floor(sim_days/out_freq);
+out_idxs = 0:n_outfiles;
 t    = zeros(size(out_idxs));
 u_1  = zeros(size(out_idxs));
 u_2  = zeros(size(out_idxs));
@@ -91,7 +92,7 @@ plot(t, w_u, 'k-');
 
 ylabel(h(3), '(d^{-1})');
 
-legend(h(3), '\omega');
+legend(h(3), '\omega_{u}');
 
 hold off;
 
