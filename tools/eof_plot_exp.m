@@ -35,12 +35,13 @@ exp1 = ncread(eof_file, 'exp1');
 exp2 = ncread(eof_file, 'exp2');
 
 % Get PDFs of expansion coefficients
-exp1_hist = histogram(exp1);
-exp1_pdf  = histcounts(exp1, 'Normalization', 'probability');
+nbins = 16;
+exp1_hist = histogram(exp1, nbins);
+exp1_pdf  = histcounts(exp1, nbins) / numel(exp1) ./ exp1_hist.BinWidth;
 exp1_bin_centers = exp1_hist.BinEdges + (exp1_hist.BinWidth / 2);
 
-exp2_hist = histogram(exp2, 25);
-exp2_pdf  = histcounts(exp2, 25, 'Normalization', 'probability');
+exp2_hist = histogram(exp2, nbins);
+exp2_pdf  = histcounts(exp2, nbins) / numel(exp2) ./ exp2_hist.BinWidth;
 exp2_bin_centers = exp2_hist.BinEdges + (exp2_hist.BinWidth / 2);
 
 % Create tiled layout 
@@ -77,7 +78,6 @@ hold off;
 h(2) = nexttile(tlo_exp_pdf);
 
 hold on;
-
 
 plot(exp1_bin_centers(1:end-1), exp1_pdf, 'k-', ...
     'DisplayName', 'EOF 1');

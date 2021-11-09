@@ -67,6 +67,7 @@ h(1) = nexttile(tlo, 1);
 hold on;
 plot(t, u_1, 'k-');
 plot(t, u_2, 'k--');
+plot(t, 0*t, 'k:');
 
 legend(h(1), 'u_{1}', 'u_{2}');
 
@@ -78,6 +79,7 @@ h(2) = nexttile(tlo, 2);
 
 hold on;
 plot(t, v, 'k-');
+plot(t, 0*t, 'k:');
 
 legend(h(2), 'v');
 
@@ -89,6 +91,7 @@ h(3) = nexttile(tlo, 3);
 
 hold on;
 plot(t, w_u, 'k-');
+plot(t, 0*t, 'k:');
 
 ylabel(h(3), '(d^{-1})');
 

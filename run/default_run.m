@@ -1,7 +1,7 @@
 out_path = 'output';
 exp_name = 'long_default';
 
-sim_days = 800;
+sim_days = 1500;
 
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 % Parameters for the truth (OSH19) [Default]
@@ -55,7 +55,7 @@ truth_params.create_plots = false;
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 eof_params = struct();
 
-eof_params.Q_mode = 'mid'; % Use Q_mid ('mid') or Q_up ('up')
+eof_params.Q_mode = 'up'; % Use Q_mid ('mid') or Q_up ('up')
 
 eof_params.out_path = out_path;
 eof_params.exp_name = exp_name;
@@ -133,7 +133,7 @@ mjoo_params.f_t     = 4.9; % Amplitude of time-periodic damping (m^(-1))
 mjoo_params.w_f     = 2 * pi / 12; % Frequency of time-periodic damping (m^(-1))
 mjoo_params.phi     = -1; % Phase-shift of time-periodic damping
 
-mjoo_params.dt      = 1/30*2; % Time-step size (m) !! WATCH THIS WITH OUTPUT FREQUENCY !!
+mjoo_params.dt      = 1/30; % Time-step size (m) !! WATCH THIS WITH OUTPUT FREQUENCY !!
                               %                    !! MUST BE LESS THAN OUTPUT
                               %                       FREQUENCY !!
 
@@ -142,14 +142,14 @@ mjoo_params.IC_type = 1; % Initial condition type:
                          % 2 = load state from file
 
 mjoo_params.sim_days = sim_days; % Number of days to simulate (d)
-mjoo_params.out_freq = 2; % How often to output data (d)
+mjoo_params.out_freq = 1; % How often to output data (d)
 
 mjoo_params.out_path = out_path;
 mjoo_params.exp_name = exp_name;
 mjoo_params.component_name = 'mjoo';
 
-mjoo_params.init_simulation = false;
-mjoo_params.run_simulation = false;
+mjoo_params.init_simulation = true;
+mjoo_params.run_simulation = true;
 mjoo_params.create_plots = true;
 
 
