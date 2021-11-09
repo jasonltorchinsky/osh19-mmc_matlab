@@ -367,5 +367,121 @@ if mjoo_params.init_simulation
     
 end
 
+%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+% Multi-Model Ensemble
+%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+if ens_params.init_simulation
+    disp(brk_str);
+    msg = sprintf(['Initializing DCM simulation...\n']);
+    disp(msg);
+    
+    % Initialize parameters
+    ens_dcm_params = ens_params.dcm_params;
+    msg = sprintf(['Converting input parameter time units to (s)...\n']);
+    disp(msg);
+    
+    dcm_params = osh19_convert_params(dcm_params);
+    
+    osh19_output_params(dcm_params);
+    
+    % Initialize grid
+    msg = sprintf(['Initializing grid...\n']);
+    disp(msg);
+    
+    dcm_grid = osh19_init_grid(dcm_params);
+    
+    osh19_output_grid(dcm_params, dcm_grid);
+    
+    % Initialize background profiles
+    msg = sprintf(['Initializing background profiles...\n']);
+    disp(msg);
+    
+    dcm_bg_profs = osh19_init_bg_profs(dcm_params, dcm_grid);
+    
+    osh19_output_bg_profs(dcm_params, dcm_bg_profs);
+    
+    % Initialize state
+    msg = sprintf(['Initializing state...\n']);
+    disp(msg);
+    
+    [dcm_state, dcm_growths_freqs] = osh19_init_state(dcm_params, ...
+        dcm_grid, dcm_bg_profs);
+    
+    osh19_output_growths_freqs(dcm_params, dcm_growths_freqs);
+    
+    
+    if dcm_params.run_simulation
+        disp(brk_str);
+        msg = sprintf(['Running DCM simulation...\n']);
+        disp(msg);
+        
+        % Extract parameters to neaten equations
+        sim_days = dcm_params.sim_days; % "sim_days" is in seconds
+        out_freq = dcm_params.out_freq;
+        
+        dt = dcm_grid.dt;
+        
+        % Set up time-related variables
+        time         = 0.0;                 % Current time in seconds
+        out_idx      = 1;                   % Output file number
+        out_time     = out_idx * out_freq;  % Output file time
+        days_to_secs = 3600*24;
+        
+        % Output initial state
+        
+        msg  = sprintf(['Day %.2f of %.2f.\n'...
+            '   Max zonal wind speed: %.4f m s^(-1).\n'], ...
+            round(0.0/days_to_secs, 2), ...
+            round(sim_days/days_to_secs, 2), ...
+            1000*max(dcm_state.u,[],'all'));
+        disp(msg);
+        
+        osh19_output_state(dcm_params, dcm_bg_profs, dcm_state, ...
+            0, 0.0);
+        
+        msg = sprintf(['Beginning time-stepping...\n']);
+        disp(msg);
+        
+        while time < sim_days
+            dcm_state = osh19_advance_state(dcm_params, dcm_grid, ...
+                dcm_bg_profs, dcm_state);
+            
+            time = time + dt;
+            
+            if abs(out_time - time) < dt/2 % Closest time to desired output time
+                % check state to ensure validity
+                if any(isnan(dcm_state.u))
+                    msg = sprintf(['ERROR: NaNs detected in solution!']);
+                    disp(msg);
+                    
+                    ierror = 1;
+                    
+                    return
+                end
+                
+                % write state to file
+                osh19_output_state(dcm_params, dcm_bg_profs, ...
+                    dcm_state, out_idx, time);
+                
+                % Output message to update user on execution status
+                msg  = sprintf(['Day %.2f of %.2f.\n'...
+                    '   Max zonal wind speed: %.4f m s^(-1).\n'], ...
+                    round(time/days_to_secs, 2), ...
+                    round(sim_days/days_to_secs, 2), ...
+                    1000*max(dcm_state.u,[],'all'));
+                disp(msg);
+                
+                out_idx  = out_idx + 1;
+                out_time = out_idx * out_freq;
+                
+            end
+            
+        end
+        
+    end
+    
+end
+
 
 end

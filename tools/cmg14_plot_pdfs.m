@@ -49,7 +49,7 @@ days_to_secs = 3600 * 24;
 w_u = w_u * days_to_secs;
 
 % Get PDFs of state variables
-nbins = 16;
+nbins = 48;
 u1_hist = histogram(u_1, nbins);
 u1_pdf  = histcounts(u_1, nbins) / numel(u_1) ./ u1_hist.BinWidth;
 u1_bin_centers = u1_hist.BinEdges + (u1_hist.BinWidth / 2);

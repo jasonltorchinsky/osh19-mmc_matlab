@@ -1,7 +1,7 @@
 out_path = 'output';
 exp_name = 'long_default';
 
-sim_days = 1500;
+sim_days = 400;
 
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 % Parameters for the truth (OSH19) [Default]
@@ -148,9 +148,44 @@ mjoo_params.out_path = out_path;
 mjoo_params.exp_name = exp_name;
 mjoo_params.component_name = 'mjoo';
 
-mjoo_params.init_simulation = true;
-mjoo_params.run_simulation = true;
-mjoo_params.create_plots = true;
+mjoo_params.init_simulation = false;
+mjoo_params.run_simulation = false;
+mjoo_params.create_plots = false;
+
+%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+% Parameters for the Multi-Model Ensemble
+%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+ens_params = struct();
+
+% Ensemble parameters
+ens_params.out_path = out_path;
+ens_params.exp_name = exp_name;
+ens_params.component_name = 'ens';
+
+ens_params.init_simulation = false;
+ens_params.run_simulation = false;
+ens_params.create_plots = false;
+
+% Ensemble DCM parameters
+ens_params.dcm_params = dcm_params;
+
+ens_params.dcm_params.component_name = 'ens_dcm';
+
+ens_params.dcm_params.init_simulation = ens_params.init_simulation;
+ens_params.dcm_params.run_simulation = ens_params.run_simulation;
+ens_params.dcm_params.create_plots = ens_params.create_plots;
+
+
+
+% Ensemble MJOO parameters
+ens_params.mjoo_params = mjoo_params;
+
+ens_params.mjoo_params.component_name = 'ens_mjoo';
+
+ens_params.mjoo_params.init_simulation = ens_params.init_simulation;
+ens_params.mjoo_params.run_simulation = ens_params.run_simulation;
+ens_params.mjoo_params.create_plots = ens_params.create_plots;
 
 
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
