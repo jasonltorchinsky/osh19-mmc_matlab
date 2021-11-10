@@ -7,7 +7,7 @@ if params.IC_type == 1
    
    state.u_1 = 0;
    state.u_2 = 0;
-   state.v   = 0;
+   state.v   = -1;
    state.w_u = 0;
     
 end

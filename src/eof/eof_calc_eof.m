@@ -10,15 +10,15 @@ q_proj = eof_proj_q(params);
 u_proj = detrend(u_proj, 0);
 q_proj = detrend(q_proj, 0);
 
-% Normalize u_proj, q_proj by their variance
-u_proj_var = std(u_proj, 0, 'all');
-u_proj = u_proj / u_proj_var;
+% Normalize u_proj, q_proj by their standard deviations
+u_proj_std = std(u_proj, 0, 'all');
+u_proj = u_proj / u_proj_std;
 
-q_proj_var = std(q_proj, 0, 'all');
-q_proj = q_proj / q_proj_var;
+q_proj_std = std(q_proj, 0, 'all');
+q_proj = q_proj / q_proj_std;
 
-eofs.u_var = u_proj_var;
-eofs.q_var = q_proj_var;
+eofs.u_std = u_proj_std;
+eofs.q_std = q_proj_std;
 
 % Perform the EOF decompostion via eigenvalue decomposition
 comb_proj = [u_proj q_proj]; % Combined projection matrix
@@ -32,14 +32,14 @@ eofs.raw_eof2 = transpose(eof_mtx(:, end-1));
 [nt, nx] = size(u_proj);
 
 exp_coeffs = comb_proj * eof_mtx(:, [end end-1]);
-eofs.raw_exp1 = transpose(exp_coeffs(1:nt, end));
-eofs.raw_exp2 = transpose(exp_coeffs(1:nt, end-1));
+eofs.raw_exp1 = transpose(exp_coeffs(1:nt, end-1));
+eofs.raw_exp2 = transpose(exp_coeffs(1:nt, end));
 
 % Get the first two EOFs, and expansion coefficients
-eofs.u_eof1 = transpose(eof_mtx(1:nx, end)) * u_proj_var;
-eofs.u_eof2 = transpose(eof_mtx(1:nx, end-1)) * u_proj_var;
-eofs.q_eof1 = transpose(eof_mtx(nx+1:end, end)) * q_proj_var;
-eofs.q_eof2 = transpose(eof_mtx(nx+1:end, end-1)) * q_proj_var;
+eofs.u_eof1 = transpose(eof_mtx(1:nx, end)) * u_proj_std;
+eofs.u_eof2 = transpose(eof_mtx(1:nx, end-1)) * u_proj_std;
+eofs.q_eof1 = transpose(eof_mtx(nx+1:end, end)) * q_proj_std;
+eofs.q_eof2 = transpose(eof_mtx(nx+1:end, end-1)) * q_proj_std;
 
 eofs.scf = sort(diag(L) / trace(L), 'descend'); % Scaled covariance fraction
 

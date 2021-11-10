@@ -42,6 +42,12 @@ state_vec = opers.A * (state_vec ...
     + dt * (opers.B + opers.F) ...
     + sqrt(dt) * Sigma * stoch);
 
+% Set stochastic forcing equal to det forcing.
+% state_vec(3) = opers.F(3);
+
+% Set stochastic phase equal to zero, always
+state_vec(4) = 0.0;
+
 % Unpack state vector
 state_out.u_1 = state_vec(1);
 state_out.u_2 = state_vec(2);

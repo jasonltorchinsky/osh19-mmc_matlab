@@ -41,9 +41,6 @@ altW_true = zzW(altW_idx);
 eof_file_name = 'eofs.nc';
 eof_file = fullfile(eof_path, eof_file_name);
 
-u_var = ncread(eof_file, 'u_var');
-q_var = ncread(eof_file, 'q_var');
-
 u_eof1 = ncread(eof_file, 'u_eof1');
 u_eof2 = ncread(eof_file, 'u_eof2');
 
