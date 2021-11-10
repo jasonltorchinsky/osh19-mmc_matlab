@@ -118,7 +118,7 @@ dcm_params.create_plots = false;
 mjoo_params = struct();
 
 mjoo_params.d_u     = 0.5*0.9; % Damping for MJO modes (m^(-1))
-mjoo_params.d_v     = 0.9; % Damping for stochastic damping (m^(-1))
+mjoo_params.d_v     = 2*0.9; % Damping for stochastic damping (m^(-1))
 mjoo_params.d_w     = 0.5; % Damping for stochastic phase (m^(-1))
 mjoo_params.gamma   = 0.3; % Strength of non-linear interaction (m^(-1))
 mjoo_params.a       = 1.5; % Background state phase of MJO modes (m^(-1))

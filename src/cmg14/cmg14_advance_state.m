@@ -43,7 +43,7 @@ state_vec = opers.A * (state_vec ...
     + sqrt(dt) * Sigma * stoch);
 
 % Set stochastic forcing equal to det forcing.
-% state_vec(3) = opers.F(3);
+%state_vec(3) = 10^(-6) * 1/gamma;
 
 % Set stochastic phase equal to zero, always
 state_vec(4) = 0.0;
