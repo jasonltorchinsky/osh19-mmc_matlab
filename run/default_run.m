@@ -1,7 +1,7 @@
 out_path = 'output';
-exp_name = 'long_default';
+exp_name = 'short_default';
 
-sim_days = 400;
+sim_days = 25;
 
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 % Parameters for the truth (OSH19) [Default]
@@ -46,9 +46,9 @@ truth_params.out_path = out_path;
 truth_params.exp_name = exp_name;
 truth_params.component_name = 'truth';
 
-truth_params.init_simulation = false;
-truth_params.run_simulation = false;
-truth_params.create_plots = false;
+truth_params.init_simulation = true;
+truth_params.run_simulation = true;
+truth_params.create_plots = true;
 
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 % Parameters for the Empirical Orthogonal Function calculation
@@ -61,8 +61,8 @@ eof_params.out_path = out_path;
 eof_params.exp_name = exp_name;
 eof_params.component_name = truth_params.component_name;
 
-eof_params.calc_eofs = false;
-eof_params.create_plots = false;
+eof_params.calc_eofs = true;
+eof_params.create_plots = true;
 
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 % Parameters for the deficient climate model (OSH19) [Case 2]
@@ -134,8 +134,8 @@ mjoo_params.w_f     = 2 * pi / 12; % Frequency of time-periodic damping (m^(-1))
 mjoo_params.phi     = -1; % Phase-shift of time-periodic damping
 
 mjoo_params.dt      = 1/30; % Time-step size (m) !! WATCH THIS WITH OUTPUT FREQUENCY !!
-                              %                    !! MUST BE LESS THAN OUTPUT
-                              %                       FREQUENCY !!
+                            %                    !! MUST BE LESS THAN OUTPUT
+                            %                       FREQUENCY !!
 
 mjoo_params.IC_type = 1; % Initial condition type:
                          % 1 = zero
@@ -176,8 +176,6 @@ ens_params.dcm_params.init_simulation = ens_params.init_simulation;
 ens_params.dcm_params.run_simulation = ens_params.run_simulation;
 ens_params.dcm_params.create_plots = ens_params.create_plots;
 
-
-
 % Ensemble MJOO parameters
 ens_params.mjoo_params = mjoo_params;
 
@@ -192,7 +190,7 @@ ens_params.mjoo_params.create_plots = ens_params.create_plots;
 % Run the simulation
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-error = main(truth_params, eof_params, dcm_params, mjoo_params);
+error = main(truth_params, eof_params, dcm_params, mjoo_params, ens_params);
 
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 % Plot truth simulation
@@ -277,5 +275,41 @@ if mjoo_params.create_plots
     
     cmg14_plot_pdfs(mjoo_params);
     
+end
+
+%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+% Plot ensemble simulation
+%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+if ens_params.create_plots
+    clf('reset');
+    
+    osh19_plot_growths_freqs(ens_params.dcm_params, 1);
+    
+    clf('reset');
+    
+    osh19_plot_evo(ens_params.dcm_params, 10.0, 0.0);
+    
+    clf('reset');
+    
+    osh19_plot_hovmoller(ens_params.dcm_params, 10.0, 0.0);
+    
+    if ens_params.dcm_params.sim_days > 256
+        clf('reset');
+    
+        osh19_plot_wheeler_kiladis(ens_params.dcm_params, 128, 38, 0.1, 12);
+    end
+    
+    clf('reset');
+    
+    osh19_plot_energy_evo(ens_params.dcm_params, 12);
+    
+    clf('reset');
+    
+    cmg14_plot_evo(ens_params.mjoo_params);
+    
+    clf('reset');
+    
+    cmg14_plot_pdfs(ens_params.mjoo_params);
 end
     

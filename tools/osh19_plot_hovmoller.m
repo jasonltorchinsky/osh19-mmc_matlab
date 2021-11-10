@@ -47,7 +47,7 @@ q     = zeros(nx, floor(sim_days/out_freq) + 1);
 theta = zeros(nx, floor(sim_days/out_freq) + 1);
 t     = zeros(1, floor(sim_days/out_freq) + 1);
 
-n_outfiles = floor(sim_days/outfreq);
+n_outfiles = floor(sim_days/out_freq);
 out_idxs  = 0:n_outfiles;
 
 for out_idx = out_idxs
