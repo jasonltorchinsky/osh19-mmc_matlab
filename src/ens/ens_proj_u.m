@@ -3,6 +3,7 @@ function u_proj = ens_proj_u(dcm_params, dcm_grid, dcm_state, eofs)
 % Unpack some common parameters
 nx = dcm_params.nx;
 ny = dcm_params.ny;
+nz = dcm_params.nz;
 
 H = dcm_params.H;
 
@@ -29,13 +30,14 @@ u_proj = zeros([1, nx]);
 u1 = zeros([ny, nx]);
 for jj = 1:ny
     for ii = 1:nx
-        u1(jj, ii) = squeeze(squeeze(mean(dcm_state.u(jj, ii, :).*u_clin_mode_1, 'all')));
+        u1(jj, ii) = (1/(nz+1)) ...
+            * squeeze(u_clin_mode_1*squeeze(dcm_state.u(jj, ii, :)));
     end
 end
 
 % Project u1 onto zeroth parabolic cylinder function
 for ii = 1:nx
-    u_proj(1, ii) = dy_norm * squeeze(sum(u1(:, ii).*parab_cyl_0, 'all'));
+    u_proj(1, ii) = dy_norm * squeeze(parab_cyl_0*u1(:, ii));
 end
 
 % Scale by standard deviation to non-dimensionalize

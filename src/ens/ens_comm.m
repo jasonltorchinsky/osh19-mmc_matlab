@@ -46,10 +46,10 @@ mjoo_obs = H_mjoo * mjoo_ptruth ...
     + Lambda_mjoo * mjoo_stoch;
 
 % Communicate the MJO indices, climate parameter
-gain_dcm = B_dcm * transpose(H_dcm) / (eye(2) + H_dcm * B_dcm * transpose(H_dcm));
+gain_dcm = B_dcm * transpose(H_dcm) / (Lambda_dcm + H_dcm * B_dcm * transpose(H_dcm));
 dcm_pst = dcm_pri - gain_dcm * (H_dcm * dcm_pri - dcm_obs);
 
-gain_mjoo = B_mjoo * transpose(H_mjoo) / (eye(1) + H_mjoo * B_mjoo * transpose(H_mjoo));
+gain_mjoo = B_mjoo * transpose(H_mjoo) / (Lambda_mjoo + H_mjoo * B_mjoo * transpose(H_mjoo));
 mjoo_pst = mjoo_pri - gain_mjoo * (H_mjoo * mjoo_pri - mjoo_obs);
 
 % Update DCM state
@@ -72,6 +72,8 @@ dcm_state_out = dcm_state;
 dcm_state_out.q = dcm_state_out.q - q_pri + q_pst;
 % u is a prognostic variable, so we need to correct the diagnostic variables too
 dcm_state_out.u = dcm_state_out.u - u_pri + u_pst;
+dcm_state_out.u(:,:,1)    = 0.0; % Enforce BCs
+dcm_state_out.u(:,:,nz+1) = 0.0;
 dcm_state_out.u_tau = squeeze(mean(dcm_state_out.u, 3));
 for kk = 1:nz+1
     dcm_state_out.u_psi(:,:,kk) = dcm_state_out.u(:,:,kk) - dcm_state_out.u_tau;
@@ -82,9 +84,15 @@ dcm_state_out = osh19_prognose_state(dcm_params, dcm_grid, dcm_state_out);
 
 % Update MJOO state
 mjoo_state_out = mjoo_state;
-mjoo_state_out.u_1 = mjoo_pst(1);
-mjoo_state_out.u_2 = mjoo_pst(2);
-mjoo_state_out.v   = mjoo_pst(3);
+%mjoo_state_out.u_1 = mjoo_pst(1);
+%mjoo_state_out.u_2 = mjoo_pst(2);
+%mjoo_state_out.v   = mjoo_pst(3);
+
+fprintf('u1_dcm_pri,  u2_dcm_pri:  %.2f, %.2f\n',   u1_dcm_pri,  u2_dcm_pri);
+fprintf('u1_mjoo_pri, u2_mjoo_pri: %.2f, %.2f\n\n', u1_mjoo_pri, u2_mjoo_pri);
+
+fprintf('u1_dcm_pst,  u2_dcm_pst:  %.2f, %.2f\n',   u1_dcm_pst,  u2_dcm_pst);
+fprintf('u1_mjoo_pst, u2_mjoo_pst: %.2f, %.2f\n\n', mjoo_pst(1), mjoo_pst(2));
 
 end
 

@@ -35,7 +35,7 @@ q_proj_dim = q_proj * q_std;
 % Unproject meridionally
 q_mer = zeros([ny, nx]);
 for ii = 1:nx
-    q_mer(:,ii) = q_proj_dim(ii).*parab_cyl_0;
+    q_mer(:,ii) = q_proj_dim(ii) * parab_cyl_0;
 end
 
 % Unproject vertically - NOTE: the unprojection is actually just the mid- or

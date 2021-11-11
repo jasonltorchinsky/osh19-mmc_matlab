@@ -3,6 +3,7 @@ function q_proj = ens_proj_q(dcm_params, dcm_grid, dcm_state, eofs)
 % Unpack some common parameters
 nx = dcm_params.nx;
 ny = dcm_params.ny;
+nz = dcm_params.nz;
 
 H = dcm_params.H;
 
@@ -33,8 +34,10 @@ q1 = zeros([ny, nx]);
 q2 = zeros([ny, nx]);
 for jj = 1:ny
     for ii = 1:nx
-        q1(jj, ii) = squeeze(squeeze(mean(dcm_state.q(jj, ii, :).*q_clin_mode_1, 'all')));
-        q2(jj, ii) = squeeze(squeeze(mean(dcm_state.q(jj, ii, :).*q_clin_mode_2, 'all')));
+        q1(jj, ii) = (1/(nz+1)) ...
+            * squeeze(q_clin_mode_1*squeeze(dcm_state.q(jj, ii, :)));
+        q2(jj, ii) = (1/(nz+1)) ...
+            * squeeze(q_clin_mode_2*squeeze(dcm_state.q(jj, ii, :)));
     end
 end
 
@@ -47,7 +50,7 @@ end
 
 % Project Q onto zeroth parabolic cylinder function
 for ii = 1:nx
-    q_proj(1, ii) = dy_norm * squeeze(sum(Q(:, ii).*parab_cyl_0, 'all'));
+    q_proj(1, ii) = dy_norm * squeeze(parab_cyl_0*Q(:, ii));
 end
 
 % Scale by standard deviation to non-dimensionalize

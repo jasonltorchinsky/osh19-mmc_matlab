@@ -161,12 +161,12 @@ ens_params = struct();
 % Ensemble parameters
 ens_params.dcm_comm = struct();
 ens_params.dcm_comm.H = [[1 0 0]; [0 1 0]];
-ens_params.dcm_comm.B = [[0.1 0 0]; [0.1 0 0]; [0 0 1]];
+ens_params.dcm_comm.B = [[3.0 0 0]; [0 3.0 0]; [0 0 0.1]];
 ens_params.dcm_comm.Lambda = [[0.1 0]; [0 0.1]];
 
 ens_params.mjoo_comm = struct();
-ens_params.mjoo_comm.H = [1 0 1];
-ens_params.mjoo_comm.B = [[1 0 0]; [1 0 0]; [0 0 0.1]];
+ens_params.mjoo_comm.H = [0 0 1];
+ens_params.mjoo_comm.B = [[0.1 0 0]; [0.1 0 0]; [0 0 3.0]];
 ens_params.mjoo_comm.Lambda = [0.1];
 
 ens_params.out_path = out_path;

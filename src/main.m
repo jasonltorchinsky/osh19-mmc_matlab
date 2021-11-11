@@ -462,6 +462,8 @@ if ens_params.init_simulation
                 ens_dcm_grid, ens_dcm_state, ens_mjoo_state, ...
                 ens_params, ens_eofs);
             
+            fprintf('Max u size: %.4f\n', max(abs(ens_dcm_state.u), [], 'all'));
+            
             time = time + dt;
             
             if abs(out_time - time) < dt/2 % Closest time to desired output time

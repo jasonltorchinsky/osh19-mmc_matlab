@@ -31,13 +31,13 @@ u_proj_dim = u_proj * u_std;
 % Unproject meridionally
 u_mer = zeros([ny, nx]);
 for ii = 1:nx
-    u_mer(:,ii) = u_proj_dim(ii).*parab_cyl_0;
+    u_mer(:,ii) = u_proj_dim(ii) * parab_cyl_0;
 end
 
 % Unproject vertically
 for jj = 1:ny
     for ii = 1:nx
-        u(jj, ii, :) = u_mer(jj, ii).*u_clin_mode_1;
+        u(jj, ii, :) = u_mer(jj, ii) * u_clin_mode_1;
     end
 end
 
