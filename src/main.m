@@ -370,7 +370,8 @@ if ens_params.init_simulation
     fprintf('Initializing ensemble simulation...\n');
     
     
-    % Initialize parameters
+    % Unpack DCM, MJOO parameters. From here, DO NOT TOUCH DCM, MJOO PARAMS
+    % WITHIN ENS_PARAMS
     ens_dcm_params = ens_params.dcm_params;
     ens_mjoo_params = ens_params.mjoo_params;
     
@@ -408,6 +409,7 @@ if ens_params.init_simulation
     
     % Read-in EOFs for communication information
     ens_eofs = ens_read_eofs(ens_params);
+
     
     if ens_params.run_simulation
         disp(brk_str);
@@ -456,7 +458,9 @@ if ens_params.init_simulation
             ens_mjoo_state = cmg14_advance_state(ens_mjoo_params, ens_mjoo_opers, time, ...
                 ens_mjoo_state);
             
-            % COMMUNICATION WOULD HAPPEN HERE %
+            [ens_dcm_state, ens_mjoo_state] = ens_comm(dcm_params, ...
+                ens_dcm_grid, ens_dcm_state, ens_mjoo_state, ...
+                ens_params, ens_eofs);
             
             time = time + dt;
             

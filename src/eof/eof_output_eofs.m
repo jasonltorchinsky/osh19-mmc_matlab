@@ -31,14 +31,20 @@ if isfile(eofs_file)
     delete(eofs_file)
 end
 
-% nccreate(eofs_file, 'Q_mode',...
-%     'Datatype', 'string',...
-%     'Format', 'netcdf4', ...
-%     'Dimensions', {'len', length(params.Q_mode)});
-% ncwriteatt(eofs_file, 'Q_mode', 'description', ...
-%     'Mid- or upper-mode of moisture for EOF decomposition');
-% ncwriteatt(eofs_file, 'Q_mode', 'units', 'N/A');
-% ncwrite(eofs_file, 'Q_mode', params.Q_mode);
+Q_mode_code = 0;
+if strcmpi(params.Q_mode, 'mid')
+    Q_mode_code = 0;
+elseif strcmpi(params.Q_mode, 'up')
+    Q_mode_code = 1;
+end
+
+nccreate(eofs_file, 'Q_mode_code',...
+    'Datatype', 'int64',...
+    'Format', 'netcdf4');
+ncwriteatt(eofs_file, 'Q_mode_code', 'description', ...
+    'Mid- (0) or upper-mode (1) of moisture for EOF decomposition');
+ncwriteatt(eofs_file, 'Q_mode_code', 'units', 'N/A');
+ncwrite(eofs_file, 'Q_mode_code', Q_mode_code);
 
 % Variances of EOFs used to get back to physical units
 nccreate(eofs_file, 'u_std',...

@@ -18,11 +18,19 @@ addpath(eof_path);
 eof_file_name = 'eofs.nc';
 eof_file = fullfile(eof_path, eof_file_name);
 
-ens_eofs.u_var = ncread(eof_file, 'u_var');
-ens_eofs.q_var = ncread(eof_file, 'q_var');
+ens_eofs.u_std = ncread(eof_file, 'u_std');
+ens_eofs.q_std = ncread(eof_file, 'q_std');
 
 ens_eofs.raw_eof1 = ncread(eof_file, 'raw_eof1');
 ens_eofs.raw_eof2 = ncread(eof_file, 'raw_eof2');
+
+Q_mode_code = ncread(eof_file, 'Q_mode_code');
+if Q_mode_code == 0
+    ens_eofs.Q_mode = 'mid';
+elseif Q_mode_code == 1
+    ens_eofs.Q_mode = 'up';
+end
+    
 
 end
 

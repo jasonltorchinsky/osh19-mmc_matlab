@@ -69,7 +69,7 @@ for out_idx = out_idxs
         Q = q1 * sqrt(2) * sin(2*pi/3) + q2 * 2 * sqrt(2) * sin(4*pi/3);
     end
     
-    % Project u1 onto zeroth parabolic cylinder function
+    % Project Q onto zeroth parabolic cylinder function
     for ii = 1:nx
        q_proj(out_idx+1, ii) = dy_norm * sum(squeeze(Q(:, ii)).*parab_cyl_0); 
     end
