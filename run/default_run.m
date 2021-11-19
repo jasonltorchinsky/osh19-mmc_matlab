@@ -1,7 +1,7 @@
 out_path = 'output';
-exp_name = 'default';
+exp_name = 'long_default';
 
-sim_days = 100;
+sim_days = 400;
 
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 % Parameters for the truth (OSH19) [Default]
@@ -61,8 +61,8 @@ eof_params.out_path = out_path;
 eof_params.exp_name = exp_name;
 eof_params.component_name = truth_params.component_name;
 
-eof_params.calc_eofs = false;
-eof_params.create_plots = false;
+eof_params.calc_eofs = true;
+eof_params.create_plots = true;
 
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 % Parameters for the deficient climate model (OSH19) [Case 2]
@@ -93,9 +93,10 @@ dcm_params.s_tilde = 12; % q_bg vertical decay length scale (km)
 dcm_params.D_hUp = 121.6; % Horizontal q diffusion in upper-troposphere (km^(2) s^(-1))
 dcm_params.D_hMid = 15.2; % Horizontal q diffusion in mid-troposphere (km^(2) s^(-1))
 dcm_params.D_v = 5 * 10^(-4); % Vertical q diffusion (km^(2) s^(-1))
-dcm_params.IC_type = 1; % Initial condition type:
+dcm_params.IC_type = 2; % Initial condition type:
                           % 1 = get modes, wavenumbers from linear solution
-                          % 2 = load state from file
+                          % 2 = all zero
+                          % ~2 = load state from file~ Not functional!
 dcm_params.IC_modes = [1]; % Modes to use for initial condition (IC)
 dcm_params.IC_wavenums = [1, 2, 3]; % Zonal wavenumber to use for IC
 dcm_params.IC_amp = 1; % Amplification factor for IC
@@ -162,7 +163,7 @@ ens_params = struct();
 ens_params.dcm_comm = struct();
 ens_params.dcm_comm.H = [[1 0 0]; [0 1 0]];
 ens_params.dcm_comm.B = [[3.0 0 0]; [0 3.0 0]; [0 0 0.1]];
-ens_params.dcm_comm.Lambda = [[0.1 0]; [0 0.1]];
+ens_params.dcm_comm.Lambda = 10^(-3) * [[1 0]; [0 1]];
 
 ens_params.mjoo_comm = struct();
 ens_params.mjoo_comm.H = [0 0 1];
@@ -305,7 +306,7 @@ end
 if ens_params.create_plots
     clf('reset');
     
-    osh19_plot_growths_freqs(ens_params.dcm_params, 1);
+    %osh19_plot_growths_freqs(ens_params.dcm_params, 1);
     
     clf('reset');
     

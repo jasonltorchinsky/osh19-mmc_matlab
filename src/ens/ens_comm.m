@@ -48,6 +48,8 @@ mjoo_obs = H_mjoo * mjoo_ptruth ...
 % Communicate the MJO indices, climate parameter
 gain_dcm = B_dcm * transpose(H_dcm) / (Lambda_dcm + H_dcm * B_dcm * transpose(H_dcm));
 dcm_pst = dcm_pri - gain_dcm * (H_dcm * dcm_pri - dcm_obs);
+% TRUST MJOO MODEL ENTIRELY
+dcm_pst = mjoo_pri;
 
 gain_mjoo = B_mjoo * transpose(H_mjoo) / (Lambda_mjoo + H_mjoo * B_mjoo * transpose(H_mjoo));
 mjoo_pst = mjoo_pri - gain_mjoo * (H_mjoo * mjoo_pri - mjoo_obs);
@@ -88,11 +90,16 @@ mjoo_state_out = mjoo_state;
 %mjoo_state_out.u_2 = mjoo_pst(2);
 %mjoo_state_out.v   = mjoo_pst(3);
 
-fprintf('u1_dcm_pri,  u2_dcm_pri:  %.2f, %.2f\n',   u1_dcm_pri,  u2_dcm_pri);
-fprintf('u1_mjoo_pri, u2_mjoo_pri: %.2f, %.2f\n\n', u1_mjoo_pri, u2_mjoo_pri);
+fprintf('u1_dcm_pri,  u2_dcm_pri:  %.4f, %.4f\n',   u1_dcm_pri,  u2_dcm_pri);
+fprintf('u1_mjoo_pri, u2_mjoo_pri: %.4f, %.4f\n\n', u1_mjoo_pri, u2_mjoo_pri);
 
-fprintf('u1_dcm_pst,  u2_dcm_pst:  %.2f, %.2f\n',   u1_dcm_pst,  u2_dcm_pst);
-fprintf('u1_mjoo_pst, u2_mjoo_pst: %.2f, %.2f\n\n', mjoo_pst(1), mjoo_pst(2));
+fprintf('u1_dcm_pst,  u2_dcm_pst:  %.4f, %.4f\n',   u1_dcm_pst,  u2_dcm_pst);
+fprintf('u1_mjoo_pst, u2_mjoo_pst: %.4f, %.4f\n\n', mjoo_pst(1), mjoo_pst(2));
 
+fprintf('Max u_proj in, max u_proj out: %.4f, %.4f\n\n', ...
+    max(abs(u_pri), [], 'all'), max(abs(u_pst), [], 'all'));
+
+fprintf('Max u in, max u out: %.4f, %.4f\n\n', ...
+    max(abs(dcm_state.u), [], 'all'), max(abs(dcm_state_out.u), [], 'all'));
 end
 

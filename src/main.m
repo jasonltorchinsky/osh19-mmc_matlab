@@ -458,11 +458,11 @@ if ens_params.init_simulation
             ens_mjoo_state = cmg14_advance_state(ens_mjoo_params, ens_mjoo_opers, time, ...
                 ens_mjoo_state);
             
-            [ens_dcm_state, ens_mjoo_state] = ens_comm(dcm_params, ...
-                ens_dcm_grid, ens_dcm_state, ens_mjoo_state, ...
-                ens_params, ens_eofs);
-            
-            fprintf('Max u size: %.4f\n', max(abs(ens_dcm_state.u), [], 'all'));
+            if time < dt
+                [ens_dcm_state, ens_mjoo_state] = ens_comm(dcm_params, ...
+                    ens_dcm_grid, ens_dcm_state, ens_mjoo_state, ...
+                    ens_params, ens_eofs);
+            end
             
             time = time + dt;
             
