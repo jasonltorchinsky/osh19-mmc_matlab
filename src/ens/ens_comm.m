@@ -58,8 +58,8 @@ mjoo_pst = mjoo_pri - gain_mjoo * (H_mjoo * mjoo_pri - mjoo_obs);
 % Get posterior projections
 u1_dcm_pst = dcm_pst(1);
 u2_dcm_pst = dcm_pst(2);
-a_proj_pst = a_proj_pri + (u1_dcm_pst - u1_dcm_pri) * eofs.raw_eof1 ...
-    + (u2_dcm_pst - u2_dcm_pri) * eofs.raw_eof2;
+a_proj_pst = a_proj_pri + (u1_dcm_pst - u1_dcm_pri) * eofs.raw_eof1.' ...
+    + (u2_dcm_pst - u2_dcm_pri) * eofs.raw_eof2.';
 u_proj_pst = a_proj_pst(1:nx);
 q_proj_pst = a_proj_pst(nx+1:end);
 
@@ -73,16 +73,41 @@ q_pst = ens_unproj_q(dcm_params, dcm_grid, q_proj_pst, eofs);
 dcm_state_out = dcm_state;
 dcm_state_out.q = dcm_state_out.q - q_pri + q_pst;
 % u is a prognostic variable, so we need to correct the diagnostic variables too
-dcm_state_out.u = dcm_state_out.u - u_pri + u_pst;
-dcm_state_out.u(:,:,1)    = 0.0; % Enforce BCs
-dcm_state_out.u(:,:,nz+1) = 0.0;
+dcm_state_out.u = dcm_state_out.u + (u_pst - u_pri);
+%dcm_state_out.u(:,:,1)    = 0.0; % Enforce BCs
+%dcm_state_out.u(:,:,nz+1) = 0.0;
+
+
+u_temp = u_pri;
+dcm_state_temp = dcm_state;
+dcm_state_temp.u = u_temp;
+u_temp_proj = ens_proj_u(dcm_params, dcm_grid, dcm_state_temp, eofs);
+u_temp = ens_unproj_u(dcm_params, dcm_grid, u_temp_proj, eofs);
+
+disp(max(abs(u_proj_pri - u_temp_proj), [], 'all'));
+
+
+% % Take dcm_state_out.u and get the MJO indices from there!
+% u_out_proj = ens_proj_u(dcm_params, dcm_grid, dcm_state_out, eofs);
+% q_out_proj = ens_proj_q(dcm_params, dcm_grid, dcm_state_out, eofs);
+% a_out_proj = [u_out_proj q_out_proj];
+% 
+% % Get MJO indices, climate parameter from DCM
+% u1_out_dcm = a_out_proj * eofs.raw_eof1;
+% u2_out_dcm = a_out_proj * eofs.raw_eof2;
+% v_out_dcm  = dcm_params.B_vs;
+
 dcm_state_out.u_tau = squeeze(mean(dcm_state_out.u, 3));
+
 for kk = 1:nz+1
     dcm_state_out.u_psi(:,:,kk) = dcm_state_out.u(:,:,kk) - dcm_state_out.u_tau;
 end
 dcm_state_out.zeta_tau = D1(dcm_state_out.v_tau, 'x', scale_x) ...
     - D1(dcm_state_out.u_tau, 'y', scale_y);
 dcm_state_out = osh19_prognose_state(dcm_params, dcm_grid, dcm_state_out);
+
+
+disp('----');
 
 % Update MJOO state
 mjoo_state_out = mjoo_state;
@@ -101,5 +126,6 @@ fprintf('Max u_proj in, max u_proj out: %.4f, %.4f\n\n', ...
 
 fprintf('Max u in, max u out: %.4f, %.4f\n\n', ...
     max(abs(dcm_state.u), [], 'all'), max(abs(dcm_state_out.u), [], 'all'));
+
 end
 

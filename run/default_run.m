@@ -61,8 +61,8 @@ eof_params.out_path = out_path;
 eof_params.exp_name = exp_name;
 eof_params.component_name = truth_params.component_name;
 
-eof_params.calc_eofs = true;
-eof_params.create_plots = true;
+eof_params.calc_eofs = false;
+eof_params.create_plots = false;
 
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 % Parameters for the deficient climate model (OSH19) [Case 2]
@@ -93,10 +93,10 @@ dcm_params.s_tilde = 12; % q_bg vertical decay length scale (km)
 dcm_params.D_hUp = 121.6; % Horizontal q diffusion in upper-troposphere (km^(2) s^(-1))
 dcm_params.D_hMid = 15.2; % Horizontal q diffusion in mid-troposphere (km^(2) s^(-1))
 dcm_params.D_v = 5 * 10^(-4); % Vertical q diffusion (km^(2) s^(-1))
-dcm_params.IC_type = 2; % Initial condition type:
+dcm_params.IC_type = 1; % Initial condition type:
                           % 1 = get modes, wavenumbers from linear solution
                           % 2 = all zero
-                          % ~2 = load state from file~ Not functional!
+                          % ~3 = load state from file~ Not functional!
 dcm_params.IC_modes = [1]; % Modes to use for initial condition (IC)
 dcm_params.IC_wavenums = [1, 2, 3]; % Zonal wavenumber to use for IC
 dcm_params.IC_amp = 1; % Amplification factor for IC
@@ -176,7 +176,7 @@ ens_params.component_name = 'ens';
 
 ens_params.init_simulation = true;
 ens_params.run_simulation = true;
-ens_params.create_plots = true;
+ens_params.create_plots = false;
 
 % Ensemble DCM parameters
 ens_params.dcm_params = dcm_params;
@@ -206,7 +206,7 @@ ens_params.eof_params = eof_params;
 
 misc_params = struct();
 
-misc_params.create_plots = true;
+misc_params.create_plots = false;
 
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 % Run the simulation

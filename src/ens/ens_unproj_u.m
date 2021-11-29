@@ -25,19 +25,13 @@ u_std = eofs.u_std;
 
 u = zeros([ny, nx, nz + 1]);
 
-% Re-dimensionalize u_proj
-u_proj_dim = u_proj * u_std;
-
-% Unproject meridionally
-u_mer = zeros([ny, nx]);
-for ii = 1:nx
-    u_mer(:,ii) = u_proj_dim(ii) * parab_cyl_0;
-end
-
-% Unproject vertically
+% Dimensionalize, and unproject vertically and meridionally
 for jj = 1:ny
     for ii = 1:nx
-        u(jj, ii, :) = u_mer(jj, ii) * u_clin_mode_1;
+        for kk = 1:nz+1
+            u(jj, ii, kk) = u_std * u_proj(ii) * parab_cyl_0(jj) ...
+                * u_clin_mode_1(kk);
+        end
     end
 end
 
