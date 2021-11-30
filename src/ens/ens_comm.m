@@ -49,7 +49,7 @@ mjoo_obs = H_mjoo * mjoo_ptruth ...
 gain_dcm = B_dcm * transpose(H_dcm) / (Lambda_dcm + H_dcm * B_dcm * transpose(H_dcm));
 dcm_pst = dcm_pri - gain_dcm * (H_dcm * dcm_pri - dcm_obs);
 % TRUST MJOO MODEL ENTIRELY
-dcm_pst = dcm_pri;
+dcm_pst = mjoo_pri;
 
 gain_mjoo = B_mjoo * transpose(H_mjoo) / (Lambda_mjoo + H_mjoo * B_mjoo * transpose(H_mjoo));
 mjoo_pst = mjoo_pri - gain_mjoo * (H_mjoo * mjoo_pri - mjoo_obs);
