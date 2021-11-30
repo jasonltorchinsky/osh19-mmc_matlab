@@ -49,7 +49,7 @@ mjoo_obs = H_mjoo * mjoo_ptruth ...
 gain_dcm = B_dcm * transpose(H_dcm) / (Lambda_dcm + H_dcm * B_dcm * transpose(H_dcm));
 dcm_pst = dcm_pri - gain_dcm * (H_dcm * dcm_pri - dcm_obs);
 % TRUST MJOO MODEL ENTIRELY
-dcm_pst = mjoo_pri;
+dcm_pst = 0.1*dcm_pri;
 
 gain_mjoo = B_mjoo * transpose(H_mjoo) / (Lambda_mjoo + H_mjoo * B_mjoo * transpose(H_mjoo));
 mjoo_pst = mjoo_pri - gain_mjoo * (H_mjoo * mjoo_pri - mjoo_obs);
@@ -71,7 +71,7 @@ u_pst = ens_unproj_u(dcm_params, dcm_grid, u_proj_pst, eofs);
 q_pst = ens_unproj_q(dcm_params, dcm_grid, q_proj_pst, eofs);
 
 dcm_state_out = dcm_state;
-dcm_state_out.q = dcm_state_out.q - q_pri + q_pst;
+dcm_state_out.q = dcm_state_out.q + (q_pst - q_pri);
 % u is a prognostic variable, so we need to correct the diagnostic variables too
 dcm_state_out.u = dcm_state_out.u + (u_pst - u_pri);
 %dcm_state_out.u(:,:,1)    = 0.0; % Enforce BCs
@@ -84,18 +84,18 @@ dcm_state_temp.u = u_temp;
 u_temp_proj = ens_proj_u(dcm_params, dcm_grid, dcm_state_temp, eofs);
 u_temp = ens_unproj_u(dcm_params, dcm_grid, u_temp_proj, eofs);
 
-disp(max(abs(u_proj_pri - u_temp_proj), [], 'all'));
+disp(max(abs(u_pri - u_temp), [], 'all'));
 
 
-% % Take dcm_state_out.u and get the MJO indices from there!
-% u_out_proj = ens_proj_u(dcm_params, dcm_grid, dcm_state_out, eofs);
-% q_out_proj = ens_proj_q(dcm_params, dcm_grid, dcm_state_out, eofs);
-% a_out_proj = [u_out_proj q_out_proj];
-% 
-% % Get MJO indices, climate parameter from DCM
-% u1_out_dcm = a_out_proj * eofs.raw_eof1;
-% u2_out_dcm = a_out_proj * eofs.raw_eof2;
-% v_out_dcm  = dcm_params.B_vs;
+% Take dcm_state_out.u and get the MJO indices from there!
+u_out_proj = ens_proj_u(dcm_params, dcm_grid, dcm_state_out, eofs);
+q_out_proj = ens_proj_q(dcm_params, dcm_grid, dcm_state_out, eofs);
+a_out_proj = [u_out_proj q_out_proj];
+ 
+% Get MJO indices, climate parameter from DCM
+u1_out_dcm = a_out_proj * eofs.raw_eof1;
+u2_out_dcm = a_out_proj * eofs.raw_eof2;
+v_out_dcm  = dcm_params.B_vs;
 
 dcm_state_out.u_tau = squeeze(mean(dcm_state_out.u, 3));
 
