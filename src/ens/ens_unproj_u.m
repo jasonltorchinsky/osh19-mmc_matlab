@@ -10,8 +10,6 @@ H = dcm_params.H;
 yy = dcm_grid.yy;
 zzU = dcm_grid.zzU;
 
-dy = dcm_grid.dy;
-
 % Scale meridional, vertical coordinate for basis functions
 L = 1490; % Equatorial meridional length scale (km)
 yy_norm = yy / L;

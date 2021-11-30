@@ -24,6 +24,10 @@ parab_cyl_0   = parab_cyl(yy_norm, 0);
 u_clin_mode_1 = u_clin_mode(zzU_norm, 1);
 u_std = eofs.u_std;
 
+% Get the normalization constants due to discretized norms
+merid_norm = dy_norm * (parab_cyl_0 * parab_cyl_0.');
+vert_norm  = (1/(nz+1)) * (u_clin_mode_1 * u_clin_mode_1.');
+
 u_proj = zeros([1, nx]);
 
 % Project u onto first baroclinic mode
@@ -31,13 +35,15 @@ u1 = zeros([ny, nx]);
 for jj = 1:ny
     for ii = 1:nx
         u1(jj, ii) = (1/(nz+1)) ...
-            * squeeze(u_clin_mode_1*squeeze(dcm_state.u(jj, ii, :)));
+            * squeeze(u_clin_mode_1*squeeze(dcm_state.u(jj, ii, :))) ...
+            * (1/vert_norm);
     end
 end
 
 % Project u1 onto zeroth parabolic cylinder function
 for ii = 1:nx
-    u_proj(1, ii) = dy_norm * squeeze(parab_cyl_0*u1(:, ii));
+    u_proj(1, ii) = dy_norm * squeeze(parab_cyl_0*u1(:, ii)) ...
+        * (1/merid_norm);
 end
 
 % Scale by standard deviation to non-dimensionalize
