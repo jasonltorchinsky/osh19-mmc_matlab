@@ -49,29 +49,12 @@ mjoo_obs = H_mjoo * mjoo_ptruth ...
 gain_dcm = B_dcm * transpose(H_dcm) / (Lambda_dcm + H_dcm * B_dcm * transpose(H_dcm));
 dcm_pst = dcm_pri - gain_dcm * (H_dcm * dcm_pri - dcm_obs);
 % Set MJO indices to MJOO model
-dcm_pst = mjoo_pri;
+dcm_pst = dcm_pri;
 
 gain_mjoo = B_mjoo * transpose(H_mjoo) / (Lambda_mjoo + H_mjoo * B_mjoo * transpose(H_mjoo));
 mjoo_pst = mjoo_pri - gain_mjoo * (H_mjoo * mjoo_pri - mjoo_obs);
 
 % Update DCM state
-% % Adjust MJO part of projection
-% u1_dcm_pst = dcm_pst(1);
-% u2_dcm_pst = dcm_pst(2);
-% a_proj_pst = a_proj_pri + (u1_dcm_pst - u1_dcm_pri) * eofs.raw_eof1.' ...
-%     + (u2_dcm_pst - u2_dcm_pri) * eofs.raw_eof2.';
-% u_proj_pst = a_proj_pst(1:nx);
-% q_proj_pst = a_proj_pst(nx+1:end);
-% 
-% u_pst = ens_unproj_u(dcm_params, dcm_grid, u_proj_pst, eofs);
-% q_pst = ens_unproj_q(dcm_params, dcm_grid, q_proj_pst, eofs);
-% 
-% dcm_state_out = dcm_state;
-% dcm_state_out.q = dcm_state_out.q + q_pst;
-% % u is a prognostic variable, so we need to correct the diagnostic variables too
-% dcm_state_out.u = dcm_state_out.u + u_pst;
-
-% Keep only MJO part of projection
 u1_dcm_pst = dcm_pst(1);
 u2_dcm_pst = dcm_pst(2);
 mjo_proj_pst = (u1_dcm_pst - u1_dcm_pri) * eofs.raw_eof1.' ...
@@ -79,25 +62,29 @@ mjo_proj_pst = (u1_dcm_pst - u1_dcm_pri) * eofs.raw_eof1.' ...
 u_mjo_proj_pst = mjo_proj_pst(1:nx);
 q_mjo_proj_pst = mjo_proj_pst(nx+1:end);
 
-% % Un-project the prior and posterior u, q, and update them in the state
-% mjo_proj_pri = u1_dcm_pri * eofs.raw_eof1.' + u2_dcm_pri * eofs.raw_eof2.';
-% u_mjo_proj_pri = mjo_proj_pri(1:nx);
-% q_mjo_proj_pri = mjo_proj_pri(nx+1:end);
-% u_mjo_pri = ens_unproj_u(dcm_params, dcm_grid, u_mjo_proj_pri, eofs);
-% q_mjo_pri = ens_unproj_q(dcm_params, dcm_grid, q_mjo_proj_pri, eofs);
-
+% Un-project the prior and posterior u, q, and update them in the state
 u_mjo_pst = ens_unproj_u(dcm_params, dcm_grid, u_mjo_proj_pst, eofs);
 q_mjo_pst = ens_unproj_q(dcm_params, dcm_grid, q_mjo_proj_pst, eofs);
 
 dcm_state_out = dcm_state;
 dcm_state_out.q = dcm_state_out.q + q_mjo_pst;
-% u is a prognostic variable, so we need to correct the diagnostic variables too
 dcm_state_out.u = dcm_state_out.u + u_mjo_pst;
-dcm_state_out.u(:,:,1)    = 0.0; % Enforce BCs
-%dcm_state_out.u(:,:,nz+1) = 0.0;
+dcm_state_out.u(:,:,1) = 0.0; % Enforce BCs
 
+% u is a prognostic variable, so we need to correct the diagnostic variables too
+for kk = 2:nz
+    dcm_state_out.u_psi(:,:,kk) = dcm_state_out.u(:,:,kk) - dcm_state.u_tau;
+end
+dcm_state_out = osh19_prognose_state(dcm_params, dcm_grid, dcm_state_out);
 
-% u_temp = u_pri;
+% Update MJOO state
+mjoo_state_out = mjoo_state;
+%mjoo_state_out.u_1 = mjoo_pst(1);
+%mjoo_state_out.u_2 = mjoo_pst(2);
+%mjoo_state_out.v   = mjoo_pst(3);
+
+% % Check if project and un-project are really inverses
+% u_temp = u_mjo_pri;
 % dcm_state_temp = dcm_state;
 % dcm_state_temp.u = u_temp;
 % u_temp_proj = ens_proj_u(dcm_params, dcm_grid, dcm_state_temp, eofs);
@@ -106,31 +93,15 @@ dcm_state_out.u(:,:,1)    = 0.0; % Enforce BCs
 % disp(max(abs(u_pri - u_temp), [], 'all'));
 
 
-% % Take dcm_state_out.u and get the MJO indices from there!
-% u_out_proj = ens_proj_u(dcm_params, dcm_grid, dcm_state_out, eofs);
-% q_out_proj = ens_proj_q(dcm_params, dcm_grid, dcm_state_out, eofs);
-% a_out_proj = [u_out_proj q_out_proj];
-%  
-% % Get MJO indices, climate parameter from DCM
-% u1_out_dcm = a_out_proj * eofs.raw_eof1;
-% u2_out_dcm = a_out_proj * eofs.raw_eof2;
-% v_out_dcm  = dcm_params.B_vs;
-
-% Update state to be in line with the new u.
-%dcm_state_out.u_tau = squeeze(mean(dcm_state_out.u, 3));
-for kk = 2:nz
-    dcm_state_out.u_psi(:,:,kk) = dcm_state_out.u(:,:,kk) - dcm_state.u_tau;
-end
-%dcm_state_out.zeta_tau = D1(dcm_state_out.v_tau, 'x', scale_x) ...
-%    - D1(dcm_state_out.u_tau, 'y', scale_y);
-dcm_state_out = osh19_prognose_state(dcm_params, dcm_grid, dcm_state_out);
-
-
-% Update MJOO state
-mjoo_state_out = mjoo_state;
-%mjoo_state_out.u_1 = mjoo_pst(1);
-%mjoo_state_out.u_2 = mjoo_pst(2);
-%mjoo_state_out.v   = mjoo_pst(3);
+% Take dcm_state_out.u and get the MJO indices from there!
+u_out_proj = ens_proj_u(dcm_params, dcm_grid, dcm_state_out, eofs);
+q_out_proj = ens_proj_q(dcm_params, dcm_grid, dcm_state_out, eofs);
+a_out_proj = [u_out_proj q_out_proj];
+ 
+% Get MJO indices, climate parameter from DCM
+u1_out_dcm = a_out_proj * eofs.raw_eof1;
+u2_out_dcm = a_out_proj * eofs.raw_eof2;
+v_out_dcm  = dcm_params.B_vs;
 
 
 % fprintf('u1_dcm_pri,  u2_dcm_pri:  %.4f, %.4f\n',   u1_dcm_pri,  u2_dcm_pri);
