@@ -22,7 +22,7 @@ zzU_norm = pi * zzU / H;
 % deviation scale of u for projections
 parab_cyl_0   = parab_cyl(yy_norm, 0);
 u_clin_mode_1 = u_clin_mode(zzU_norm, 1);
-u_std = eofs.u_std;
+u_std = eofs.u_std/1000; % File is in m s^(-1), code is in km s^(-1)
 
 % Get the normalization constants due to discretized norms
 merid_norm = dy_norm * (parab_cyl_0 * parab_cyl_0.');

@@ -48,8 +48,8 @@ mjoo_obs = H_mjoo * mjoo_ptruth ...
 % Communicate the MJO indices, climate parameter
 gain_dcm = B_dcm * transpose(H_dcm) / (Lambda_dcm + H_dcm * B_dcm * transpose(H_dcm));
 dcm_pst = dcm_pri - gain_dcm * (H_dcm * dcm_pri - dcm_obs);
-% SET POSTERIOR INDICES TO 0
-dcm_pst = dcm_pri;
+% SET MJO INDICES TO 0
+dcm_pst = 0*dcm_pri;
 
 gain_mjoo = B_mjoo * transpose(H_mjoo) / (Lambda_mjoo + H_mjoo * B_mjoo * transpose(H_mjoo));
 mjoo_pst = mjoo_pri - gain_mjoo * (H_mjoo * mjoo_pri - mjoo_obs);
@@ -58,23 +58,26 @@ mjoo_pst = mjoo_pri - gain_mjoo * (H_mjoo * mjoo_pri - mjoo_obs);
 % Get posterior projections
 u1_dcm_pst = dcm_pst(1);
 u2_dcm_pst = dcm_pst(2);
-a_proj_pst = a_proj_pri + (u1_dcm_pst - u1_dcm_pri) * eofs.raw_eof1.' ...
+mjo_proj_pst = (u1_dcm_pst - u1_dcm_pri) * eofs.raw_eof1.' ...
     + (u2_dcm_pst - u2_dcm_pri) * eofs.raw_eof2.';
-u_proj_pst = a_proj_pst(1:nx);
-q_proj_pst = a_proj_pst(nx+1:end);
+u_proj_pst = mjo_proj_pst(1:nx);
+q_proj_pst = mjo_proj_pst(nx+1:end);
 
 % Un-project the prior and posterior u, q, and update them in the state
-u_pri = ens_unproj_u(dcm_params, dcm_grid, u_proj_pri, eofs);
-q_pri = ens_unproj_q(dcm_params, dcm_grid, q_proj_pri, eofs);
+% mjo_proj_pri = u1_dcm_pri * eofs.raw_eof1.' + u2_dcm_pri * eofs.raw_eof2.';
+% u_mjo_proj_pri = mjo_proj_pri(1:nx);
+% q_mjo_proj_pri = mjo_proj_pri(nx+1:end);
+% u_mjo_pri = ens_unproj_u(dcm_params, dcm_grid, u_mjo_proj_pri, eofs);
+% q_mjo_pri = ens_unproj_q(dcm_params, dcm_grid, q_mjo_proj_pri, eofs);
 
-u_pst = ens_unproj_u(dcm_params, dcm_grid, u_proj_pst, eofs);
-q_pst = ens_unproj_q(dcm_params, dcm_grid, q_proj_pst, eofs);
+u_mjo_pst = ens_unproj_u(dcm_params, dcm_grid, u_proj_pst, eofs);
+q_mjo_pst = ens_unproj_q(dcm_params, dcm_grid, q_proj_pst, eofs);
 
 dcm_state_out = dcm_state;
-dcm_state_out.q = dcm_state_out.q + (q_pst - q_pri);
+dcm_state_out.q = dcm_state_out.q + q_mjo_pst;
 % u is a prognostic variable, so we need to correct the diagnostic variables too
-dcm_state_out.u = dcm_state_out.u + (u_pst - u_pri);
-%dcm_state_out.u(:,:,1)    = 0.0; % Enforce BCs
+dcm_state_out.u = dcm_state_out.u + u_mjo_pst;
+dcm_state_out.u(:,:,1)    = 0.0; % Enforce BCs
 %dcm_state_out.u(:,:,nz+1) = 0.0;
 
 
