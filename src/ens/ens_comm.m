@@ -48,8 +48,8 @@ mjoo_obs = H_mjoo * mjoo_ptruth ...
 % Communicate the MJO indices, climate parameter
 gain_dcm = B_dcm * transpose(H_dcm) / (Lambda_dcm + H_dcm * B_dcm * transpose(H_dcm));
 dcm_pst = dcm_pri - gain_dcm * (H_dcm * dcm_pri - dcm_obs);
-% TRUST MJOO MODEL ENTIRELY
-dcm_pst = 0.1*dcm_pri;
+% SET POSTERIOR INDICES TO 0
+dcm_pst = dcm_pri;
 
 gain_mjoo = B_mjoo * transpose(H_mjoo) / (Lambda_mjoo + H_mjoo * B_mjoo * transpose(H_mjoo));
 mjoo_pst = mjoo_pri - gain_mjoo * (H_mjoo * mjoo_pri - mjoo_obs);
@@ -78,36 +78,34 @@ dcm_state_out.u = dcm_state_out.u + (u_pst - u_pri);
 %dcm_state_out.u(:,:,nz+1) = 0.0;
 
 
-u_temp = u_pri;
-dcm_state_temp = dcm_state;
-dcm_state_temp.u = u_temp;
-u_temp_proj = ens_proj_u(dcm_params, dcm_grid, dcm_state_temp, eofs);
-u_temp = ens_unproj_u(dcm_params, dcm_grid, u_temp_proj, eofs);
+% u_temp = u_pri;
+% dcm_state_temp = dcm_state;
+% dcm_state_temp.u = u_temp;
+% u_temp_proj = ens_proj_u(dcm_params, dcm_grid, dcm_state_temp, eofs);
+% u_temp = ens_unproj_u(dcm_params, dcm_grid, u_temp_proj, eofs);
+% 
+% disp(max(abs(u_pri - u_temp), [], 'all'));
 
-disp(max(abs(u_pri - u_temp), [], 'all'));
 
+% % Take dcm_state_out.u and get the MJO indices from there!
+% u_out_proj = ens_proj_u(dcm_params, dcm_grid, dcm_state_out, eofs);
+% q_out_proj = ens_proj_q(dcm_params, dcm_grid, dcm_state_out, eofs);
+% a_out_proj = [u_out_proj q_out_proj];
+%  
+% % Get MJO indices, climate parameter from DCM
+% u1_out_dcm = a_out_proj * eofs.raw_eof1;
+% u2_out_dcm = a_out_proj * eofs.raw_eof2;
+% v_out_dcm  = dcm_params.B_vs;
 
-% Take dcm_state_out.u and get the MJO indices from there!
-u_out_proj = ens_proj_u(dcm_params, dcm_grid, dcm_state_out, eofs);
-q_out_proj = ens_proj_q(dcm_params, dcm_grid, dcm_state_out, eofs);
-a_out_proj = [u_out_proj q_out_proj];
- 
-% Get MJO indices, climate parameter from DCM
-u1_out_dcm = a_out_proj * eofs.raw_eof1;
-u2_out_dcm = a_out_proj * eofs.raw_eof2;
-v_out_dcm  = dcm_params.B_vs;
-
-dcm_state_out.u_tau = squeeze(mean(dcm_state_out.u, 3));
-
-for kk = 1:nz+1
-    dcm_state_out.u_psi(:,:,kk) = dcm_state_out.u(:,:,kk) - dcm_state_out.u_tau;
+% Update state to be in line with the new u.
+%dcm_state_out.u_tau = squeeze(mean(dcm_state_out.u, 3));
+for kk = 2:nz
+    dcm_state_out.u_psi(:,:,kk) = dcm_state_out.u(:,:,kk) - dcm_state.u_tau;
 end
-dcm_state_out.zeta_tau = D1(dcm_state_out.v_tau, 'x', scale_x) ...
-    - D1(dcm_state_out.u_tau, 'y', scale_y);
+%dcm_state_out.zeta_tau = D1(dcm_state_out.v_tau, 'x', scale_x) ...
+%    - D1(dcm_state_out.u_tau, 'y', scale_y);
 dcm_state_out = osh19_prognose_state(dcm_params, dcm_grid, dcm_state_out);
 
-
-disp('----');
 
 % Update MJOO state
 mjoo_state_out = mjoo_state;
@@ -115,17 +113,24 @@ mjoo_state_out = mjoo_state;
 %mjoo_state_out.u_2 = mjoo_pst(2);
 %mjoo_state_out.v   = mjoo_pst(3);
 
-fprintf('u1_dcm_pri,  u2_dcm_pri:  %.4f, %.4f\n',   u1_dcm_pri,  u2_dcm_pri);
-fprintf('u1_mjoo_pri, u2_mjoo_pri: %.4f, %.4f\n\n', u1_mjoo_pri, u2_mjoo_pri);
 
-fprintf('u1_dcm_pst,  u2_dcm_pst:  %.4f, %.4f\n',   u1_dcm_pst,  u2_dcm_pst);
-fprintf('u1_mjoo_pst, u2_mjoo_pst: %.4f, %.4f\n\n', mjoo_pst(1), mjoo_pst(2));
+% fprintf('u1_dcm_pri,  u2_dcm_pri:  %.4f, %.4f\n',   u1_dcm_pri,  u2_dcm_pri);
+% fprintf('u1_mjoo_pri, u2_mjoo_pri: %.4f, %.4f\n\n', u1_mjoo_pri, u2_mjoo_pri);
+% 
+% fprintf('u1_dcm_pst,  u2_dcm_pst:  %.4f, %.4f\n',   u1_dcm_pst,  u2_dcm_pst);
+% fprintf('u1_mjoo_pst, u2_mjoo_pst: %.4f, %.4f\n\n', mjoo_pst(1), mjoo_pst(2));
+% 
+% fprintf('Max u_proj in, max u_proj out: %.4f, %.4f\n\n', ...
+%     max(abs(u_pri), [], 'all'), max(abs(u_pst), [], 'all'));
+%
+% fprintf('Max u in, max u out: %.4f, %.4f\n\n', ...
+%    max(abs(dcm_state.u), [], 'all')*10^3, ...
+%    max(abs(dcm_state_out.u), [], 'all')*10^3);
+% 
+% x = max(abs(dcm_state.u - dcm_state_out.u), [], 'all') * 10^3;
+% y = max(abs(dcm_state.u), [], 'all') * 10^3;
+% fprintf('Max u change: %.8f \n\n', x);
 
-fprintf('Max u_proj in, max u_proj out: %.4f, %.4f\n\n', ...
-    max(abs(u_pri), [], 'all'), max(abs(u_pst), [], 'all'));
-
-fprintf('Max u in, max u out: %.4f, %.4f\n\n', ...
-    max(abs(dcm_state.u), [], 'all'), max(abs(dcm_state_out.u), [], 'all'));
 
 end
 

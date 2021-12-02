@@ -1,6 +1,14 @@
 function state = osh19_prognose_state(params, grid, state_in)
 
+% Copy in the diagnostic variables, and set the prognostic variables to zero
 state = state_in;
+state.tau_z = 0*state.tau_z;
+state.u_tau = 0*state.u_tau;
+state.v_tau = 0*state.v_tau;
+state.u = 0*state.u;
+state.v = 0*state.v;
+state.w = 0*state.w;
+state.p = 0*state.p;
 
 % Unpack some commonly used variables
 nx = params.nx;
@@ -22,6 +30,8 @@ k_y_dim_vec  = transpose([0:ny/2 -ny/2+1:-1]) * scale_y;
 k_x_dim_vec  = [0:nx/2 -nx/2+1:-1] * scale_x;
 [kk_x, kk_y] = meshgrid(k_x_dim_vec, k_y_dim_vec);
 wavenum_mat  = -(kk_y.^2 + kk_x.^2);
+
+% Try setting (0, 0) = 0 to avoid blow up
 wavenum_mat(1,1) = 10^10;  % THIS NUMBER SHOULD BE IRRELEVANT, AS LONG AS IT'S NONZERO, RIGHT?  
 % (THE RHS OF THE PBAR EQUATION SHOULD SATISFY A ZERO MEAN CONDITION SO THAT IT SHOULDN'T MATTER) 
 
@@ -38,8 +48,8 @@ for kk = 2:nz
 end 
 
 % Calculate top-level total winds from barotropic winds
-state.u(:,:,nz+1) = nz * state.u_tau - squeeze(sum(state.u(:,:,2:nz+1), 3));
-state.v(:,:,nz+1) = nz * state.v_tau - squeeze(sum(state.v(:,:,2:nz+1), 3));
+state.u(:,:,nz+1) = nz * state.u_tau - squeeze(sum(state.u(:,:,2:nz), 3));
+state.v(:,:,nz+1) = nz * state.v_tau - squeeze(sum(state.v(:,:,2:nz), 3));
 
 % Calculate total vertical winds
 for kk = 2:nz
@@ -49,6 +59,7 @@ for kk = 2:nz
 end
 
 % Calculate pressure
+state.p(:,:,2) = 0;
 for kk = 1:nz-1
     state.p(:,:,2) = state.p(:,:,2) ...
         - g * dz / nz * (nz - kk) ...

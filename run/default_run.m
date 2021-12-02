@@ -176,7 +176,7 @@ ens_params.component_name = 'ens';
 
 ens_params.init_simulation = true;
 ens_params.run_simulation = true;
-ens_params.create_plots = false;
+ens_params.create_plots = true;
 
 % Ensemble DCM parameters
 ens_params.dcm_params = dcm_params;

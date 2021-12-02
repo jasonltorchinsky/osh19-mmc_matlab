@@ -92,7 +92,7 @@ if truth_params.init_simulation
             if abs(out_time - time) < dt/2 % Closest time to desired output time
                 % check state to ensure validity
                 if any(isnan(truth_state.u), 'all')
-                    fprintf('ERROR: NaNs detected in solution!');
+                    fprintf('ERROR: NaNs detected in solution!\n');
                     
                     
                     ierror = 1;
@@ -222,7 +222,7 @@ if dcm_params.init_simulation
             if abs(out_time - time) < dt/2 % Closest time to desired output time
                 % check state to ensure validity
                 if any(isnan(dcm_state.u), 'all')
-                    fprintf('ERROR: NaNs detected in solution!');
+                    fprintf('ERROR: NaNs detected in solution!\n');
                     
                     
                     ierror = 1;
@@ -387,6 +387,7 @@ if ens_params.init_simulation
     fprintf('Initializing DCM component...\n');
     
     ens_dcm_grid = osh19_init_grid(ens_dcm_params);
+    %ens_dcm_grid.dt = 0.01*ens_dcm_grid.dt;
     osh19_output_grid(ens_dcm_params, ens_dcm_grid);
     
     ens_dcm_bg_profs = osh19_init_bg_profs(ens_dcm_params, ens_dcm_grid);
@@ -468,7 +469,7 @@ if ens_params.init_simulation
             if abs(out_time - time) < dt/2 % Closest time to desired output time
                 % check state to ensure validity
                 if any(isnan(ens_dcm_state.u), 'all')
-                    fprintf('ERROR: NaNs detected in solution!');
+                    fprintf('ERROR: NaNs detected in solution!\n');
                     
                     ierror = 1;
                     
