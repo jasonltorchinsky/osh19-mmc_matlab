@@ -1,4 +1,4 @@
-function u_proj = ens_proj_u(dcm_params, dcm_grid, dcm_state, eofs)
+function u_proj = ens_proj_u(dcm_params, dcm_grid, u, eofs)
 
 % Unpack some common parameters
 nx = dcm_params.nx;
@@ -11,12 +11,13 @@ yy = dcm_grid.yy;
 zzU = dcm_grid.zzU;
 
 dy = dcm_grid.dy;
+dz = dcm_grid.dz;
 
 % Scale meridional, vertical coordinate for basis functions
 L = 1490; % Equatorial meridional length scale (km)
 yy_norm = yy / L;
 dy_norm = dy / L;
-zzU_norm = pi * zzU / H;
+zzU_norm = pi * (zzU + dz/2) / H; % Shift required because staggered grid
 
 % Get first baroclinic mode, zeroth parabolic cylinder function, standard
 % deviation scale of u for projections
@@ -35,7 +36,7 @@ u1 = zeros([ny, nx]);
 for jj = 1:ny
     for ii = 1:nx
         u1(jj, ii) = (1/(nz+1)) ...
-            * squeeze(u_clin_mode_1*squeeze(dcm_state.u(jj, ii, :))) ...
+            * squeeze(u_clin_mode_1*squeeze(u(jj, ii, :))) ...
             * (1/vert_norm);
     end
 end

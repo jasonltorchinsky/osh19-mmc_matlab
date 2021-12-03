@@ -10,10 +10,12 @@ H = dcm_params.H;
 yy = dcm_grid.yy;
 zzU = dcm_grid.zzU;
 
+dz = dcm_grid.dz;
+
 % Scale meridional, vertical coordinate for basis functions
 L = 1490; % Equatorial meridional length scale (km)
 yy_norm = yy / L;
-zzU_norm = pi * zzU / H;
+zzU_norm = pi * (zzU + dz/2) / H;
 
 % Get first baroclinic mode, zeroth parabolic cylinder function, standard
 % deviation scale of u for projections

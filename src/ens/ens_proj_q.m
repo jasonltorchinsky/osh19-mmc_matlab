@@ -1,4 +1,4 @@
-function q_proj = ens_proj_q(dcm_params, dcm_grid, dcm_state, eofs)
+function q_proj = ens_proj_q(dcm_params, dcm_grid, q, eofs)
 
 % Unpack some common parameters
 nx = dcm_params.nx;
@@ -35,9 +35,9 @@ q2 = zeros([ny, nx]);
 for jj = 1:ny
     for ii = 1:nx
         q1(jj, ii) = (1/(nz+1)) ...
-            * squeeze(q_clin_mode_1*squeeze(dcm_state.q(jj, ii, :)));
+            * squeeze(q_clin_mode_1*squeeze(q(jj, ii, :)));
         q2(jj, ii) = (1/(nz+1)) ...
-            * squeeze(q_clin_mode_2*squeeze(dcm_state.q(jj, ii, :)));
+            * squeeze(q_clin_mode_2*squeeze(q(jj, ii, :)));
     end
 end
 
