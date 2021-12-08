@@ -8,7 +8,7 @@ nz = dcm_params.nz;
 H = dcm_params.H;
 
 yy = dcm_grid.yy;
-zzW = dcm_grid.zzU;
+zzW = dcm_grid.zzW;
 
 dy = dcm_grid.dy;
 
@@ -35,7 +35,7 @@ q_proj_dim = q_proj * q_std;
 % Unproject meridionally
 q_mer = zeros([ny, nx]);
 for ii = 1:nx
-    q_mer(:,ii) = q_proj_dim(ii) * parab_cyl_0;
+    q_mer(:,ii) = q_proj_dim(ii) * parab_cyl_0.';
 end
 
 % Unproject vertically - NOTE: the unprojection is actually just the mid- or
@@ -43,16 +43,33 @@ end
 if strcmpi(Q_mode, 'mid')
     for jj = 1:ny
         for ii = 1:nx
-           q(jj, ii, :) = q_mer(jj, ii) * (q_clin_mode_1 - 1/4 * q_clin_mode_2); 
+            q(jj, ii, :) = 1 / sqrt(2) * q_mer(jj, ii) * (q_clin_mode_1 + q_clin_mode_2); 
         end
     end
 else
     for jj = 1:ny
         for ii = 1:nx
-           q(jj, ii, :) = q_mer(jj, ii) * q_clin_mode_1; 
+           q(jj, ii, :) = 1 / sqrt(2) * q_mer(jj, ii) * (q_clin_mode_1 - q_clin_mode_2); 
         end
     end
 end
+
+
+% % Unproject vertically - NOTE: the unprojection is actually just the mid- or
+% % upper-barolicinic mode of moisture
+% if strcmpi(Q_mode, 'mid')
+%     for jj = 1:ny
+%         for ii = 1:nx
+%             q(jj, ii, :) = q_mer(jj, ii) * q_clin_mode_1; 
+%         end
+%     end
+% else
+%     for jj = 1:ny
+%         for ii = 1:nx
+%            q(jj, ii, :) = q_mer(jj, ii) * (q_clin_mode_1 - 1/2 * q_clin_mode_2);
+%         end
+%     end
+% end
 
 end
 

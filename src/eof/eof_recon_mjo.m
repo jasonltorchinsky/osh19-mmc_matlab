@@ -27,13 +27,14 @@ yy  = ncread(grid_file, 'yy');
 zzU = ncread(grid_file, 'zzU');
 zzW = ncread(grid_file, 'zzW');
 
+dz  = ncread(grid_file, 'dz');
+
 L = 1490; % Equatorial meridional length scale (km)
 yy_norm  = yy / L;
-zzU_norm = pi * zzU / H;
+zzU_norm = pi * (zzU + dz/2) / H;
 zzW_norm = pi * zzW / H;
 
 % Reconstruct the zonal wind part of the MJO
-
 parab_cyl_0   = parab_cyl(yy_norm, 0);
 u_clin_mode_1 = u_clin_mode(zzU_norm, 1);
 
@@ -63,19 +64,19 @@ end
 q_clin_mode_1 = q_clin_mode(zzW_norm, 1);
 q_clin_mode_2 = q_clin_mode(zzW_norm, 2);
 
-eofs_out.q_mjo1 = zeros([ny, nx, nz]);
-eofs_out.q_mjo2 = zeros([ny, nx, nz]);
-if strcmpi(params.Q_mode, 'mid')
+Q_mode = params.Q_mode;
+
+eofs_out.q_mjo1 = zeros([ny, nx, nz + 1]);
+eofs_out.q_mjo2 = zeros([ny, nx, nz + 1]);
+if strcmpi(Q_mode, 'mid')
     for kk = 1:nz+1
-        eofs_out.q_mjo1(:,:,kk) = Q_1 .* q_clin_mode_1(kk);
-        eofs_out.q_mjo2(:,:,kk) = Q_2 .* q_clin_mode_1(kk);
+        eofs_out.q_mjo1(:,:,kk) = 1 / sqrt(2) * Q_1 .* (q_clin_mode_1(kk) + q_clin_mode_2(kk));
+        eofs_out.q_mjo2(:,:,kk) = 1 / sqrt(2) * Q_2 .* (q_clin_mode_1(kk) + q_clin_mode_2(kk));
     end
 else
     for kk = 1:nz+1
-        eofs_out.q_mjo1(:,:,kk) = Q_1 ...
-            .* (q_clin_mode_1(kk) - 1/4 * q_clin_mode_2(kk));
-        eofs_out.q_mjo2(:,:,kk) = Q_2 ...
-            .* (q_clin_mode_1(kk) - 1/4 * q_clin_mode_2(kk));
+        eofs_out.q_mjo1(:,:,kk) = 1 / sqrt(2) * Q_1 .* (q_clin_mode_1(kk) - q_clin_mode_2(kk));
+        eofs_out.q_mjo2(:,:,kk) = 1 / sqrt(2) * Q_2 .* (q_clin_mode_1(kk) - q_clin_mode_2(kk));
     end
 end
 

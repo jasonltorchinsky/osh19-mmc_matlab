@@ -34,7 +34,6 @@ lats = yy / 110.567;
 [~, altU_idx] = min(abs(zzU-alt));
 [~, altW_idx] = min(abs(zzW-alt));
 
-altU_true = zzU(altU_idx);
 altW_true = zzW(altW_idx);
 
 % Read in EOFs, reconstructed MJOs
@@ -52,22 +51,6 @@ u_mjo2 = ncread(eof_file, 'u_mjo2');
 
 q_mjo1 = ncread(eof_file, 'q_mjo1');
 q_mjo2 = ncread(eof_file, 'q_mjo2');
-
-exp1 = ncread(eof_file, 'exp1');
-exp2 = ncread(eof_file, 'exp2');
-
-% Normalize EOFs, MJOs to have physical units
-% u_eof1 = u_eof1 * max(abs(exp1), [], 'all');
-% u_eof2 = u_eof2 * max(abs(exp2), [], 'all');
-% 
-% q_eof1 = q_eof1 * max(abs(exp1), [], 'all');
-% q_eof2 = q_eof2 * max(abs(exp2), [], 'all');
-% 
-% u_mjo1 = u_mjo1 * max(abs(exp1), [], 'all');
-% u_mjo2 = u_mjo2 * max(abs(exp2), [], 'all');
-% 
-% q_mjo1 = q_mjo1 * max(abs(exp1), [], 'all');
-% q_mjo2 = q_mjo2 * max(abs(exp2), [], 'all');
 
 
 % Create tiled layout 
@@ -156,7 +139,7 @@ quiver(lons, lats, u_mjo2_horz, 0*u_mjo2_horz, ...
         'k', ...
         'Autoscale', 'off');
 
-title_str = sprintf(['MJO 2 - Altitude %.2f (km)'], round(altW_true, 2));
+title_str = sprintf('MJO 2 - Altitude %.2f (km)', round(altW_true, 2));
 
 title(title_str);
     

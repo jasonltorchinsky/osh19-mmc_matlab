@@ -1,4 +1,4 @@
-function q_proj = eof_proj_q(params)
+function [q_proj, q_std] = eof_proj_q(params)
 
 % Get path to output data.
 out_path       = params.out_path;
@@ -14,12 +14,13 @@ params_file = fullfile(component_path, 'params.nc');
 
 nx       = ncread(params_file, 'nx');
 ny       = ncread(params_file, 'ny');
+nz       = ncread(params_file, 'nz');
 
 H        = ncread(params_file, 'H');
 sim_days = ncread(params_file, 'sim_days');
 out_freq = ncread(params_file, 'out_freq');
 
-n_outfiles = floor(sim_days/out_freq);
+n_outfiles = floor(sim_days/out_freq) + 1;
 
 % Read in grids
 grid_file = fullfile(component_path, 'grid.nc');
@@ -36,15 +37,21 @@ zzW_norm = pi * zzW / H;
 
 % Get the first baroclinic mode, zeroth parabolic cylinder function for the
 % projections.
-
 parab_cyl_0   = parab_cyl(yy_norm, 0);
 q_clin_mode_1 = q_clin_mode(zzW_norm, 1);
 q_clin_mode_2 = q_clin_mode(zzW_norm, 2);
 
+Q_mode = params.Q_mode;
+
+% Get the normalization constants due to discretized norms
+merid_norm  = dy_norm * (parab_cyl_0.' * parab_cyl_0);
+vert_norm_1 = (1/(nz+1)) * (q_clin_mode_1.' * q_clin_mode_1);
+vert_norm_2 = (1/(nz+1)) * (q_clin_mode_2.' * q_clin_mode_2);
+
 % Set up u_proj, and begin calculating it
 q_proj = zeros([n_outfiles, nx]);
 
-out_idxs = 0:n_outfiles;
+out_idxs = 0:(n_outfiles-1);
 
 for out_idx = out_idxs
     state_file_name = strcat(['state_', num2str(out_idx,'%04u'),'.nc']);
@@ -57,24 +64,34 @@ for out_idx = out_idxs
     q2 = zeros([ny, nx]);
     for jj = 1:ny
         for ii = 1:nx
-           q1(jj, ii) = mean(squeeze(squeeze(q(jj, ii, :)).*q_clin_mode_1));
-           q2(jj, ii) = mean(squeeze(squeeze(q(jj, ii, :)).*q_clin_mode_2));
+           q1(jj, ii) = (1/(nz+1)) ...
+               * squeeze(q_clin_mode_1.'*squeeze(q(jj, ii, :))) ...
+               * (1/vert_norm_1);
+           q2(jj, ii) = (1/(nz+1)) ...
+               * squeeze(q_clin_mode_2.'*squeeze(q(jj, ii, :))) ...
+               * (1/vert_norm_2);
         end
     end
     
     % Pick Q_mid or Q_up
-    if strcmpi(params.Q_mode, 'mid')
-        Q = q1 * sqrt(2) * sin(pi/2);
+    if strcmpi(Q_mode, 'mid')
+        Q = 1 / sqrt(3) * (q1 * q_clin_mode(pi/3, 1) + q2 * q_clin_mode(pi/3, 2));
     else
-        Q = q1 * sqrt(2) * sin(2*pi/3) + q2 * 2 * sqrt(2) * sin(4*pi/3);
+        Q = 1 / sqrt(3) * (q1 * q_clin_mode(2*pi/3, 1) - q2 * q_clin_mode(2*pi/3, 2));
     end
     
     % Project Q onto zeroth parabolic cylinder function
     for ii = 1:nx
-       q_proj(out_idx+1, ii) = dy_norm * sum(squeeze(Q(:, ii)).*parab_cyl_0); 
+       q_proj(out_idx+1, ii) = dy_norm * squeeze(Q(:, ii).'*parab_cyl_0) ...
+        * (1/merid_norm);
     end
 end
 
+% Get standard deviation from q_proj, after taking out time-series mean, and
+% non-dimensionalize it
+q_proj = detrend(q_proj, 0);
+q_std  = std(q_proj, 0, 'all');
+q_proj = q_proj / q_std;
 
 end
 

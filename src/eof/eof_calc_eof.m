@@ -2,58 +2,52 @@ function eofs = eof_calc_eof(params)
 
 eofs = struct();
 
+% Get path to output data.
+out_path       = params.out_path;
+exp_path       = fullfile(out_path, params.exp_name);
+component_path = fullfile(exp_path, params.component_name);
+
+addpath(out_path);
+addpath(exp_path);
+addpath(component_path);
+
+% Read in run parameters
+params_file = fullfile(component_path, 'params.nc');
+
+nx       = ncread(params_file, 'nx');
+
+sim_days = ncread(params_file, 'sim_days');
+out_freq = ncread(params_file, 'out_freq');
+
+nt = floor(sim_days/out_freq) + 1;
+
 % Get vertical, meridional projections of u, q 
-u_proj = eof_proj_u(params);
-q_proj = eof_proj_q(params);
+[u_proj, u_std] = eof_proj_u(params);
+[q_proj, q_std] = eof_proj_q(params);
 
-% Take out time-series means
-u_proj = detrend(u_proj, 0);
-q_proj = detrend(q_proj, 0);
-
-% Normalize u_proj, q_proj by their standard deviations
-u_proj_std = std(u_proj, 0, 'all');
-u_proj = u_proj / u_proj_std;
-
-q_proj_std = std(q_proj, 0, 'all');
-q_proj = q_proj / q_proj_std;
-
-eofs.u_std = u_proj_std;
-eofs.q_std = q_proj_std;
+eofs.u_std = u_std;
+eofs.q_std = q_std;
 
 % Perform the EOF decompostion via eigenvalue decomposition
 comb_proj = [u_proj q_proj]; % Combined projection matrix
 cov = transpose(comb_proj) * comb_proj;
 [eof_mtx, L] = eig(cov);
 
-% Get "raw" EOFs, xpansion coefficients of combined system
-eofs.raw_eof1 = transpose(eof_mtx(:, end));
-eofs.raw_eof2 = transpose(eof_mtx(:, end-1));
-
-[nt, nx] = size(u_proj);
+% Get non-dimensional EOFs, expansion coefficients of combined system
+eofs.eof1 = transpose(eof_mtx(:, end));
+eofs.eof2 = transpose(eof_mtx(:, end-1));
 
 exp_coeffs = comb_proj * eof_mtx(:, [end end-1]);
-eofs.raw_exp1 = transpose(exp_coeffs(1:nt, end-1));
-eofs.raw_exp2 = transpose(exp_coeffs(1:nt, end));
+eofs.exp1 = transpose(exp_coeffs(1:nt, end-1));
+eofs.exp2 = transpose(exp_coeffs(1:nt, end));
 
 % Get the first two EOFs, and expansion coefficients
-eofs.u_eof1 = transpose(eof_mtx(1:nx, end)) * u_proj_std;
-eofs.u_eof2 = transpose(eof_mtx(1:nx, end-1)) * u_proj_std;
-eofs.q_eof1 = transpose(eof_mtx(nx+1:end, end)) * q_proj_std;
-eofs.q_eof2 = transpose(eof_mtx(nx+1:end, end-1)) * q_proj_std;
+eofs.u_eof1 = eofs.eof1(1:nx) * u_std;
+eofs.u_eof2 = eofs.eof2(1:nx) * u_std;
+eofs.q_eof1 = eofs.eof1(nx+1:end) * q_std;
+eofs.q_eof2 = eofs.eof2(nx+1:end) * q_std;
 
 eofs.scf = sort(diag(L) / trace(L), 'descend'); % Scaled covariance fraction
-
-% Scale EOFs, expansion coefficients so EOFs have unit norm
-eof1_norm = norm(eofs.raw_eof1)^2;
-eof2_norm = norm(eofs.raw_eof2)^2;
-
-eofs.u_eof1 = eofs.u_eof1 / eof1_norm;
-eofs.u_eof2 = eofs.u_eof2 / eof2_norm;
-eofs.q_eof1 = eofs.q_eof1 / eof1_norm;
-eofs.q_eof2 = eofs.q_eof2 / eof2_norm;
-
-eofs.exp1 = eofs.raw_exp1 * eof1_norm;
-eofs.exp2 = eofs.raw_exp2 * eof2_norm;
 
 eofs = eof_recon_mjo(params, eofs);
 

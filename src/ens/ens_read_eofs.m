@@ -21,8 +21,8 @@ eof_file = fullfile(eof_path, eof_file_name);
 ens_eofs.u_std = ncread(eof_file, 'u_std');
 ens_eofs.q_std = ncread(eof_file, 'q_std');
 
-ens_eofs.raw_eof1 = ncread(eof_file, 'raw_eof1');
-ens_eofs.raw_eof2 = ncread(eof_file, 'raw_eof2');
+ens_eofs.eof1 = ncread(eof_file, 'eof1');
+ens_eofs.eof2 = ncread(eof_file, 'eof2');
 
 Q_mode_code = ncread(eof_file, 'Q_mode_code');
 if Q_mode_code == 0
