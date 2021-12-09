@@ -470,6 +470,13 @@ text(-8, 0.425, 'WIG',...
 
 title('Symmetric Part');
 
+ax = gca;
+set(ax, 'Layer', 'top');
+xticks(-max_wavenum+2:2:max_wavenum);
+xlabels = string(ax.XAxis.TickLabels);
+ax.XAxis.TickLabels = xlabels; % set
+xtickangle(0)
+
 hold off;
 
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -632,6 +639,13 @@ text(-8, 0.425, 'WIG',...
     'Margin', 1);
 
 title('Asymmetric Part');
+
+ax = gca;
+set(ax, 'Layer', 'top');
+xticks(-max_wavenum+2:2:max_wavenum);
+xlabels = string(ax.XAxis.TickLabels);
+ax.XAxis.TickLabels = xlabels; % set
+xtickangle(0)
 
 hold off;
 

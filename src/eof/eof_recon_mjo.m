@@ -31,7 +31,7 @@ dz  = ncread(grid_file, 'dz');
 
 L = 1490; % Equatorial meridional length scale (km)
 yy_norm  = yy / L;
-zzU_norm = pi * (zzU + dz/2) / H;
+zzU_norm = pi * (zzU(2:nz+1) - dz/2) / (H - dz);
 zzW_norm = pi * zzW / H;
 
 % Reconstruct the zonal wind part of the MJO
@@ -42,11 +42,11 @@ eofs_out.u_mjo1 = zeros([ny, nx, nz + 1]);
 eofs_out.u_mjo2 = zeros([ny, nx, nz + 1]);
 for jj = 1:ny
     for ii = 1:nx
-        for kk = 1:nz+1
+        for kk = 2:nz+1 % BC at domain bottom is zero
             eofs_out.u_mjo1(jj, ii, kk) = eofs_in.u_eof1(ii) ...
-                * parab_cyl_0(jj) * u_clin_mode_1(kk);
+                * parab_cyl_0(jj) * u_clin_mode_1(kk-1);
             eofs_out.u_mjo2(jj, ii, kk) = eofs_in.u_eof2(ii) ...
-                * parab_cyl_0(jj) * u_clin_mode_1(kk);
+                * parab_cyl_0(jj) * u_clin_mode_1(kk-1);
         end
     end
 end

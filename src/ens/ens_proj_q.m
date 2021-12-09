@@ -1,4 +1,4 @@
-function [q_proj, q1, q2] = ens_proj_q(dcm_params, dcm_grid, q, eofs)
+function q_proj = ens_proj_q(dcm_params, dcm_grid, q, eofs)
 
 % Unpack some common parameters
 nx = dcm_params.nx;
@@ -50,9 +50,9 @@ end
 
 % Pick Q_mid or Q_up REFURB, ACTUALLY LOW
 if strcmpi(Q_mode, 'mid') % is actually low here
-    Q = 1 / sqrt(3) * (q1 * q_clin_mode(pi/3, 1) + q2 * q_clin_mode(pi/3, 2));
+    Q = 1 / sqrt(3) * (q1 * q_clin_mode(pi/3, 1) - q2 * q_clin_mode(pi/3, 2));
 else
-    Q = 1 / sqrt(3) * (q1 * q_clin_mode(2*pi/3, 1) - q2 * q_clin_mode(2*pi/3, 2));
+    Q = 1 / sqrt(3) * (q1 * q_clin_mode(2*pi/3, 1) + q2 * q_clin_mode(2*pi/3, 2));
 end
 
 % % Pick Q_mid or Q_up

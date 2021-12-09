@@ -369,6 +369,11 @@ if ens_params.init_simulation
     disp(brk_str);
     fprintf('Initializing ensemble simulation...\n');
     
+    % Convert ensemble parameters to seconds
+    ens_params = ens_convert_params(ens_params);
+    comm_freq = ens_params.comm_freq;
+    
+    % Make sure to output ensemble parameters at some point!
     
     % Unpack DCM, MJOO parameters. From here, DO NOT TOUCH DCM, MJOO PARAMS
     % WITHIN ENS_PARAMS
@@ -425,9 +430,11 @@ if ens_params.init_simulation
         
         
         % Set up time-related variables
-        time         = 0.0;                 % Current time in seconds
-        out_idx      = 1;                   % Output file number
-        out_time     = out_idx * out_freq;  % Output file time
+        time         = 0.0;                  % Current time in seconds
+        out_idx      = 1;                    % Output file number
+        out_time     = out_idx * out_freq;   % Output file time
+        comm_idx     = 1;                    % Communication step index
+        comm_time    = comm_idx * comm_freq; % Communication time
         days_to_secs = 3600*24;
         
         % Output initial state
@@ -458,13 +465,18 @@ if ens_params.init_simulation
                 ens_dcm_bg_profs, ens_dcm_state);
             ens_mjoo_state = cmg14_advance_state(ens_mjoo_params, ens_mjoo_opers, time, ...
                 ens_mjoo_state);
-            
-            [ens_dcm_state, ens_mjoo_state] = ens_comm(dcm_params, ...
-                ens_dcm_grid, ens_dcm_state, ens_mjoo_state, ...
-                ens_params, ens_eofs);
-            
-            
+
             time = time + dt;
+            
+            if abs(comm_time - time) < dt/2 % Closest time to desired 
+                % communication time
+                [ens_dcm_state, ens_mjoo_state] = ens_comm(dcm_params, ...
+                    ens_dcm_grid, ens_dcm_state, ens_mjoo_state, ...
+                    ens_params, ens_eofs);
+                
+                comm_idx  = comm_idx + 1;
+                comm_time = comm_idx * comm_freq;
+            end
             
             if abs(out_time - time) < dt/2 % Closest time to desired output time
                 % check state to ensure validity

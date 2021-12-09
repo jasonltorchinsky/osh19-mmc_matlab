@@ -6,10 +6,7 @@ nx = dcm_params.nx;
 nz = dcm_params.nz;
 H  = dcm_params.H;
 
-zzW = dcm_grid.zzW;
-zzW_norm = pi * zzW / H;
-
-Q_mode = eofs.Q_mode;
+dz = dcm_grid.dz;
 
 H_dcm = ens_params.dcm_comm.H;
 B_dcm = ens_params.dcm_comm.B;
@@ -21,7 +18,7 @@ Lambda_mjoo = ens_params.mjoo_comm.Lambda;
 
 % Project DCM state onto non-dimensional concatenated EOF to get DCM MJO indices
 u_proj_pri = ens_proj_u(dcm_params, dcm_grid, dcm_state.u, eofs);
-[q_proj_pri, q1_pri, q2_pri] = ens_proj_q(dcm_params, dcm_grid, dcm_state.q, eofs);
+q_proj_pri = ens_proj_q(dcm_params, dcm_grid, dcm_state.q, eofs);
 a_proj_pri = [u_proj_pri q_proj_pri];
 
 % Get MJO indices, climate parameter from DCM
@@ -65,39 +62,31 @@ delta_mjo_proj = (u1_dcm_pst - u1_dcm_pri) * eofs.eof1.' ...
 delta_u_mjo_proj = delta_mjo_proj(1:nx);
 delta_q_mjo_proj = delta_mjo_proj(nx+1:end);
 
-% Un-project the prior and posterior u, q, and update them in the state
+% % Un-project the prior and posterior u, q, and update them in the state
 delta_u_mjo = ens_unproj_u(dcm_params, dcm_grid, delta_u_mjo_proj, eofs);
 delta_q_mjo = ens_unproj_q(dcm_params, dcm_grid, delta_q_mjo_proj, eofs);
 
+% delta_u_mjo = (u1_dcm_pst - u1_dcm_pri) * eofs.u_mjo1 ...
+%     + (u2_dcm_pst - u2_dcm_pri) * eofs.u_mjo2;
+% delta_q_mjo = (u1_dcm_pst - u1_dcm_pri) * eofs.q_mjo1 ...
+%     + (u2_dcm_pst - u2_dcm_pri) * eofs.q_mjo2;
+
 dcm_state_out = dcm_state;
 dcm_state_out.u = dcm_state_out.u + delta_u_mjo;
-dcm_state_out.u(:,:,1) = 0.0; % Enforce BCs
-
-% Communicating the moisture is a little more complicated
-% q_clin_mode_1 = q_clin_mode(zzW_norm, 1);
-% q_clin_mode_2 = q_clin_mode(zzW_norm, 2);
 dcm_state_out.q = dcm_state_out.q + delta_q_mjo;
-% if strcmpi(Q_mode, 'mid')
-%    for kk = 1:nz+1
-%       dcm_state_out.q(:,:,kk) = dcm_state_out.q(:,:,kk) ...
-%           - (sqrt(2) * sin(pi/2)) * q_clin_mode_1(kk) * q1_pri(:,:); 
-%    end
-% else
-%     for kk = 1:nz+1
-%         dcm_state_out.q(:,:,kk) = dcm_state_out.q(:,:,kk) ...
-%           - (sqrt(2) * sin(2*pi/3) ...
-%              * (q_clin_mode_1(kk) - 1/2 * q_clin_mode_2(kk))) * q1_pri(:,:) ...
-%           - (2 * sqrt(2) * sin(4*pi/3) ...
-%              * (q_clin_mode_1(kk) - 1/2 * q_clin_mode_2(kk))) * q2_pri(:,:); 
-%     end
-% end
-
 
 % u is a prognostic variable, so we need to correct the diagnostic variables too
+scale_x = (2 * pi) / (2 * pi * dcm_params.P_E);
+scale_y = (2 * pi) / (2 * dcm_params.P_Y);
+% Update u_psi, w
 for kk = 2:nz
-    dcm_state_out.u_psi(:,:,kk) = dcm_state_out.u(:,:,kk) - dcm_state.u_tau;
+    dcm_state_out.u_psi(:,:,kk) = dcm_state_out.u(:,:,kk) - dcm_state_out.u_tau;
 end
-dcm_state_out = osh19_prognose_state(dcm_params, dcm_grid, dcm_state_out);
+for kk = 2:nz
+    dcm_state_out.w(:,:,kk) = dcm_state_out.w(:,:,kk-1) ...
+        - dz * (D1(dcm_state_out.u(:,:,kk),'x',scale_x) ...
+        + D1(dcm_state_out.v(:,:,kk),'y',scale_y));
+end
 
 % Update MJOO state
 mjoo_state_out = mjoo_state;
@@ -105,20 +94,23 @@ mjoo_state_out = mjoo_state;
 %mjoo_state_out.u_2 = mjoo_pst(2);
 %mjoo_state_out.v   = mjoo_pst(3);
 
-% Check if project and un-project are really inverses
-a_mjo_proj = 1 * eofs.eof1.' + 0 * eofs.eof2.';
-u_mjo_proj = a_mjo_proj(1:nx);
-q_mjo_proj = a_mjo_proj(nx+1:end);
 
-u_mjo = ens_unproj_u(dcm_params, dcm_grid, u_mjo_proj, eofs);
-q_mjo = ens_unproj_q(dcm_params, dcm_grid, q_mjo_proj, eofs);
+% WARNING: BCS ARE NOT ENFORCED
 
-u_mjo_reproj = ens_proj_u(dcm_params, dcm_grid, u_mjo, eofs);
-[q_mjo_reproj, ~, ~] = ens_proj_q(dcm_params, dcm_grid, q_mjo, eofs);
-a_mjo_reproj = [u_mjo_reproj q_mjo_reproj];
-
-u1 = a_mjo_reproj * eofs.eof1;
-u2 = a_mjo_reproj * eofs.eof2;
+% % Check if project and un-project are really inverses
+% a_mjo_proj = 0 * eofs.eof1.' + 1 * eofs.eof2.';
+% u_mjo_proj = a_mjo_proj(1:nx);
+% q_mjo_proj = a_mjo_proj(nx+1:end);
+% 
+% u_mjo = ens_unproj_u(dcm_params, dcm_grid, u_mjo_proj, eofs);
+% q_mjo = ens_unproj_q(dcm_params, dcm_grid, q_mjo_proj, eofs);
+% 
+% u_mjo_reproj = ens_proj_u(dcm_params, dcm_grid, u_mjo, eofs);
+% [q_mjo_reproj, ~, ~] = ens_proj_q(dcm_params, dcm_grid, q_mjo, eofs);
+% a_mjo_reproj = [u_mjo_reproj q_mjo_reproj];
+% 
+% u1 = a_mjo_reproj * eofs.eof1;
+% u2 = a_mjo_reproj * eofs.eof2;
 
 % % Take dcm_state_out.u and get the MJO indices from there!
 % u_out_proj = ens_proj_u(dcm_params, dcm_grid, dcm_state_out.u, eofs);
@@ -129,6 +121,8 @@ u2 = a_mjo_reproj * eofs.eof2;
 % u1_out_dcm = a_out_proj * eofs.eof1;
 % u2_out_dcm = a_out_proj * eofs.eof2;
 % v_out_dcm  = dcm_params.B_vs;
+% 
+% disp([u1_out_dcm, u2_out_dcm]);
 
 % % Check out the prior and posterior MJOs
 % a_mjo_proj_pri = u1_dcm_pri * eofs.eof1.' + u2_dcm_pri * eofs.eof2.';
@@ -153,7 +147,7 @@ u2 = a_mjo_reproj * eofs.eof2;
 % 
 % fprintf('Max u_proj in, max u_proj out: %.4f, %.4f\n\n', ...
 %     max(abs(u_pri), [], 'all'), max(abs(u_pst), [], 'all'));
-%
+
 % fprintf('Max u in, max u out: %.4f, %.4f\n\n', ...
 %    max(abs(dcm_state.u), [], 'all')*10^3, ...
 %    max(abs(dcm_state_out.u), [], 'all')*10^3);

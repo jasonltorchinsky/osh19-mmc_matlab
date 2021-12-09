@@ -110,7 +110,7 @@ dcm_params.component_name = 'dcm';
 
 dcm_params.init_simulation = false;
 dcm_params.run_simulation = false;
-dcm_params.create_plots = false;
+dcm_params.create_plots = true;
 
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 % Parameters for the MJO-only model (OSH19) [Default]
@@ -170,13 +170,15 @@ ens_params.mjoo_comm.H = [0 0 1];
 ens_params.mjoo_comm.B = [[0.1 0 0]; [0.1 0 0]; [0 0 3.0]];
 ens_params.mjoo_comm.Lambda = [0.1];
 
+ens_params.comm_freq = 1/2; % Frequency of communication (d)
+
 ens_params.out_path = out_path;
 ens_params.exp_name = exp_name;
 ens_params.component_name = 'ens';
 
-ens_params.init_simulation = true;
-ens_params.run_simulation = true;
-ens_params.create_plots = true;
+ens_params.init_simulation = false;
+ens_params.run_simulation = false;
+ens_params.create_plots = false;
 
 % Ensemble DCM parameters
 ens_params.dcm_params = dcm_params;

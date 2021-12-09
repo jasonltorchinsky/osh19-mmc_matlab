@@ -24,6 +24,12 @@ ens_eofs.q_std = ncread(eof_file, 'q_std');
 ens_eofs.eof1 = ncread(eof_file, 'eof1');
 ens_eofs.eof2 = ncread(eof_file, 'eof2');
 
+ens_eofs.u_mjo1 = ncread(eof_file, 'u_mjo1');
+ens_eofs.u_mjo2 = ncread(eof_file, 'u_mjo2');
+
+ens_eofs.q_mjo1 = ncread(eof_file, 'q_mjo1');
+ens_eofs.q_mjo2 = ncread(eof_file, 'q_mjo2');
+
 Q_mode_code = ncread(eof_file, 'Q_mode_code');
 if Q_mode_code == 0
     ens_eofs.Q_mode = 'mid';

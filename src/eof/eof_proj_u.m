@@ -34,7 +34,9 @@ dz  = ncread(grid_file, 'dz');
 L = 1490; % Equatorial meridional length scale (km)
 yy_norm  = yy / L;
 dy_norm  = dy / L;
-zzU_norm = pi * (zzU + dz/2) / H; % Shift required because staggered grid
+zzU_norm = pi * (zzU(2:nz+1) - dz/2) / (H - dz); 
+  % Shift required because staggered grid, don't want to include points outside
+  % the domain
 
 % Get the first baroclinic mode, zeroth parabolic cylinder function for the
 % projections.
@@ -43,7 +45,7 @@ u_clin_mode_1 = u_clin_mode(zzU_norm, 1);
 
 % Get the normalization constants due to discretized norms
 merid_norm = dy_norm * (parab_cyl_0.' * parab_cyl_0);
-vert_norm  = (1/(nz+1)) * (u_clin_mode_1.' * u_clin_mode_1);
+vert_norm  = (1/nz) * (u_clin_mode_1.' * u_clin_mode_1);
 
 % Set up u_proj, and begin calculating it
 u_proj = zeros([n_outfiles, nx]);
@@ -60,8 +62,8 @@ for out_idx = out_idxs
     u1 = zeros([ny, nx]);
     for jj = 1:ny
         for ii = 1:nx
-           u1(jj, ii) = (1/(nz+1)) ...
-               * squeeze(squeeze(u(jj, ii, :)).'*u_clin_mode_1) ...
+           u1(jj, ii) = (1/nz) ...
+               * squeeze(squeeze(u(jj, ii, 2:nz+1)).'*u_clin_mode_1) ...
                * (1/vert_norm);
         end
     end
