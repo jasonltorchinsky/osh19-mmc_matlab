@@ -1,0 +1,13 @@
+The error of aliasing arises in pseudo-spectral methods when evaluating multiplicative non-linearities in the  evolution equations. \cite{Hou07} For example, consider the advection term $u\,\partial_x u$. It is favorable to evaluate the product $u\,\gpr{\partial_x u}$ in physical space but evaluate the partial derivative $\partial_x u$ in Fourier space. However, the larger wavenumbers of $u$ and $\partial_x u$ will ``add together'' in Fourier space and will ``out-run'' the lower-order wavenumbers, i.e., the sum/difference of the higher wavernumbers of $u$ and $\partial_x u$ will exceed the number of available wavenumbers and ``wrap back around''.
+
+The standard reference for de-aliasing is \cite{Orszag71}, which proves that only the largest one-third of wavenumbers will cause this aliasing effect. Although there are other choices of de-alieasing filters, such as that mentioned in \cite{Hou07}, one of the simplest is the \textit{2/3s-rule}, in which the largest two-thirds of wavenumbers are cut-off.
+
+For example, again consider the advection term $u\,\partial_x u$. We begin by transforming $u$ to obtain $\widehat{u}$. We multiply one copy of $\widehat{u}$ by the appropriate factor to obtain $\widehat{\partial_x u}$ (see Appendix~\ref{appendix:horz_derv}, the ``appropriate factor'' is the factor mentioned in how we obtain $n$\textsuperscript{th}-order derivative). We apply the following low-pass filter to each of $\widehat{u}$ and $\widehat{\partial_x u}$
+
+\begin{equation}
+	\widehat{u}_{k_x} \mapsto \left\lbrace \mqty{\widehat{u}_{k_x},\quad & \abs{k_x / n_x} \leq 2/3,\\[6pt] 0,\quad & \abs{k_x / n_x} > 2/3,} \right. \qquad \widehat{\partial_x u}_{k_x} \mapsto \left\lbrace \mqty{\widehat{\partial_x u}_{k_x} ,\quad & \abs{k_x / n_x} \leq 2/3,\\[6pt] 0,\quad & \abs{k_x / n_x} > 2/3.} \right.
+\end{equation}
+
+We may then inverse transform the \emph{filtered} $\widehat{u}$ and $\widehat{\partial_x u}$ into physical space in order to perform the multiplication $u\,\partial_x u$, which gives the final result.
+
+Alternatively, we may use the 3/2s-rule, in which we pad each of the transformed quanitites instead of filtering them, but this requires more computer memory and operations, since we must copy the original arrays into the new larger arrays.

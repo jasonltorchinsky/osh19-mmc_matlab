@@ -1,0 +1,44 @@
+Since we use FFTW3-MPI for our code, we will adopt their formulation for the discrete Fourier transform (DFT). \cite{Frigo05} In particular, the foward one-dimensional DFT of an array $X$ of $n_x$ complex numbers along the $x$-dimension is the array $\widehat{X}$ given by
+
+\begin{equation}
+	\widehat{X}_{k_x} = \sum_{i = 0}^{n_x-1} X_i\,e^{-\frac{2\,\pi\,\sqrt{-1}\,i\,k_x}{n_x}}
+\end{equation}
+
+where $0 \leq k_x \leq n_x - 1$ indexes the array $\widehat{X}$ and $0 \leq i \leq n_x - 1$ indexes the array $X$ along the $x$-dimension. Note, this would work similarly along any spatial or temporal dimension, we chose $X$ to only have the $x$ dimension here for concreteness. The backward one-dimensional DFT is given by
+
+\begin{equation}
+	X_i = \frac{1}{n}\,\sum_{k_x = 0}^{n-1} \widehat{X}_{k_x}\,e^{\frac{2\,\pi\,\sqrt{-1}\,i\,k_x}{n}},
+\end{equation}
+
+where, unlike \cite{Frigo05}, we have normalized the backward transform. To calculate the odd- and even-order of $X$, pseudo-spectrally, we follow the method of \cite{Johnson11}. In particular, assuming $X$ has period $l$ we use the following procedure for odd- and even-order derivatives
+
+\begin{quote}[$n$\textsuperscript{th}-order derivative for odd $n$.]
+	\begin{enumerate}[1.]
+		\item Forward transform $X$ to obtain $\widehat{X}$.
+		\item Multiply $\widehat{X}_{k_x}$ by $\gpr{\frac{2\,\pi\,\sqrt{-1}}{l}\,k_x}^n$ for $k_x < n_x/2$, by $\gpr{\frac{2\,\pi\,\sqrt{-1}}{l}\,\gpr{n_x - k_x}}^n$  for $k_x > n_x/2$, and by zero for $k_x = n_x/2$ (if $n_x$ is even) to obtain $\widehat{X}_{k_x}^{(n)}$.
+		\item Backward transform $\widehat{X}^{(n)}$ to obtain the $n$\textsuperscript{th}-order derivative $X^{(n)}$.
+	\end{enumerate}
+\end{quote}
+
+\begin{quote}[$n$\textsuperscript{th}-order derivative for even $n$.]
+	\begin{enumerate}[1.]
+		\item Forward transform $X$ to obtain $\widehat{X}$.
+		\item Multiply $\widehat{X}_{k_x}$ by $\gpr{-\gpr{\frac{2\,\pi}{l}\,k_x}^2}^n$ for $k_x \leq n_x/2$ and by $\gpr{-\gpr{\frac{2\,\pi}{l}\,\gpr{n_x - k_x}}^2}^n$  for $k_x > n_x/2$ to obtain $\widehat{X}_{k_x}''$.
+		\item Backward transform $\widehat{X}''$ to obtain $X^{(n)}$.
+	\end{enumerate}
+\end{quote}
+
+We may apply this same formulation to multi-dimensional DFTs, applying one-dimensional DFTs along each dimension of $X$, and differentiating along each dimension individually. For example, suppose $X$ is two-dimensional, specifically along the $x$- and $y$-dimensions. The forward two-dimensional DFT of $X$ is given by
+
+\begin{equation}
+	\widehat{X}_{k_x k_y} = \sum_{j = 0}^{n_y-1} \sum_{i = 0}^{n_x-1} X_{ij}\,e^{-\frac{2\,\pi\,\sqrt{-1}\,\gpr{i\,k_x + j\,k_y}}{n_x}}
+\end{equation}
+
+while the backward two-dimensional $DFT$ of $\widehat{X}$ is given by
+
+\begin{equation}
+	X_{ij} = \sum_{k_y = 0}^{n_y-1} \sum_{k_x = 0}^{n_x-1} \widehat{X}_{k_x k_y}\,e^{\frac{2\,\pi\,\sqrt{-1}\,\gpr{i\,k_x + j\,k_y}}{n_x}}
+\end{equation}
+
+We may even transform this two-dimensional $X$ along a single dimension if we only wish to differentiate it along that dimension.
+

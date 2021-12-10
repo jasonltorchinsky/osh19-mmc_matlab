@@ -1,0 +1,84 @@
+\documentclass[letterpaper, 12pt]{article}
+\usepackage{DocumentationFormatting}
+\usepackage{MathTypesetting}
+
+\begin{document}
+\heading
+
+\newpage
+
+\tableofcontents
+
+\newpage
+
+\section{Introduction}
+    \import{}{introduction.tex}
+    
+    \subsection{The Ogrosky--Stechmann--Hottovy 2019 system} \label{subsection:osh19}
+    	\import{}{osh19.tex}
+    	
+    \subsection{$\zeta_{\tau}$-formulation of OSH19} \label{subsubsection:zeta_tau_form}
+    		\import{}{zeta_tau_form.tex}
+
+	\subsection{Boundary conditions of OSH19}
+		\import{}{boundary.tex}
+
+	\subsection{Discretization of the $\zeta_{\tau}$-formulation of OSH19} \label{subsection:discret}
+    	\import{}{discret.tex}
+
+  
+   
+%\section{Compiling and running}
+%	\import{}{use.tex}
+
+%\section{Code structure}
+%	\import{}{structure.tex}
+	
+%\section{Future work}
+%	\import{}{future.tex}
+
+\addcontentsline{toc}{section}{Acknowledgements}
+\section*{Acknowledgements}
+	\import{}{acknowledgements.tex}
+    
+\newpage
+    
+\clearpage
+\addcontentsline{toc}{section}{References}
+\bibliography{refs}
+\bibliographystyle{siam}
+
+\newpage
+
+\appendix
+
+\section{Derivation of the $\zeta_{\tau}$-formulation} \label{appendix:zeta_tau_form_deriv}
+
+	\subsection{Evolution of the vertical component of barotropic relative vorticity} \label{subsection:zeta}
+		\import{}{zeta.tex}
+		
+	\subsection{Evolution of baroclinic zonal and meridional wind speed} \label{subsection:u_v}
+		\import{}{u_v.tex}
+		
+	\subsection{Evolution of the potential temperature anomaly} \label{subsection:theta}
+		\import{}{theta.tex}
+		
+	\subsection{Evolution of the moisture anomaly} \label{subsection:q}
+		\import{}{q.tex}
+		
+	\subsection{Diagnosis of total zonal, meridional, and vertical wind speed, and pressure anomaly} \label{subsubsection:diag}
+		\import{}{diag.tex}
+
+
+\section{Pseudo-spectral method for zonal and meridional derivatives} \label{appendix:horz_derv}
+	\import{}{horz_derv.tex}
+
+\section{De-aliasing and the 2/3s-rule} \label{appendix:dealias}
+	\import{}{dealias.tex}
+
+\section{Initial condition -- the linearized model} \label{appendix:linear_model}
+	\import{}{init_cond.tex}
+
+
+\end{document}
+ 

@@ -1,0 +1,36 @@
+\begin{thebibliography}{1}
+
+\bibitem{Chen14}
+{\sc N.~Chen, A.~Majda, and D.~Giannakis}, {\em Predicting the cloud patterns
+  of the {M}adden-{J}ulian {O}scillation through a low-order nonlinear
+  stochastic model}, Geophys. Res. Lett., 41 (2014), pp.~5612--5619.
+
+\bibitem{Frigo05}
+{\sc M.~Frigo and S.~Johnson}, {\em The design and implementation of {FFTW3}},
+  Proceedings of the IEEE, 93 (2005), pp.~216--231.
+
+\bibitem{Hou07}
+{\sc T.~Hou and R.~Li}, {\em Computing nearly singular solutions using
+  pseudo-spectral methods}, Jounral of Computational Physics, 226 (2007),
+  pp.~379--397.
+
+\bibitem{Johnson11}
+{\sc S.~Johnson}, {\em Notes on {FFT}-based differentiation}.
+\newblock Online, May 2011.
+
+\bibitem{Ogrosky19}
+{\sc H.~Ogrosky, S.~Stechmann, and S.~Hottovy}, {\em Instability and nonlinear
+  dynamics of the mjo in a tropical channel model with vertically varying
+  convective adjustment}, Theor. Comput. Fluid Dyn., 33 (2019), pp.~307--323.
+
+\bibitem{Orszag71}
+{\sc S.~Orszag}, {\em On the elimination of aliasing in finite-difference
+  schemes by filtering high-wavenumber components}, Journal of Atmospheric
+  Sciences, 28 (1971), p.~1074.
+
+\bibitem{Vallis17}
+{\sc G.~Vallis}, {\em Atmospheric and Oceanic Fluid Dynamics: Fundamentals and
+  Large-Scale Circulation}, Cambridge University Press, Cambridge, U.K., 2~ed.,
+  Jun. 2017.
+
+\end{thebibliography}

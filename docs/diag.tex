@@ -1,0 +1,36 @@
+To update the total zonal and meridional wind speeds, we simply sum the barotropic and baroclinic wind speeds. In particular, we may obtain the barotropic zonal and meridional wind speeds from the updated vertical component of barotropic vorticity (``inverting the vorticity'' to obtain the vertical component of the barotropic stream function and taking the appropriate derivatives). The total vertical wind speed may be obtained from the incompressibility condition and taking advantage of the fact that $w = 0$ at $z = 0$.
+
+The pressure anomaly may be obtained from the hydrostatic condition, via numeric integration of Eq~\ref{eqn:hydrostatic}. In particular, we have
+
+\begin{equation}
+	\func{p}{z} = \func{p}{H} - \frac{g}{\theta_0}\,\int_{z}^{H} \func{\theta}{t,\ x,\ y,\ z'}\,dz',
+	\label{eqn:press}
+\end{equation}
+
+where we have $\func{p}{H} = 0$ from the rigid-lid boundary condition. For computational efficiency, we may simply calculate $p_{\frac{1}{2}}$ and use a recursive relation to calculate $p_{k - \frac{1}{2}}$ for $k = 2,\ \dots,\ n_z$. Using the midpoint approximation
+
+\begin{equation}
+	\gpr{\partial_z p}_{k} \approx \frac{p_{k + \frac{1}{2}} - p_{k - \frac{1}{2}}}{\Delta z} = \frac{g}{\theta_0}\,\theta_k,\qquad k = 1,\ \dots,\ n_z - 1,
+\end{equation}
+
+we obtain the recursive relation
+
+\begin{equation}
+	p_{k + \frac{1}{2}} = p_{k - \frac{1}{2}} + \frac{g\,\Delta z}{\theta_0}\,\theta_k,\qquad k = 1,\ \dots,\ n_z - 1.
+	\label{eqn:p_{k+1/2}}
+\end{equation}
+
+Now, we may re-write this recursive relation to obtain $p_{k - \frac{1}{2}}$ from $p_{\frac{1}{2}}$ 
+
+\begin{equation}
+	p_{k + \frac{1}{2}} = p_{\frac{1}{2}} + \frac{g\,\Delta z}{\theta_0}\, \sum_{k' = 1}^{k - 1} \theta_{k'}. 
+\end{equation}
+
+Taking advantage of the definition of the barotropic pressure $p_{\tau} = \frac{1}{n_z}\,\sum_{k = 0}^{n_z - 1} p_{k - \frac{1}{2}} = \frac{1}{n_z}\,\sum_{k = 1}^{n_z - 1} p_{k - \frac{1}{2}}$, we obtain
+
+\begin{equation}
+	p_{\frac{1}{2}} = p_{\tau} - \frac{g}{\theta_0}\,\frac{\Delta z}{n_z}\,\sum_{k = 1}^{n_z - 1} \gpr{n_z - k}\,\theta_{k} = - \frac{g}{\theta_0}\,\frac{\Delta z}{n_z}\,\sum_{k = 1}^{n_z - 1} \gpr{n_z - k}\,\theta_{k},
+	\label{eqn:p_1/2}
+\end{equation}
+
+where we may assign $p_{\tau} = 0$ for the following reason: in a barotropic flow, the pressure is a function  of density alone. Since the winds are incompressible, the density is constant throughout, and thus so is the barotropic pressure. However, the dynamics of the system depend only on pressure gradients, and thus the mean value of the pressure does not matter.

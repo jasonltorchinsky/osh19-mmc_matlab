@@ -1,0 +1,24 @@
+Similarly to the evolution equation for the vertical component of barotropic relative vorticity $\zeta_{\tau}$ (Eqn.~\ref{eqn:evol_zeta_tau}), we may re-write the non-linear advection terms of the evolution equations for the zonal and meridional components of the baroclinic wind (Eqs.~\ref{eqn:evol_clin_u} and \ref{eqn:evol_clin_v}, respectively) in terms of derivatives of ${u_{\tau}}^2$, $u_{\tau}\,v_{\tau}$, $u^2$, and $u\,v$. By utilizing the incompressibility of the barotropic winds, we obtain the identities
+
+\begin{subequations}
+	\begin{align}
+		\partial_x \gbkt{{u_\tau}^2} + \partial_y \gbkt{u_{\tau}\,v_{\tau}} &- \partial_x \gbkt{u^2} - \partial_y \gbkt{u\,v} \nonumber \\
+			&\qquad = 2\,u_{\tau}\,\partial_x u_{\tau} + u_{\tau}\,\partial_y v_{\tau} + v_{\tau}\,\partial_y u_{\tau} - 2\,u\,\partial_x u - u\,\partial_y v - v\,\partial_y u \nonumber \\
+			&\qquad = u_{\tau}\,\partial_x u_{\tau} + v_{\tau}\,\partial_y u_{\tau} - u\,\partial_x u - v\,\partial_y u + u\,\partial_z w.
+	\end{align}
+	\begin{align}
+		\partial_x \gbkt{u_{\tau}\,v_{\tau}} + \partial_y \gbkt{{v_{\tau}}^2} &- \partial_x \gbkt{u\,v} - \partial_y \gbkt{v^2} \nonumber \\
+			&\qquad = u_{\tau}\,\partial_x v_{\tau} - v_{\tau}\,\partial_y v_{\tau} + 2\,v_{\tau}\,\partial_y v_{\tau} - u\,\partial_x v - v\,\partial_x u - 2\,v\,\partial_y v \nonumber \\
+			&\qquad = u_{\tau} \partial_x v_{\tau} + v_{\tau}\,\partial_y v_{\tau} - u\,\partial_x v - v\,\partial_y v + v\,\partial_z w
+	\end{align}
+\end{subequations}
+
+Plugging these into Eqs.~\ref{eqn:evol_clin_u} and \ref{eqn:evol_clin_v}, respectively, and utilizing the incompressibility of the total winds, we obtain the evolution equations for $u_{\psi}$ and $v_{\psi}$ that we shall discretize for our simulations
+
+\begin{subequations}
+	\begin{align}
+		\partial_t u_{\psi} &= \partial_x \gbkt{{u_\tau}^2} + \partial_y \gbkt{u_{\tau}\,v_{\tau}} - \partial_x \gbkt{u^2} - \partial_y \gbkt{u\,v} - \partial_z \gbkt{u\,w} + \beta\,y\,v_{\psi} - \partial_x p_{\psi} - \frac{1}{\tau_u}\,u_{\psi}, \\
+		\partial_t v_{\psi} &= \partial_x \gbkt{u_{\tau}\,v_{\tau}} + \partial_y \gbkt{{v_{\tau}}^2} - \partial_x \gbkt{u\,v} - \partial_y \gbkt{v^2} - \partial_z \gbkt{v\,w} - \beta\,y\,u_{\psi} - \partial_y p_{\psi} - \frac{1}{\tau_u}\,v_{\psi}.
+	\end{align}
+\end{subequations}
+

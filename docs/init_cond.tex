@@ -1,0 +1,303 @@
+In \cite{Ogrosky19}, there are two primary implementations of the model solver: a linearized model solver and a non-linear model solver. The primary difference between the two is that the linearized model solver first linearizes the model equations (Eqs.~\ref{eqs:osh19}) about a rest state while the non-linear model solver does not. We devote our attention to the non-linear model solver and leave our discussion of the linear model for Appendix~\ref{appendix:linear_model}.
+
+For the initial condition for the non-linear model, we utilize the leading zonal modes of a solution to the linearized model with appropriate frequency, i.e., a linearized MJO. In particular, we linearize the model Eqs.~\ref{eqs:osh19} about a resting background state and seek solutions of the form $\func{\widehat{u}_{k_x}}{z}\,e^{i\,\gpr{k_x\,x + k_y\,y - k_t\,t}}$, and similarly for other state variables. Specifically, we consider a state $u = \epsilon\,\widetilde{u}$, $v = \epsilon\,\widetilde{v}$, and similarly for all other state variables and plug these into Eqs.~\ref{eqs:osh19}, ignoring terms of order $\ord{\epsilon^n}$ for $n \geq 2$ to obtain the linearized model 
+
+\begin{subequations}
+	\begin{align}
+		\pdv{u}{t} - \beta\,y\,v + \pdv{p}{x} &= -\frac{1}{\tau_u}\,u, \label{eqn:lin_zonal_wind} \\
+		\pdv{v}{t} + \beta\,y\,u + \pdv{p}{y} &= -\frac{1}{\tau_u}\,v, \label{eqn:lin_merid_wind} \\
+		\pdv{p}{z} &= \frac{g}{\theta_0}\,\theta, \label{eqn:lin_hydrostatic} \\
+		\pdv{u}{x} + \pdv{v}{y} + \pdv{w}{z} &= 0,\\
+		\pdv{\theta}{t} + B\,w &= \frac{L_v}{c_p\,\tau_{\text{up}}}\,q_{\text{up}} + \frac{L_v}{c_p\,\tau_{\text{mid}}}\,q_{\text{mid}} - \frac{1}{\tau_{\theta}}\,\theta, \label{eqn:lin_temp} \\
+		\pdv{q}{t} + v\,\pdv{q_{\text{bg}}}{y} + w\,\pdv{q_{\text{bg}}}{z} &= -\frac{1}{\tau_{\text{up}}}\,q_{\text{up}} - \frac{1}{\tau_{\text{mid}}}\,q_{\text{mid}} + \func{D_h}{z}\,\gpr{\pdv[2]{q}{x} + \pdv[2]{q}{y}} + D_v\,\pdv[2]{q}{z}, \label{eqn:lin_moist}
+	\end{align}
+	\label{eqs:lin_osh19}
+\end{subequations}
+
+where we have discarded the tildes for increased readability. As we are seeking solutions of the form $\func{\widehat{u}_{k_x}}{z}\,e^{i\,\gpr{k_x\,x + k_y\,y - k_t\,t}}$, and similarly for other state variables, we plug these solutions into Eqs.~\ref{eqs:lin_osh19} to obtain
+
+\begin{subequations}
+	\begin{align}
+		-i\,k_t\,\widehat{u} - \beta\,y\,\widehat{v} + i\,k_x\,\widehat{p} &= -\frac{1}{\tau_u}\,\widehat{u}, \label{eqn:wav_zonal_wind} \\
+		-i\,k_t\,\widehat{v} + \beta\,y\,\widehat{u} + i\,k_y\,\widehat{p} &= -\frac{1}{\tau_u}\,\widehat{v}, \label{eqn:wav_merid_wind} \\
+		\pdv{\widehat{p}}{z} &= \frac{g}{\theta_0}\,\widehat{\theta}, \label{eqn:wav_hydrostatic} \\
+		i\,k_x\,\widehat{u} + i\,k_y\,\widehat{v} + \pdv{\widehat{w}}{z} &= 0, \label{eqn:lin_incomp}\\
+		-i\,k_t\,\widehat{\theta} + B\,\widehat{w} &= \frac{L_v}{c_p\,\tau_{\text{up}}}\,\widehat{q}_{\text{up}} + \frac{L_v}{c_p\,\tau_{\text{mid}}}\,\widehat{q}_{\text{mid}} - \frac{1}{\tau_{\theta}}\,\widehat{\theta}, \label{eqn:wav_temp} \\
+		-i\,k_t\,\widehat{q} + \widehat{v}\,\pdv{q_{\text{bg}}}{y} + \widehat{w}\,\pdv{q_{\text{bg}}}{z} &= -\frac{1}{\tau_{\text{up}}}\,\widehat{q}_{\text{up}} - \frac{1}{\tau_{\text{mid}}}\,\widehat{q}_{\text{mid}} - \func{D_h}{z}\,\gpr{{k_x}^2\,\widehat{q} + {k_y}^2\,\widehat{q}} + D_v\,\pdv[2]{\widehat{q}}{z}, \label{eqn:wav_moist}
+	\end{align}
+	\label{eqs:wav_osh19}
+\end{subequations}
+
+where we have omitted the subscript $k_x$ and left it as understood that these equations hold for a fixed zonal wavenumber $k_x$. Here, and throughout this section, we use $i = \sqrt{-1}$ as the complex unit instead of the zonal index as we had previously. We may reformulate Eqs.~\ref{eqs:wav_osh19} in the form of an eigenvalue problem
+
+\begin{equation}
+	k_t\,\va{\mu} = \vb{A}\,\va{\mu}.
+	\label{eqn:e-val_prob}
+\end{equation}
+
+The vector $\va{\mu}$ is a column vector of length $4\,n_y\,n_z - 3\,n_y$ containing the values of $\widehat{u}$, $\widehat{v}$, $\widehat{\theta}$, $\widehat{q}$, and $\widehat{\zeta}_{\tau}$ at each $y_j$ and $z_k$. In particular, define $\va{\widehat{u}}_{k - \frac{1}{2}}$ ($k = 1,\ \dots,\ n_z - 1$) as the $n_y \times 1$ column vector containing the value of $\widehat{u}$ at all $y_j$ for a particular vertical level $k$. We similarly define $\va{\widehat{v}}_{k - \frac{1}{2}}$, $\va{\widehat{q}}_{k}$, and $\va{\widehat{\theta}}_k$, as well as $\va{\widehat{\zeta}}_\tau$ which is constant for all vertical levels. We may now construct $\va{\mu}$
+
+\begin{equation}
+	\va{\mu} = \mqty[\va{\widehat{u}}_{\frac{1}{2}}^T & \va{\widehat{v}}_{\frac{1}{2}}^T & \va{\widehat{\theta}}_{1}^T & \va{\widehat{q}}_{1}^T & \cdots & \va{\widehat{u}}_{n_z-\frac{3}{2}}^T & \va{\widehat{v}}_{n_z-\frac{3}{2}}^T & \va{\widehat{\theta}}_{n_z - 1}^T & \va{\widehat{q}}_{n_z - 1}^T & \va{\widehat{\zeta}}_{\tau}^T]^T.
+\end{equation}
+
+To construct the matrix $\vb{A}$, we will re-write Eqs.~\ref{eqs:wav_osh19} in terms of the vectors $\va{\widehat{u}}_{k - \frac{1}{2}}$, $\va{\widehat{v}}_{k - \frac{1}{2}}$, $\va{\widehat{q}}_{k}$, $\va{\widehat{\theta}}_k$, and $\va{\widehat{\zeta}}_\tau$. We shall begin with Eqs.~\ref{eqn:wav_zonal_wind} and \ref{eqn:wav_merid_wind} by recalling Eqs.~\ref{eqn:p_1/2} and \ref{eqn:p_{k+1/2}}. We may re-write these equations as
+
+\begin{subequations}
+	\begin{equation}
+		\va{\widehat{p}}_{\frac{1}{2}} = -\frac{g}{\theta_0}\,\frac{\Delta z}{n_z}\,\sum_{k = 1}^{n_z - 1} \gpr{n_z - k}\,\va{\widehat{\theta}}_{k},
+	\end{equation}
+	\begin{equation}
+		\va{\widehat{p}}_{k + \frac{1}{2}} = \va{\widehat{p}}_{k - \frac{1}{2}} + \frac{g\,\Delta z}{\theta_0}\,\va{\widehat{\theta}}_k,\qquad k = 1,\ \dots,\ n_z - 1.
+	\end{equation}
+\end{subequations}
+
+Combining these, we obtain
+
+\begin{equation}
+	\va{\widehat{p}}_{k + \frac{1}{2}} = \frac{g\,\Delta z}{\theta_0\,n_z}\,\gpr{\sum_{k' = 1}^{k} k'\,\va{\widehat{\theta}}_{k'} - \sum_{k' = k + 1}^{n_z - 1} \gpr{n_z - k'}\,\va{\widehat{\theta}}_{k'}},\qquad k = 1,\ \dots,\ n_z - 1.
+\end{equation}
+
+Using this and by denoting the meridional discrete Fourier transformation matrix as $\vb*{\mathbb{F}}_y$ as well as defining the meridional wavenumber matrix $\vb{K}_y$ as the diagonal matrix with entries $0,\ 1\,i,\ \dots,\ i\,\frac{n_y}{2},\  -i\,\gpr{\frac{n_y}{2} + 1} ,\ \dots,\ -1\,i$, we may re-write Eqs.~\ref{eqn:wav_zonal_wind} and \ref{eqn:wav_merid_wind} for $k = 1,\ \dots,\ n_z - 1$ as
+
+\begin{subequations}
+	\begin{align}
+		i\,k_t\,\va{\widehat{u}}_{k - \frac{1}{2}} &= \beta\,\vb*{\mathbb{F}}_y\,\vb{Y}\,\vb*{\mathbb{F}}_y^{-1}\,\va{\widehat{v}}_{k - \frac{1}{2}} - i\,k_x\,\frac{g\,\Delta z}{\theta_0\,n_z}\,\gpr{\sum_{k' = 1}^{k - 1} k'\,\va{\widehat{\theta}}_{k'} - \sum_{k' = k}^{n_z - 1} \gpr{n_z - k'}\,\va{\widehat{\theta}}_{k'}} + \frac{1}{\tau_u}\,\va{\widehat{u}}_{k - \frac{1}{2}},\\
+		i\,k_t\,\va{\widehat{v}}_{k - \frac{1}{2}} &= -\beta\,\vb*{\mathbb{F}}_y\,\vb{Y}\,\vb*{\mathbb{F}}_y^{-1}\,\va{\widehat{u}}_{k - \frac{1}{2}} - \frac{g\,\Delta z}{\theta_0\,n_z}\,\vb{K}_y\,\gpr{\sum_{k' = 1}^{k - 1} k'\,\va{\widehat{\theta}}_{k'} - \sum_{k' = k}^{n_z - 1} \gpr{n_z - k'}\,\va{\widehat{\theta}}_{k'}} + \frac{1}{\tau_u}\,\va{\widehat{v}}_{k - \frac{1}{2}},
+	\end{align}
+\end{subequations}
+
+where $\vb{Y}$ is a diagonal matrix containing the $y_j$ values of the grid points and it is understood that for $k = 1$ the first summation in the second term of each of these equations is to be ignored. Now, we define the $n_y \times n_y$ block matrices $\vb{UU}_{kl}$, $\vb{UV}_{kl}$, $\vb{U\Theta}_{kl}$, $\vb{VU}_{kl}$, $\vb{VV}_{kl}$, and $\vb{V\Theta}_{kl}$ for $k,\ l = 1,\ \dots,\ n_z - 1$ as
+
+\begin{subequations}
+	\begin{equation}
+		\vb{UU}_{kl} = \vb{VV}_{kl} = \left\lbrace 
+		                              \mqty{\frac{1}{\tau_u}\,\vb{\mathcal{I}},\quad k = l,\\[6pt]
+		                                    0,\quad \text{otherwise},
+		                                   }
+		                              \right.,
+	\end{equation}
+	\begin{equation}
+		\vb{UV}_{kl} = -\vb{VU}_{kl} = \left\lbrace
+		                               \mqty{\beta\,\vb*{\mathbb{F}}_y\,\vb{Y}\,\vb*{\mathbb{F}}_y^{-1},\quad k = l,\\[6pt] 
+		                                     0,\quad \text{otherwise},
+		                                    }
+		                               \right.
+	\end{equation}	
+	\begin{equation}
+		\vb{U\Theta}_{kl} = \left\lbrace 
+		                    \mqty{-i\,l\,k_x\,\frac{g\,\Delta z}{\theta_0\,n_z},\quad & l \leq k - 1,\\[6pt]
+		                          i\,\gpr{n_z - l}\,k_x\,\frac{g\,\Delta z}{\theta_0\,n_z},\quad & \text{otherwise},
+		                         }
+		                    \right.
+	\end{equation}	
+	\begin{equation}
+		\vb{V\Theta}_{kl} = \left\lbrace 
+		                    \mqty{- l\,\frac{g\,\Delta z}{\theta_0\,n_z}\,\vb*{\mathbb{F}}_y^{-1}\,\vb{K}_y\,\vb*{\mathbb{F}}_y,\quad & l \leq k - 1,\\ [6pt]
+			                      \gpr{n_z - l}\,\frac{g\,\Delta z}{\theta_0\,n_z}\,\vb{K}_y,\quad & \text{otherwise},
+			                      }
+			                \right.
+	\end{equation}
+\end{subequations}
+
+where $\vb{\mathcal{I}}$ is the appropriately-sized identity matrix, so that we may write
+
+\begin{subequations}
+	\begin{align}
+		i\,k_t\,\va{\widehat{u}}_{k - \frac{1}{2}} &= \sum_{l = 1}^{n_z - 1} \vb{UU}_{kl}\,\va{\widehat{u}}_{l - \frac{1}{2}} + \vb{UV}_{kl}\,\va{\widehat{v}}_{l - \frac{1}{2}} + \vb{U\Theta}_{kl}\,\va{\widehat{\theta}}_{l} ,\\
+		i\,k_t\,\va{\widehat{v}}_{k - \frac{1}{2}} &= \sum_{l = 1}^{n_z - 1} \vb{VU}_{kl}\,\va{\widehat{u}}_{l - \frac{1}{2}} + \vb{VV}_{kl}\,\va{\widehat{v}}_{l - \frac{1}{2}} + \vb{V\Theta}_{kl}\,\va{\widehat{\theta}}_{l}.
+	\end{align}
+\end{subequations}
+
+We will now re-write Eqn.~\ref{eqn:wav_temp} in terms of the vectors $\va{\widehat{u}}_{k - \frac{1}{2}}$, $\va{\widehat{v}}_{k - \frac{1}{2}}$, $\va{\widehat{q}}_{k}$, $\va{\widehat{\theta}}_k$, and $\va{\widehat{\zeta}}_\tau$. Similarly to how we derived and equation for the pressure anomaly (Eqs.~\ref{eqn:p_1/2} and \ref{eqn:p_{k+1/2}}) from the hydrostatic equation (Eqn.~\ref{eqn:lin_hydrostatic}), we may derive a recursive relation for the non-linear part of the linearized vertical wind speed from the incompressibility condition (Eqn.~\ref{eqn:lin_incomp})
+
+\begin{equation}
+	\va{\widehat{w}}_{k} = \va{\widehat{w}}_{k + 1} + \Delta z \gpr{i\,k_x\,\va{\widehat{u}}_{k+\frac{1}{2}} + \vb{K}_y\,\va{\widehat{v}}_{k + \frac{1}{2}}},\qquad k = 0,\ \dots,\ n_z - 1,
+\end{equation}
+
+and since $w_{n_z - 1} = 0$ from the rigid-lid boundary condition at $z = H$, we may write
+
+\begin{align}
+	\va{\widehat{w}}_{k} &= \sum_{l = k+1}^{n_z - 1} i\,k_x\,\Delta z\,\va{\widehat{u}}_{l - \frac{1}{2}} + \sum_{l = k+1}^{n_z - 1} \Delta z\,\vb{K}_y\,\va{\widehat{v}}_{l - \frac{1}{2}},\qquad k = 1,\ \dots,\ n_{z} - 2 \nonumber \\
+		&= \sum_{l = 1}^{n_z - 1} \vb{WU}_{kl}\,\va{\widehat{u}}_{l - \frac{1}{2}} + \vb{WV}_{kl}\,\va{\widehat{v}}_{l - \frac{1}{2}} \label{eqn:w_vec}
+\end{align}
+
+where, for $k,\ l = 1,\ \dots,\ n_z - 1$,
+
+\begin{subequations}
+	\begin{equation}
+		\vb{WU}_{kl} = \left\lbrace
+		               \mqty{0,\quad & k = n_z - 1 \text{ or } k > l - 1, \\[6pt]
+		                     i\,k_x\,\Delta z\,\vb{\mathcal{I}},\quad & \text{otherwise},
+		                    }
+		               \right.
+	\end{equation}
+	\begin{equation}
+		\vb{WV}_{kl} = \left\lbrace
+		               \mqty{0,\quad & k = n_z - 1 \text{ or } k > l - 1, \\[6pt]
+		                     \Delta z\,\vb{K}_y,\quad & \text{otherwise}.
+		                    }
+		               \right.
+	\end{equation}
+\end{subequations}
+
+Now, we shall write $\widehat{q}_{\text{up}}$ and $\widehat{q}_{\text{mid}}$ in terms of $\widehat{q}$ at each vertical grid level
+
+\begin{subequations}
+	\begin{align}
+		\va{\widehat{q}}_{\text{up},k} &= \gpr{\frac{\sqrt{6}}{n_z}\,\sum_{l = 1}^{n_z - 1} \va{\widehat{q}}_{l}\,\func{\sin}{\frac{\pi\,z_{l}}{H}} - \frac{4\,\sqrt{3}}{n_z}\,\sum_{l = 1}^{n_z - 1} \va{\widehat{q}}_{l}\,\func{\sin}{\frac{2\,\pi\,z_{l}}{H}}}\,\gpr{\func{\sin}{\frac{\pi\,z_k}{H}} - \frac{1}{2}\,\func{\sin}{\frac{2\,\pi\,z_k}{H}}} \nonumber \\
+			&= \sum_{l = 1}^{n_z - 1} \vb{Q_{\text{\textbf{up}}} Q}_{kl}\,\va{\widehat{q}}_{l}, \label{eqn:q1_vec}
+	\end{align}
+	\begin{align}
+		\va{\widehat{q}}_{\text{mid},k} &= \frac{2}{n_z}\,\gpr{\sum_{k' = 1}^{n_z - 1} \va{\widehat{q}}_{k'}\,\func{\sin}{\frac{\pi\,z_{k'}}{H}}}\,\func{\sin}{\frac{\pi\,z_k}{H}} \nonumber \\
+			&= \sum_{l = 1}^{n_z - 1} \vb{Q_{\text{\textbf{mid}}} Q}_{kl}\,\va{\widehat{q}}_{l}, 
+		\label{eqn:q2_vec}
+	\end{align}
+\end{subequations}
+
+where
+
+\begin{subequations}
+	\begin{equation}
+		\vb{Q_{\text{\textbf{up}}}Q}_{kl} = \gpr{\frac{\sqrt{6}}{n_z}\,\func{\sin}{\frac{\pi\,z_l}{H}} - \frac{4\,\sqrt{3}}{n_z}\,\func{\sin}{\frac{2\,\pi\,z_l}{H}}}\,\gpr{\func{\sin}{\frac{\pi\,z_k}{H}} - \frac{1}{2}\,\func{\sin}{\frac{2\,\pi\,z_k}{H}}}\,\vb{\mathcal{I}},
+	\end{equation}
+	\begin{equation}
+		\vb{Q_{\text{\textbf{mid}}}Q}_{kl} = \frac{2}{n_z}\,\func{\sin}{\frac{\pi\,z_l}{H}}\func{\sin}{\frac{\pi\,z_k}{H}}\,\vb{\mathcal{I}}.
+	\end{equation}
+\end{subequations}
+
+We may define the following $n_y \times n_y$ block matrices for $k,\ l = 1,\ \dots,\ n_z - 1$ to simplify Eqn.~\ref{eqn:wav_temp}
+
+\begin{subequations}
+	\begin{equation}
+		\vb{\Theta U}_{kl} = B\,\vb{WU}_{kl},
+	\end{equation}
+	\begin{equation}
+		\vb{\Theta V}_{kl} = B\,\vb{WV}_{kl},
+	\end{equation}
+	\begin{equation}
+		\vb{\Theta \Theta}_{kl} = \left\lbrace 
+								   \mqty{0,\quad & k \neq l, \\[6pt]
+								         \frac{1}{\tau_{\theta}}\,\vb{\mathcal{I}},\quad & \text{otherwise},
+								        }
+								   \right.
+	\end{equation}
+	\begin{align}
+		\vb{\Theta Q}_{kl} &= \frac{L_v}{c_p\,\tau_{\text{up}}}\,\vb{Q_{\text{\textbf{up}}} Q}_{kl} + \frac{L_v}{c_p\,\tau_{\text{mid}}}\,\vb{Q_{\text{\textbf{mid}}} Q}_{kl}.
+	\end{align}
+\end{subequations}
+
+
+We may now re-write Eqn.~\ref{eqn:wav_temp} as a matrix equation
+
+\begin{equation}
+	i\,k_t\,\va{\widehat{\theta}}_k = \sum_{l = 1}^{n_z - 1} \vb{\Theta U}_{kl}\,\va{\widehat{u}}_{l - \frac{1}{2}} + \vb{\Theta V}_{kl}\,\va{\widehat{v}}_{l - \frac{1}{2}} + \vb{\Theta \Theta}_{kl}\,\va{\widehat{\theta}}_l - \vb{\Theta Q}_{kl}\,\va{\widehat{q}}_l.
+\end{equation}
+
+We will now re-write Eqn.~\ref{eqn:wav_moist} in terms of the vectors $\va{\widehat{u}}_{k - \frac{1}{2}}$, $\va{\widehat{v}}_{k - \frac{1}{2}}$, $\va{\widehat{q}}_{k}$, $\va{\widehat{\theta}}_k$, and $\va{\widehat{\zeta}}_\tau$. This process is similar to re-writing Eqn.~\ref{eqn:wav_temp}. We begin be defining the following $n_y \times n_y$ diagonal matrices
+
+\begin{subequations}
+	\begin{equation}
+		\vb{Q_{\text{\textbf{bg}}}Y}_{k} = -\frac{a}{\widetilde{L}^2}\,\gpr{B_{vs}\,\gpr{z_{k - \frac{1}{2}} - H}}\,\mqty[\dmat{y_{0}\,e^{-\frac{{y_0}^2}{2\,\widetilde{L}^2}}, \ddots, y_{n_y - 1}\,e^{-\frac{{y_{n_y - 1}}^2}{2\,\widetilde{L}^2}}}],
+	\end{equation}
+	\begin{equation}
+		\vb{Q_{\text{\textbf{bg}}}Z}_{k} = B_{vs}\,\mqty[\dmat{1 - a\,\gpr{1 - e^{-\frac{{y_0}^2}{2\,\widetilde{L}^2}}}, \ddots, 1 - a\,\gpr{1 - e^{-\frac{{y_{n_y - 1}}^2}{2\,\widetilde{L}^2}}}}],
+	\end{equation}
+\end{subequations}
+
+where we have chosen these names for these matrices as they describe the $\partial_y q_{\text{bg}}$ and $\partial_z q_{\text{bg}}$ coefficients. We define the following $n_y \times n_y$ block matrices for $k,\ l = 1,\ \dots,\ n_z - 1$
+
+\begin{subequations}
+	\begin{equation}
+		\vb{Q U}_{kl} = \left\lbrace 
+		                \mqty{0,\quad & l < k + 1, \\[6pt] 
+		                      i\,k_x\,\Delta z\,\vb*{\mathbb{F}}_y\,\vb{Q_{\text{\textbf{bg}}}Z}_{k}\,\vb*{\mathbb{F}}_y^{-1},\quad & \text{otherwise},
+		                     }
+		                \right.
+	\end{equation}
+	\begin{equation}
+		\vb{Q V}_{kl} = \left\lbrace 
+		                \mqty{\vb{\mathbb{F}}_y\,\vb{Q_{\text{\textbf{bg}}} Y}_k\,\vb{\mathbb{F}}_y^{-1} + \vb{\mathbb{F}}_y\,\vb{Q_{\text{\textbf{bg}}} Z}_k\,\vb{\mathbb{F}}_y^{-1}\,\vb{WV}_{kl},\quad & k = l, \\[6pt]
+		                      \vb{\mathbb{F}}_y\,\vb{Q_{\text{\textbf{bg}}} Z}_k\,\vb{\mathbb{F}}_y^{-1}\,\vb{WV}_{kl},\quad & \text{otherwise},}
+		                \right.
+	\end{equation}
+	\begin{equation}
+		\vb{Q Q}_{kl} = \left\lbrace
+		                \mqty{\frac{1}{\tau_{\text{up}}}\,\vb{Q_{\text{\textbf{up}}} Q}_{kl} + \frac{1}{\tau_{\text{mid}}}\,\vb{Q_{\text{\textbf{mid}}} Q}_{kl} + \func{D_h}{z_{k}}\,\gpr{{k_x}^2\,\vb{\mathcal{I}} + {\vb{K}_y}^2} + \frac{2}{\Delta z^2}\,\vb{\mathcal{I}},\quad & k = l, \\[6pt]
+		                      \frac{1}{\tau_{\text{up}}}\,\vb{Q_{\text{\textbf{up}}} Q}_{kl} + \frac{1}{\tau_{\text{mid}}}\,\vb{Q_{\text{\textbf{mid}}} Q}_{kl} - \frac{1}{\Delta z^2}\,\vb{\mathcal{I}},\quad & k = l-1,\ l+1, \\[6pt]
+		                      \frac{1}{\tau_{\text{up}}}\,\vb{Q_{\text{\textbf{up}}} Q}_{kl} + \frac{1}{\tau_{\text{mid}}}\,\vb{Q_{\text{\textbf{mid}}} Q}_{kl},\quad & \text{otherwise},
+		                     }
+		                \right.
+	\end{equation}
+\end{subequations}
+
+where we utilized a centered first-order finite difference method in the definition of $\vb{Q Q}_{kl}$ for the vertical derivative. Therefore,
+
+\begin{equation}
+	i\,k_t\,\va{\widehat{q}}_{k} = \sum_{l = 1}^{n_z - 1} \vb{QU}_{kl}\,\va{\widehat{u}}_{l - \frac{1}{2}} + \vb{QV}_{kl}\,\va{\widehat{v}}_{l - \frac{1}{2}} + \vb{QQ}_{kl}\,\va{\widehat{q}}_{l - \frac{1}{2}}.
+\end{equation}
+
+To obtain an evolution equation for $\zeta_\tau$,\footnote{Here we are refering to the non-linear part of the linearized $\zeta_\tau$, and omitting the tilde for readability.} we recall that
+
+\begin{equation}
+	\zeta_{\tau} = \partial_x v_{\tau} - \partial_y u_{\tau}
+\end{equation}
+
+and maniuplate Eqs.~\ref{eqn:lin_zonal_wind} and \ref{eqn:lin_merid_wind} to obtain
+
+\begin{subequations}
+	\begin{align}
+		\partial_t u_{\tau} &= \beta\,y\,v_{\tau} - \frac{1}{\tau_u}\,u_{\tau},\\
+		\partial_t v_{\tau} &= -\beta\,y\,u_{\tau} - \frac{1}{\tau_u}\,v_{\tau},
+	\end{align}
+\end{subequations}
+
+and so
+
+\begin{align}
+	\partial_t \zeta_\tau &= -\beta\,y\,\partial_x u_\tau - \frac{1}{\tau_u}\,\partial_x v_{\tau} - \beta\,y\,\partial_y v_{\tau} - \beta\,v_{\tau} + \frac{1}{\tau_u}\,\partial_y u_{\tau} \nonumber \\
+		&= - \beta\,v_{\tau} - \frac{1}{\tau_u}\,\zeta_{\tau},
+\end{align}
+
+where we have utilized the incompressibility of the horizontal barotropic winds. Now, by defining the inverse Laplacian matrix 
+
+\begin{equation}
+	\vb{L}^{-1} = \gpr{-{k_x}^2 + {\vb{K}_y}^2}^{-1}
+\end{equation}
+
+
+we may define the $n_y \times n_y$ block matrix
+
+\begin{equation}
+	\vb{Z Z} = i\,k_x\,\beta\,\vb{L}^{-1} + \frac{1}{\tau_u}\,\vb{\mathcal{I}},
+\end{equation}
+
+where the first term allows use to spectrally calculate $\beta\,\widehat{v}_{\tau}$ from $\zeta_{\tau}$. This allows us to write a matrix equation for $\va{\widehat{\zeta}}_\tau$
+
+\begin{equation}
+	i\,k_t\,\va{\widehat{\zeta}}_{\tau} = \vb{ZZ}\,\va{\widehat{\zeta}}_{\tau}.
+\end{equation}
+
+With all of this, may finally write the eigenvalue problem (Eqn.~\ref{eqn:e-val_prob}) in full. We define the $4\,n_y \times 4\,n_y$ block matrix
+
+\begin{equation}
+	\vb{A}_{kl} = \mqty[\vb{UU}_{kl} & \vb{UV}_{kl} & \vb{U\Theta}_{kl} & \vb{0} \\[6pt]
+	                    \vb{VU}_{kl} & \vb{VV}_{kl} & \vb{V\Theta}_{kl} & \vb{0} \\[6pt]
+	                    \vb{\Theta U}_{kl} & \vb{\Theta V}_{kl} & \vb{\Theta \Theta}_{kl} & \vb{\Theta Q}_{kl} \\[6pt]
+	                    \vb{Q U}_{kl} & \vb{Q V}_{kl} & \vb{0} & \vb{Q Q}_{kl}
+	                    ]
+\end{equation}
+
+with which we may somewhat compactly write
+
+\begin{equation}
+	i\,k_t\,\va{\mu} = \mqty[\vb{A}_{11} & \vb{A}_{12} & \cdots & \vb{A}_{1\gpr{n_z - 1}} & \vb{0} \\[6pt]
+	                         \vb{A}_{21} & \vb{A}_{22} & \cdots & \vb{A}_{2\gpr{n_z - 1}} & \vb{0} \\[6pt]
+	                         \vdots & \vdots & \ddots & \vdots & \vdots \\[6pt]
+	                         \vb{A}_{\gpr{n_z - 1}1} & \vb{A}_{\gpr{n_z - 1}2} & \cdots & \vb{A}_{\gpr{n_z - 1}\gpr{n_z - 1}} & \vb{0} \\[6pt]
+	                         \vb{0} & \vb{0} & \vb{0} & \vb{0} & \vb{ZZ}
+	                         ]\,\va{\mu}.
+\end{equation}
+
+For the initial conditions of the non-linear model, we take the eigenvectors of the leading zonal modes of the solution to the linear model ($k_x = 1,\ 2$) whose frequency matches that of the observed MJO.
+

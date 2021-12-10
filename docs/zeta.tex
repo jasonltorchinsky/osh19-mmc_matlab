@@ -1,0 +1,59 @@
+To define the barotropic relative vorticity, we first define the \textit{barotropic stream function} $\va{\tau} = \func{\va{\tau}}{t,\ \va{x}_{h}}$ as the vertical average of the stream function for the total winds $\va{\chi} = \func{\va{\chi}}{t,\ \va{x}}$,\footnote{The streamfunctions $\va{\tau}$ and $\va{\chi}$ exist as the total wind is incompressible.} \cite{Vallis17}
+
+\begin{equation}
+	\func{\va{\tau}}{t,\ \va{x}_h} = \frac{1}{H}\,\int_{0}^{H} \func{\va{\chi}}{t,\ \va{x}}\,dz.
+\end{equation}
+
+The \textit{barotropic winds} are given by the negative of the curl of $\va{\tau}$,
+
+\begin{equation}
+	\va{u}_{\tau} = \mqty[u_{\tau} & v_{\tau} & w_{\tau}]^T = \mqty[-\partial_y \tau_{z} & \partial_x \tau_z & \partial_y \tau_x - \partial_x \tau_y]^T
+\end{equation}
+
+where $\tau_x$, $\tau_y$, and $\tau_z$ are the zonal, meridional, and vertical parts of the barotropic stream function. The vertical component of the barotropic vorticity, therefore, is given by
+
+\begin{equation}
+	\zeta_{\tau} = \partial_x v_{\tau} - \partial_y u_{\tau} = \nabla^2 \tau_z, \label{eqn:zeta_tau}
+\end{equation}
+
+and the total winds may be written as the sum of the barotropic $\va{u}_{\tau}$ and baroclinic $\va{u}_{\psi}$ parts.
+
+To derive an evolution equation for $\zeta_{\tau}$, we may find evolution equations for $u_{\tau}$ and $v_{\tau}$ from Eqs.~\ref{eqn:zonal_wind} and \ref{eqn:merid_wind}. We begin by expanding Eqn.~\ref{eqn:zonal_wind}
+
+\begin{align}
+	\partial_t u_{\tau} + \partial_t u_{\psi} &= \gpr{- u_{\tau}\,\partial_x u_{\tau} - v_{\tau}\,\partial_y u_{\tau} + \beta\,y\,v_{\tau} - \frac{1}{\tau_u}\,u_{\tau}} \nonumber \\
+			&\qquad + \left( - u_{\tau}\,\partial_x u_{\psi} - u_{\psi}\,\partial_x u - v_{\tau}\,\partial_y u_{\psi} - v_{\psi}\,\partial_y u - w\,\partial_z u_{\psi} \phantom{\frac{1}{\tau_u}} \right. \nonumber \\
+			&\qquad\qquad \left. + \beta\,y\,v_{\psi}- \partial_x p_{\psi} - \frac{1}{\tau_u}\,u_{\psi} \right),
+\end{align}
+
+where the first term in parentheses on the left- and right-hand sides are independent of $z$ and the second term in parentheses of the left- and right-hand sides depend of $z$.\footnote{The barotropic part of the pressure $p_{\tau}$ is constant since the the barotropic pressure is a function of density, and the density is constant from the incompressibility of the winds.} Thus, we may split them into their own equations
+
+\begin{subequations}
+	\begin{align}
+		\partial_t u_{\tau}  &= - u_{\tau}\,\partial_x u_{\tau} - v_{\tau}\,\partial_y u_{\tau} + \beta\,y\,v_{\tau} - \frac{1}{\tau_u}\,u_{\tau}, \label{eqn:evol_trop_u} \\
+		\partial_t u_{\psi} &= - u_{\tau}\,\partial_x u_{\psi} - u_{\psi}\,\partial_x u - v_{\tau}\,\partial_y u_{\psi} - v_{\psi}\,\partial_y u - w\,\partial_z u + \beta\,y\,v_{\psi} - \partial_x p_{\psi} - \frac{1}{\tau_u}\,u_{\psi} \nonumber \\
+			&= u_{\tau}\,\partial_x u_{\tau} + v_{\tau}\,\partial_y u_{\tau} - u\,\partial_x u - v\,\partial_y u - w\,\partial_z u + \beta\,y\,v_{\psi} - \partial_x p_{\psi} - \frac{1}{\tau_u}\,u_{\psi}. \label{eqn:evol_clin_u}
+	\end{align}
+\end{subequations}
+
+We may similarly split the evolution equation for total meridional wind speed (Eqn.~\ref{eqn:merid_wind}) into barotropic and baroclinic parts
+
+\begin{subequations}
+	\begin{align}
+		\partial_t v_{\tau}  &= - u_{\tau}\,\partial_x v_{\tau} - v_{\tau}\,\partial_y v_{\tau} - \beta\,y\,u_{\tau} - \frac{1}{\tau_u}\,v_{\tau}, \label{eqn:evol_trop_v} \\
+		\partial_t v_{\psi} &= - u_{\tau}\,\partial_x v_{\psi} - u_{\psi}\,\partial_x v - v_{\tau}\,\partial_y v_{\psi} - v_{\psi}\,\partial_y v - w\,\partial_z v - \beta\,y\,u_{\psi} - \partial_y p_{\psi} - \frac{1}{\tau_u}\,v_{\psi} \nonumber \\
+			&= u_{\tau}\,\partial_x v_{\tau} + v_{\tau}\,\partial_y v_{\tau} - u\,\partial_x v - v\,\partial_y v - w\,\partial_z v - \beta\,y\,u_{\psi} - \partial_y p_{\psi} - \frac{1}{\tau_u}\,v_{\psi}. \label{eqn:evol_clin_v}
+	\end{align}
+\end{subequations}
+
+We may combine Eqs.~\ref{eqn:zeta_tau}, \ref{eqn:evol_trop_u}, and \ref{eqn:evol_trop_v} to derive an evolution equation for $\zeta_{\tau}$. To do so, we take advantage of the incompressibility of the barotropic wind
+
+\begin{equation}
+	\partial_t \zeta_\tau = -\beta\,v_{\tau} - \frac{1}{\tau_u}\,\zeta_{\tau} - u_{\tau}\,\gpr{\partial_x^2 v_{\tau} + \partial_y^2 v_{\tau}} + v_{\tau}\,\gpr{\partial_x^2 u_{\tau} + \partial_y^2 u_{\tau}}.
+\end{equation}
+
+To help avoid aliasing issues in our pseudo-spectral methods, it is useful to re-write non-linear diffusion terms as derivtaives of ${u_{\tau}}^2$, $u_{\tau}\,v_{\tau}$, $u^2$, and $u\,v$. With this, we obtain the final form of the evolution equation for $\zeta_\tau$ that we shall discretize for our simulations
+
+\begin{equation}
+	\partial_t \zeta_\tau = -\beta\,v_{\tau} - \frac{1}{\tau_u}\,\zeta_{\tau} -\partial_x^2 \gbkt{u_{\tau}\,v_{\tau}} + \partial_y^2 \gbkt{u_{\tau}\,v_{\tau}} - \partial_x \partial_y \gbkt{{v_{\tau}}^2} + \partial_x \partial_y \gbkt{{u_{\tau}}^2}. \label{eqn:evol_zeta_tau}
+\end{equation}

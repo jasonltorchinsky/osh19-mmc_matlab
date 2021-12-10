@@ -1,0 +1,71 @@
+The horizontal discretization for each state variable is the same; uniform in the zonal and meridional directions with uniform grid spacing. We index the zonal direction with $i = 0,\ \dots,\ n_x-1$ and the meridional direction with $j = 0,\ \dots,\ n_y - 1$, where $n_x$ and $n_y$ are the number of grid points in the zonal and meridional directions, respectively. Since we are primarily concerned with the tropics, the latitude $\vartheta$ and longitude $\lambda$ of any air column may be obtained via a straightforward conversion
+
+\begin{subequations}
+	\begin{align}
+		\vartheta_j = \frac{y_j}{110.567\ km},\qquad j = 0,\ \dots,\ n_y - 1,\\
+		\lambda_i = 360\,\gpr{\frac{x_i - x_0}{x_{{n_x} - 1} - x_0}},\qquad i = 0,\ \dots,\ n_x - 1,
+	\end{align}
+\end{subequations}
+
+where the factor of $110.567\ km$ comes from the approximate distance between lines of latitude at the equator, and we assume that the zonal grid points make up the full interval $\cointer{0}{360}$.
+
+The vertical discretization is a staggered grid with $\theta$, $q$, and $w$ evaluated at levels $z_k = k\,\Delta z$ while $u$, $v$, and $p$ are evaluated at levels $z_{k - 1/2} = \gpr{k - \frac{1}{2}}\,\Delta z$. Here, $\Delta z = \frac{H}{n_z}$ is the vertical grid spacing, and the vertical index is $k = 0,\ \dots,\ n_z - 1$, where $n_z$ is the number of vertical $u$ levels. \footnote{Here we use $k$ as the vertical index, and $k_{\sbullet[.75]}$ with the appropriate subscript to denote wavenumbers, e.g., $k_x$ denotes zonal wavenumber.} Derivatives are calculated spectrally in $x$ and $y$ using the standard 2/3-rule for dealiasing non-linearities, and using finite differences in $z$.
+
+Note that since some state variables are staggered with respect to others, some terms of Eqs.~\ref{eqs:osh19-zeta_tau} may not be discretized immediately. We choose to map between grid levels using simple averages of surrounding grid levels, e.g., we may map zonal wind velocity $u$ to the $k$ grid levels via
+
+\begin{equation}
+	\widetilde{u}_{ijk} = \frac{1}{2}\,\gpr{u_{ij\gpr{k+\frac{1}{2}}} + u_{ij\gpr{k-\frac{1}{2}}}},\qquad k = 1,\ \dots,\ n_z - 2
+\end{equation}
+
+with $\widetilde{u}_{ij0} = \widetilde{u}_{ij\gpr{n_z -1}} = 0$ from the boundary conditions, and then calculate $\gbrc{\partial_z \gbkt{u\,w}}_{ij\gpr{k-\frac{1}{2}}}$ via
+
+\begin{equation}
+	\gbrc{\partial_z \gbkt{u\,w}}_{ij\gpr{k-\frac{1}{2}}} = \frac{1}{\Delta z}\,\gpr{\widetilde{u}_{ijk}\,w_{ijk} - \widetilde{u}_{ij\gpr{k-1}}\,w_{ij\gpr{k-1}}},\qquad k = 1,\ \dots,\ n_z - 2,
+\end{equation}
+
+where we have a factor of $\frac{1}{\Delta z}$ instead of $\frac{1}{2\,\Delta z}$ as the derivative is calculated halfway between grid levels $k-1$ and $k$.
+
+In general, for a variable $\alpha$ on $k-\frac{1}{2}$ grid levels and $\beta$ on $k$ grid levels, we have
+
+\begin{subequations}
+	\begin{align}
+		\gbrc{\partial_z \gbkt{\alpha\,\beta}}_{ij\gpr{k-\frac{1}{2}}} = \frac{1}{\Delta z}\,\gpr{\widetilde{\alpha}_{ijk}\,\beta_{ijk} - \widetilde{\alpha}_{ij\gpr{k-1}}\,\beta_{ij\gpr{k-1}}},\qquad k = 1,\ \dots,\ n_z - 2, \\
+		\gbrc{\partial_z \gbkt{\alpha\,\beta}}_{ijk} = \frac{1}{\Delta z}\,\gpr{\alpha_{ij\gpr{k+\frac{1}{2}}}\,\widetilde{\beta}_{ij\gpr{k+\frac{1}{2}}} - \alpha_{ij\gpr{k-\frac{1}{2}}}\,\widetilde{\beta}_{ij\gpr{k-\frac{1}{2}}}},\qquad k = 1,\ \dots,\ n_z - 2.
+	\end{align}
+\end{subequations}
+
+With this determined, we may now write the discrete forms of the dynamical equations of the $\zeta_{\tau}$-formualtion of OSH19 (Eqs.~\ref{eqs:osh19-zeta_tau})
+
+\begin{subequations}
+	\begin{align}
+		\partial_t \zeta_\tau &= -\beta\,v_{\tau} - \frac{1}{\tau_u}\,\zeta_{\tau} - \partial_x^2 \gbkt{u_{\tau}\,v_{\tau}} + \partial_y^2 \gbkt{u_{\tau}\,v_{\tau}} - \partial_x \partial_y \gbkt{{v_{\tau}}^2} + \partial_x \partial_y \gbkt{{u_{\tau}}^2},\\
+		\partial_t u_{\psi} &= \partial_x \gbkt{{u_\tau}^2} + \partial_y \gbkt{u_{\tau}\,v_{\tau}} - \partial_x \gbkt{u^2} - \partial_y \gbkt{u\,v} - \partial_z \gbkt{u\,w} + \beta\,y\,v_{\psi} - \partial_x p_{\psi} - \frac{1}{\tau_u}\,u_{\psi}, \\
+		\partial_t v_{\psi} &= \partial_x \gbkt{u_{\tau}\,v_{\tau}} + \partial_y \gbkt{{v_{\tau}}^2} - \partial_x \gbkt{u\,v} - \partial_y \gbkt{v^2} - \partial_z \gbkt{v\,w} - \beta\,y\,u_{\psi} - \partial_y p_{\psi} - \frac{1}{\tau_u}\,v_{\psi}, \\
+		\partial_t \theta &= -\partial_x \gbkt{u\,\theta} - \partial_y \gbkt{v\,\theta} - \partial_z \gbkt{w\,\theta} - B\,w - \frac{1}{\tau_{\theta}}\,\theta + \frac{L_v}{c_p\,\tau_{\text{up}}}\,q_{\text{up}} + \frac{L_v}{c_p\,\tau_{\text{mid}}}\,q_{\text{mid}}, \\
+		\partial_t q &= -\partial_x \gbkt{u\,q} - \partial_y \gbkt{v\,q} - \partial_z \gbkt{w\,q} - v\,\partial_y q_{\text{bg}} - w\,\partial_z q_{\text{bg}} \nonumber \\
+				&\qquad - \frac{1}{\tau_{\text{up}}}\,q_{\text{up}} - \frac{1}{\tau_{\text{mid}}}\,q_{\text{mid}} + \func{D_h}{z}\,\gpr{\partial_x^2 q + \partial_y^2 q} + D_v\,\partial_z^2 q, \\
+	\end{align}
+\end{subequations}
+
+Note, however, that $u$ and $v$ are staggered vertically with respect to $w$, and so the terms $\partial_z \gbkt{u\,w}$ and $\partial_z \gbkt{v\,w}$ with centered averages, i.e., by defining $\widetilde{u}_{ijk} = \frac{1}{2}\,\gpr{u_{ij\gpr{k-\frac{1}{2}}} + u_{ij\gpr{k+\frac{1}{2}}}}$ for $k = 1,\ \dots,\ n_z - 2$ and similiarly for $\widetilde{v}$, we may write
+
+\begin{subequations}
+	\begin{align}
+		\partial_z \gbkt{u\,w}_{ij\gpr{k-1/2}} &\approx \frac{1}{\Delta z}\,\gpr{\widetilde{u}_{ijk}\,w_{ijk} - \widetilde{u}_{ij\gpr{k-1}}\,w_{ij\gpr{k-1}}},\qquad k = 1,\ \dots,\ n_z - 2, \\
+		\partial_z \gbkt{v\,w}_{ij\gpr{k-1/2}} &\approx \frac{1}{\Delta z}\,\gpr{\widetilde{v}_{ijk}\,w_{ijk} - \widetilde{v}_{ij\gpr{k-1}}\,w_{ij\gpr{k-1}}},\qquad k = 1,\ \dots,\ n_z - 2.
+	\end{align}
+	\label{eqs:uw_vw_vert_dervs}
+\end{subequations}
+
+Note that we have a factor of $\frac{1}{\Delta z}$ instead of $\frac{1}{2\,\Delta z}$, as the spacing between $w_{ijk}$ and $w_{ij\gpr{k-1}}$ is $\Delta z$.
+
+Discussion of horizontal pseudo-spectral derivatives and de-aliasing is included in Appendices~\ref{appendix:horz_derv} and \ref{appendix:dealias}.
+
+We use the classical 4\textsuperscript{th}-order Runge-Kutta (RK4) for time-stepping.
+
+Further, the strategy for implementing this version of the model is as follows:
+
+\begin{enumerate}[1.]
+	\item Given each state variable at the current time-step, use the diagnostic equations to calculate the diagnostic state variables at the next time-step.
+	\item We may `invert' the vertical component of barotropic relative vorticity in order to obtain the vertical component of the barotropic stream function $\tau_z$. We then have $u_\tau = -\partial_y \tau_z$... \textbf{CONTINUE HERE}
+\end{enumerate}

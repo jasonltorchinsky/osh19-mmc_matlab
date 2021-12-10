@@ -1,0 +1,7 @@
+The evolution equation for $q$ is obtained in a very similar manner to that of $\theta$ from Subsubsection~\ref{subsubsection:theta}. The equation we shall discretize temporally with RK4 is given by
+
+\begin{equation}
+	\partial_t q = -\partial_x \gbkt{u\,q} - \partial_y \gbkt{v\,q} - \partial_z \gbkt{w\,q} - v\,\partial_y q_{\text{bg}} - w\,\partial_z q_{\text{bg}} - \frac{1}{\tau_{\text{up}}}\,q_{\text{up}} - \frac{1}{\tau_{\text{mid}}}\,q_{\text{mid}} + \func{D_h}{z}\,\gpr{\partial_x^2 q + \partial_y^2 q} + D_v\,\partial_z^2 q.
+\end{equation}
+
+Similarly to $\theta$, $q$ is vertically staggered with respect to $u$ and $v$, and therefore we take the partial derivatives of $u\,q$ and $v\,q$ pseudo-spectrally by instead multiplying $q$ by $\widetilde{u}$ and $\widetilde{v}$, respectively.

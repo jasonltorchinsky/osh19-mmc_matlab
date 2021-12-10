@@ -1,0 +1,111 @@
+The Ogrosky--Stechmann--Hottovy 2019 (OSH19) system, introduced in \cite{Ogrosky19}, is a three-dimensional, non-linear, deterministic tropical channel model for the Madden-Julian Oscillation (MJO) and convectively-coupled equatorial waves (CCEWs). The model consists of the moist hydrostatic incompressible Boussinesq equations with a 2-vertical-mode convective adjustment and moisture diffusion. As in \cite{Ogrosky19}, we give the dynamical equations here (Eqs.~\ref{eqs:osh19}) in dimensional form in their original formulation.
+
+\begin{subequations}
+	\begin{align}
+		\mdv{u} - \beta\,y\,v + \pdv{p}{x} &= -\frac{1}{\tau_u}\,u, \label{eqn:zonal_wind} \\
+		\mdv{v} + \beta\,y\,u + \pdv{p}{y} &= -\frac{1}{\tau_u}\,v, \label{eqn:merid_wind} \\
+		\pdv{p}{z} &= \frac{g}{\theta_0}\,\theta, \label{eqn:hydrostatic} \\
+		\pdv{u}{x} + \pdv{v}{y} + \pdv{w}{z} &= 0, \label{eqn:incompressible} \\
+		\mdv{\theta} + B\,w &= \frac{L_v}{c_p\,\tau_{\text{up}}}\,q_{\text{up}} + \frac{L_v}{c_p\,\tau_{\text{mid}}}\,q_{\text{mid}} - \frac{1}{\tau_{\theta}}\,\theta, \label{eqn:therm} \\
+		\mdv{q} + v\,\pdv{q_{\text{bg}}}{y} + w\,\pdv{q_{\text{bg}}}{z} &= -\frac{1}{\tau_{\text{up}}}\,q_{\text{up}} - \frac{1}{\tau_{\text{mid}}}\,q_{\text{mid}} + \func{D_h}{z}\,\gpr{\pdv[2]{q}{x} + \pdv[2]{q}{y}} + D_v\,\pdv[2]{q}{z}, \label{eqn:moist}
+	\end{align}
+	\label{eqs:osh19}
+\end{subequations}
+
+where $\mdv{} = \partial_t + u\,\partial_x + v\,\partial_y + w\,\partial_z$ is the material derivative and $\va{u} = \mqty[u & v & w]^T$ is the vector of zonal, meridional, and vertical velocity components of winds. The variables $p$, $\theta$, and $q$ represent anomalies of pressure, potential temperature, and moisture, respectively, from a background state. Meanwhile, $q_{\text{up}}$ and $q_{\text{mid}}$ are convective adjustment terms. We shall elaborate on the form of the background states as well as the convective adjustment terms below.
+
+The convective adjustment scheme consists of two vertical modes, constructed from the first two baroclinic modes fro moisture. Specifically, the baroclinic modes for moisture are given by
+
+\begin{equation}
+	\func{S_k}{z} = \sqrt{2}\,\func{\sin}{k\,\gpr{\frac{\pi\,z}{H}}},\qquad k = 1,\ 2,\ \dots,\ 
+\end{equation}
+
+where the domain extends from the planetary surface $z = 0$ to the top of the troposphere $z = H$. We define the mid- and upper-baroclinic modes of moisture using only the first two baroclinic modes for moisture
+
+\begin{subequations}
+	\begin{align}
+		\func{S_{\text{low}}}{z} &= \frac{1}{\sqrt{2}}\,\gpr{\func{S_1}{z} + \func{S_2}{z}}, \\
+		\func{S_{\text{up}}}{z} &= \frac{1}{\sqrt{2}}\,\gpr{\func{S_1}{z} - \func{S_2}{z}},
+	\end{align}
+\end{subequations}
+
+so that $S_{\text{low}}$, $S_{\text{up}}$, and $S_k$ for $k = 3,\ 4,\ \dots$ form an orthonormal basis in the vertical domain with norm
+
+\begin{equation}
+	\gang{\func{f}{z},\ \func{g}{z}} = \frac{1}{H}\,\int_{0}^{H} \func{f}{z}\,\func{g}{z}\,dz.
+\end{equation}
+
+Therefore, we define the lower- and upper-vertical modes of moisture to be
+
+\begin{subequations}
+	\begin{align}
+		\func{q_{\text{low}}}{t,\ \va{x}_h} &= \frac{1}{H}\,\int_{0}^{H} \func{q}{t,\ \va{x}}\,\func{S_{\text{low}}}{z}\,dz, \\
+		\func{q_{\text{up}}}{t,\ \va{x}_h} &= \frac{1}{H}\,\int_{0}^{H} \func{q}{t,\ \va{x}}\,\func{S_{\text{up}}}{z}\,dz.
+	\end{align}
+\end{subequations}
+
+
+Also, $p$ is pressure anomalies from a background state, $\theta = \func{\theta}{t,\ \va{x}} = \func{\theta}{t,\ x,\ y,\ z}$ is potential temperature anomalies from a background state $\func{\theta_{\text{BG}}}{z} = \theta_0 + B\,z$, and the moisture variable $q = \func{q}{t,\ \va{x}}$ represents specific hulowity anomalies from a background state $\func{q_{\text{BG}}}{y,\ z} = q_0 + \func{q_{\text{bg}}}{y,\ z}$, where the background mositure anomaly $\func{q_{\text{bg}}}{y,\ z}$ is given by
+
+\begin{equation}
+	\func{q_{\text{bg}}}{y,\ z} = \gpr{1 - a\,\gpr{1 - e^{-\frac{y^2}{2\,\widetilde{L}^2}}}}\,\func{q_{\text{bg},\text{eq}}}{z},
+\end{equation}
+
+where $\func{q_{\text{bg},\text{eq}}}{z} = B_{vs}\,\gpr{z - H}$ is a prescribed vertial profile of background moisture at the equator, $0 \leq a \leq 1$ and $\widetilde{L}$ dictate the background moisture meridional decay away from the equator, and $B_{vs}$ is the vertical gradient of background moisture. The potential temperature and moisture at $z = 0$ (the top of the boundary layer) are given by $\theta_0$ and $q_0$, respectively. The terms propotional to $q_{\text{up}}$ and $q_{\text{low}}$ in Eqns.~\ref{eqn:therm} and \ref{eqn:moist} are convective adjustment terms. In the 2-vertical-mode scheme used here, they are defined using only the first two baroclinic modes of moisture
+
+\begin{subequations}
+	\begin{align}
+		\func{q_{\text{up}}}{t,\ \va{x}} &= \sqrt{2}\,Q_{\text{up}}\,\gpr{\func{\sin}{\frac{\pi\,z}{H}} - \frac{1}{2}\,\func{\sin}{\frac{2\,\pi\,z}{H}}},\\[6pt]
+		\func{q_{\text{low}}}{t,\ \va{x}} &= \sqrt{2}\,Q_{\text{low}}\,\func{\sin}{\frac{\pi\,z}{H}},
+	\end{align}
+\end{subequations}
+
+where $H$ is the height of the troposphere and 
+
+\begin{subequations}
+	\begin{align}
+		Q_{\text{up}} &= \sqrt{2}\,q_1\,\func{\sin}{\frac{2\,\pi}{3}} + 2\,\sqrt{2}\,q_2\,\func{\sin}{\frac{4\,\pi}{3}},\\[6pt]
+		Q_{\text{low}} &= \sqrt{2}\,q_1\,\func{\sin}{\frac{\pi}{2}}.
+	\end{align}
+\end{subequations}
+
+The terms $\func{q_1}{t,\ \va{x}_{h}} = \func{q_1}{t,\ x,\ y}$ and $\func{q_2}{t,\ \va{x}_h}$ represent the first and second baroclinic components of moisture, respectively, and are given by
+
+\begin{subequations}
+	\begin{align}
+		\func{q_{1}}{t,\ \va{x}_{h}} &= \frac{\sqrt{2}}{H}\,\int_{0}^{H} \func{q}{t,\ \va{x}}\,\func{\sin}{\frac{\pi\,z}{H}}\,dz,\\[6pt]
+		\func{q_{2}}{t,\ \va{x}_{h}} &= \frac{2\,\sqrt{2}}{H}\,\int_{0}^{H} \func{q}{t,\ \va{x}}\,\func{\sin}{\frac{2\,\pi\,z}{H}}\,dz.
+	\end{align}
+\end{subequations}
+
+The diffusion coefficient $\func{D_h}{z} = D_{h,\text{low}} + \frac{D_{h,\text{up}}}{H}\,z$ is a linear intrpolation of the lower- and upper-troposphere diffusion coefficients.
+
+The parameters for the ``standard'' case are given in Table~\ref{tbl:std_params}.
+
+\begin{table}[H]
+	\centering
+	\begin{tabular*}{\textwidth}{l @{\extracolsep{\fill}}l @{\extracolsep{\fill}}l}
+		\hline
+		Parameter & Description & Standard Value \\ \hline
+		$H$ & Height of troposphere & $16\ km$ \\
+		$p_Y$ & Distance from equator to channel wall & $6000\ km$ \\
+		$\beta$ & Variation of Coriolis parameter with latitude & $2.3 \times 10^{-11}\ m^{-1}\,s^{-1}$ \\
+		$g$ & Acceleration due to gravity & $9.8\ m\,s^{-2}$ \\
+		$c_p$ & Specific heat of dry air at constant pressure & $1006\ J\,kg^{-1}\,K^{-1}$ \\
+		$L_v$ & Latent heat of vaporization & $2.5 \times 10^{6}\ J\,kg^{-1}$ \\
+		$B$ & Background potential temperature vertical gradient & $3\ K\,km^{-1}$ \\
+		$\theta_0$ & Reference potential temperature & $300\ K$ \\
+		$\tau_u$ & Wind damping time-scale & $25\ d$ \\
+		$\tau_{\theta}$ & Potential temperature damping time-scale & $25\ d$ \\
+		$\tau_{\text{up}}$ & Moisture damping time-scale (upper-troposphere) & $1\ d$ \\
+		$\tau_{\text{low}}$ & Moisture damping time-scale (low-troposphere) & $1/12\ d$ \\
+		$B_{vs}$ & Mean vertical $q_{\text{BG}}$ gradient & $-1.34 \times 10^{-3}\ kg\ kg^{-1}\ km^{-1}$ \\
+		$a$ & 1 - pole--to--equator $q_{\text{BG}}$ ratio & $0.25$ \\
+		$\widetilde{L}$ & $q_{\text{BG}}$ meridional decay length-scale & $2000\ km$ \\
+		$D_{h,up}$ & Horizontal $q$ diffusion (upper-troposphere) & $60.8\ km^2\,s^{-1}$ \\
+		$D_{h,low}$ & Horizontal $q$ diffusion (lower-troposphere) & $7.6\ km^2\,s^{-1}$ \\
+		$D_v$ & Vertical $q$ diffusion & $10^{-4}\ km^2\,s^{-1}$ \\ \hline
+	\end{tabular*}
+	\caption{Physical parameter values for the ``standard'' case.} 
+	\label{tbl:std_params}
+\end{table}

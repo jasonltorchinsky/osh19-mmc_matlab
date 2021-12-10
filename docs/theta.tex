@@ -1,0 +1,15 @@
+The evolution equation for $\theta$ is obtained in a comparatively straightforward way from Eqn.~\ref{eqn:therm}. By utilizing the incompressibility of the flow, we have the equality
+
+\begin{equation}
+	\partial_x \gbkt{u\,\theta} + \partial_y \gbkt{v\,\theta} + \partial_z \gbkt{w\,\theta} = u\,\partial_x \theta + v\,\partial_y \theta + w\,\partial_z \theta.
+\end{equation}
+
+Therefore, we may rewrite Eqn.~\ref{eqn:therm} in the form we shall discretize temporally with RK4
+
+\begin{align}
+	\partial_t \theta = -\partial_x \gbkt{u\,\theta} - \partial_y \gbkt{v\,\theta} - \partial_z \gbkt{w\,\theta} - B\,w - \frac{1}{\tau_{\theta}}\,\theta + \frac{L_v}{c_p\,\tau_{\text{up}}}\,q_{\text{up}} + \frac{L_v}{c_p\,\tau_{\text{mid}}}\,q_{\text{mid}}
+\end{align}
+
+where we may calculate $q_{\text{up}}$ and $q_{\text{mid}}$ using straightforward discrete numerical averages without the need for numerical integration. Since $q$ is not staggered vertically with respect to $\theta$, there are no additional difficulties.
+
+Recall that we utilize pseudo-spectral methods for $x$- and $y$-partial derivatives. Since $u$ and $v$ are vertical staggered with respect to $\theta$, we instead use a method similar to that of Eqs.~\ref{eqs:uw_vw_vert_dervs} where take the partial derivatives of $u\,\theta$ and $v\,\theta$ pseudo-spectrally by instead multiplying $\theta$ by $\widetilde{u}$ and $\widetilde{v}$, respectively.
