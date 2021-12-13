@@ -67,3 +67,5 @@ Using these EOFs and standard deviations from the `truth' data, we may then calc
 	\item Non-dimensionalize $\func{u_{01}}{x}$ and $\func{q_{\text{up}}}{x}$ (or equivalently $\func{q_{\text{low}}}{x}$) by dividing by $r_u$ and $r_q$, respectively, obtained from the `truth' data.
 	\item Concatenate the data $\func{u_{01}}{x}$ and $\func{q_{\text{up}}}{x}$ (or equivalently $\func{q_{\text{low}}}{x}$) into a single vector $\va{\mathcal{A}}$ of length $2\,n_x$, and take the inner product of $\va{\mathcal{A}}$ with $\va{\mathcal{F}}_1$ and $\va{\mathcal{F}}_2$ to obtain the MJO indices $\mathcal{M}_1$ and $\mathcal{M}_2$, respectively.
 \end{enumerate}
+
+We've yet to determine how to map the state of the OSH19 system to the climate parameter $v$, but we suspect that it is related to $B_{vs}$. Regardless, we can use the standard 3D-Var algorithm on the MJO indices of the OSH19 and CMG14 systems to obtain a new $\va{\mathcal{A}}$ for the OSH19 system. Using this, we may reconstruct the new MJO part of the OSH19 state and add it into the the prior OSH19 system state.

@@ -75,7 +75,12 @@ end
 % Vertical line at wavenumber 0
 plot([0,0], [0,10], 'k--');
 
-ylim([0, 1.1*max(growth_rates, [], 'all')]);
+growth_max = 1.1*max(growth_rates, [], 'all');
+if growth_max > 0.0
+    ylim([0, growth_max]);
+else
+    ylim([growth_max, 0]);
+end
 
 hold off;
 

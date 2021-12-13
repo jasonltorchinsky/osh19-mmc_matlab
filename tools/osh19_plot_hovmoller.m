@@ -59,7 +59,6 @@ vert_norm_2 = (1/(nz+1)) * (q_clin_mode_2.' * q_clin_mode_2);
 
 % Get moisture, potential temperature anomaly at desired altitude and latitude
 q     = zeros(floor(sim_days/out_freq) + 1, nx);
-theta = zeros(nx, floor(sim_days/out_freq) + 1);
 t     = zeros(1, floor(sim_days/out_freq) + 1);
 
 n_outfiles = floor(sim_days/out_freq);
@@ -98,8 +97,6 @@ for out_idx = out_idxs
         q(out_idx+1, ii) = dy_norm * squeeze(parab_cyl_0.'*Q(:, ii)) ...
             * (1/merid_norm);
     end
-    
-    %theta(:, out_idx + 1) = theta_temp(lat_idx, :, altW_idx);
 end
 
 days_to_secs = 3600*24;
@@ -120,25 +117,6 @@ caxis([min_q, max_q]);
 
 cb = colorbar();
 cb.Label.String = 'Moisture Anomaly (kg kg^{-1})';
-
-
-% % Potential temperature anomaly
-% pos_theta = max(theta, 0);
-% neg_theta = min(theta, 0);
-% [~, pos_th_plt] = contour(lons, out_idxs, pos_theta.', ...
-%     'k-');
-% [~, neg_th_plt] = contour(lons, out_idxs, neg_theta.', ...
-%     'k--');
-% 
-% % Contour levels
-% max_theta = max(abs(theta));
-% th_levs = 0.1:0.2:0.9 * max_theta;
-% 
-% pos_th_plt.LevelListMode = 'manual';
-% pos_th_plt.LevelList     = th_levs;
-% 
-% neg_th_plt.LevelListMode = 'manual';
-% neg_th_plt.LevelList     = th_levs;
 
 % Title
 title_str = 'Hovmoller Diagram';

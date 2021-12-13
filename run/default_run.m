@@ -1,5 +1,5 @@
 out_path = 'output';
-exp_name = 'long_default_5';
+exp_name = 'long_default_dcm';
 
 sim_days = 400;
 
@@ -78,7 +78,7 @@ dcm_params.P_Y = 6000; % Distance from equator to channel wall (km)
 dcm_params.P_E = 40000/(2*pi); % Radius of planet (km)
 dcm_params.beta = 2.3 * 10^(-8); % Meridional variation of Coriolis parameter (km^(-1) s^(-1))
 dcm_params.g = 9.8 * 10^(-3); % Acceleration due to gravity (km s^(-2))
-dcm_params.c_p = 1006; % Specific heat of dry air at constant pressure (J kg^(-1) K^(-1))
+dcm_params.c_p = 1000; % Specific heat of dry air at constant pressure (J kg^(-1) K^(-1))
 dcm_params.L_v = 2.5 * 10^(6); % Latent heat of vaporization (J kg^(-1))
 dcm_params.B = 3; % Background potential temperature vertical gradient (K km^(-1))
 dcm_params.theta_0 = 300; % Reference potential temperature (K)
@@ -90,8 +90,8 @@ dcm_params.B_vs = -1.2 * 10^(-3); % Mean vertical q_bg gradient (kg kg^(-1) km^(
 dcm_params.a = 0.2; % 1--pole-to-equator q_bg ratio
 dcm_params.L_tilde = 3000; % q_bg meridional decay length scale (km)
 dcm_params.s_tilde = 12; % q_bg vertical decay length scale (km)
-dcm_params.D_hUp = 60.8; % Horizontal q diffusion in upper-troposphere (km^(2) s^(-1))
-dcm_params.D_hMid = 7.6; % Horizontal q diffusion in mid-troposphere (km^(2) s^(-1))
+dcm_params.D_hUp = 121.6; % Horizontal q diffusion in upper-troposphere (km^(2) s^(-1))
+dcm_params.D_hMid = 60.8; % Horizontal q diffusion in mid-troposphere (km^(2) s^(-1))
 dcm_params.D_v = 2 * 10^(-4); % Vertical q diffusion (km^(2) s^(-1))
 dcm_params.IC_type = 1; % Initial condition type:
                           % 1 = get modes, wavenumbers from linear solution
@@ -108,9 +108,9 @@ dcm_params.out_path = out_path;
 dcm_params.exp_name = exp_name;
 dcm_params.component_name = 'dcm';
 
-dcm_params.init_simulation = false;
-dcm_params.run_simulation = false;
-dcm_params.create_plots = false;
+dcm_params.init_simulation = true;
+dcm_params.run_simulation = true;
+dcm_params.create_plots = true;
 
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 % Parameters for the MJO-only model (OSH19) [Default]
@@ -176,9 +176,9 @@ ens_params.out_path = out_path;
 ens_params.exp_name = exp_name;
 ens_params.component_name = 'ens';
 
-ens_params.init_simulation = true;
-ens_params.run_simulation = true;
-ens_params.create_plots = true;
+ens_params.init_simulation = false;
+ens_params.run_simulation = false;
+ens_params.create_plots = false;
 
 % Ensemble DCM parameters
 ens_params.dcm_params = dcm_params;
@@ -208,7 +208,7 @@ ens_params.eof_params = eof_params;
 
 misc_params = struct();
 
-misc_params.create_plots = true;
+misc_params.create_plots = false;
 
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 % Run the simulation
