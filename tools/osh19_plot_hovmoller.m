@@ -1,4 +1,4 @@
-function osh19_plot_hovmoller(params, alt, lat)
+function osh19_plot_hovmoller(params, q_mode)
 
 % Get path to output data.
 out_path       = params.out_path;
@@ -21,7 +21,10 @@ addpath(plot_path);
 params_file = fullfile(component_path, 'params.nc');
 
 nx          = ncread(params_file, 'nx');
-P_E         = ncread(params_file, 'P_E'); % Convert to meters
+ny          = ncread(params_file, 'ny');
+nz          = ncread(params_file, 'nz');
+H           = ncread(params_file, 'H');
+P_E         = ncread(params_file, 'P_E');
 sim_days    = ncread(params_file, 'sim_days');
 out_freq    = ncread(params_file, 'out_freq');
 
@@ -31,19 +34,31 @@ grid_file = fullfile(component_path, 'grid.nc');
 xx  = ncread(grid_file, 'xx');
 yy  = ncread(grid_file, 'yy');
 zzW = ncread(grid_file, 'zzW');
+dy  = ncread(grid_file, 'dy');
+dz  = ncread(grid_file, 'dz');
 
 lons = 360 * (xx - xx(1)) / (xx(end) - xx(1));
 lats = yy / 110.567;
 
-% Calculate indices for desired altitude, latitude
-[~, lat_idx]  = min(abs(lats-lat));
-[~, altW_idx] = min(abs(zzW-alt));
+% Scale meridional, vertical coordinate for basis functions
+L = 1490; % Equatorial meridional length scale (km)
+yy_norm = yy / L;
+dy_norm = dy / L;
+zzW_norm = pi * zzW / H;
 
-lat_true  = lats(lat_idx);
-altW_true = zzW(altW_idx);
+% Get first baroclinic mode, zeroth parabolic cylinder function, standard
+% deviation scale of u for projections
+parab_cyl_0   = parab_cyl(yy_norm, 0);
+q_clin_mode_1 = q_clin_mode(zzW_norm, 1);
+q_clin_mode_2 = q_clin_mode(zzW_norm, 2);
+
+% Get the normalization constants due to discretized norms
+merid_norm  = dy_norm * (parab_cyl_0.' * parab_cyl_0);
+vert_norm_1 = (1/(nz+1)) * (q_clin_mode_1.' * q_clin_mode_1);
+vert_norm_2 = (1/(nz+1)) * (q_clin_mode_2.' * q_clin_mode_2);
 
 % Get moisture, potential temperature anomaly at desired altitude and latitude
-q     = zeros(nx, floor(sim_days/out_freq) + 1);
+q     = zeros(floor(sim_days/out_freq) + 1, nx);
 theta = zeros(nx, floor(sim_days/out_freq) + 1);
 t     = zeros(1, floor(sim_days/out_freq) + 1);
 
@@ -58,8 +73,33 @@ for out_idx = out_idxs
     q_temp     = ncread(state_file, 'q');
     theta_temp = ncread(state_file, 'theta');
     
-    q(:, out_idx + 1) = q_temp(lat_idx, :, altW_idx);
-    theta(:, out_idx + 1) = theta_temp(lat_idx, :, altW_idx);
+    q1 = zeros([ny, nx]);
+    q2 = zeros([ny, nx]);
+    for jj = 1:ny
+       for ii = 1:nx
+           q1(jj, ii) = (1/(nz+1)) ...
+               * squeeze(q_clin_mode_1.'*squeeze(q_temp(jj, ii, :))) ...
+               * (1/vert_norm_1);
+           q2(jj, ii) = (1/(nz+1)) ...
+               * squeeze(q_clin_mode_2.'*squeeze(q_temp(jj, ii, :))) ...
+               * (1/vert_norm_2);
+       end
+    end
+    
+    % Pick Q_mid or Q_up REFURB, ACTUALLY LOW
+    if strcmpi(q_mode, 'mid') % is actually low here
+        Q = 1 / sqrt(3) * (q1 * q_clin_mode(pi/3, 1) - q2 * q_clin_mode(pi/3, 2));
+    else
+        Q = 1 / sqrt(3) * (q1 * q_clin_mode(2*pi/3, 1) + q2 * q_clin_mode(2*pi/3, 2));
+    end
+    
+    % Project Q onto zeroth parabolic cylinder function
+    for ii = 1:nx
+        q(out_idx+1, ii) = dy_norm * squeeze(parab_cyl_0.'*Q(:, ii)) ...
+            * (1/merid_norm);
+    end
+    
+    %theta(:, out_idx + 1) = theta_temp(lat_idx, :, altW_idx);
 end
 
 days_to_secs = 3600*24;
@@ -68,7 +108,7 @@ t = t / days_to_secs;
 % Create plot
 
 hold on;
-[~, q_plt] = contourf(lons, t, q.', ...
+[~, q_plt] = contourf(lons, t, q, ...
     'edgecolor', 'none');
 
 % Colorbar
@@ -82,36 +122,26 @@ cb = colorbar();
 cb.Label.String = 'Moisture Anomaly (kg kg^{-1})';
 
 
-% Potential temperature anomaly
-pos_theta = max(theta, 0);
-neg_theta = min(theta, 0);
-[~, pos_th_plt] = contour(lons, out_idxs, pos_theta.', ...
-    'k-');
-[~, neg_th_plt] = contour(lons, out_idxs, neg_theta.', ...
-    'k--');
-
-% Contour levels
-max_theta = max(abs(theta));
-th_levs = 0.1:0.2:0.9 * max_theta;
-
-pos_th_plt.LevelListMode = 'manual';
-pos_th_plt.LevelList     = th_levs;
-
-neg_th_plt.LevelListMode = 'manual';
-neg_th_plt.LevelList     = th_levs;
+% % Potential temperature anomaly
+% pos_theta = max(theta, 0);
+% neg_theta = min(theta, 0);
+% [~, pos_th_plt] = contour(lons, out_idxs, pos_theta.', ...
+%     'k-');
+% [~, neg_th_plt] = contour(lons, out_idxs, neg_theta.', ...
+%     'k--');
+% 
+% % Contour levels
+% max_theta = max(abs(theta));
+% th_levs = 0.1:0.2:0.9 * max_theta;
+% 
+% pos_th_plt.LevelListMode = 'manual';
+% pos_th_plt.LevelList     = th_levs;
+% 
+% neg_th_plt.LevelListMode = 'manual';
+% neg_th_plt.LevelList     = th_levs;
 
 % Title
-title_base_str = sprintf('Hovmoller Diagram\nAltitude %3.1f km\n',...
-    altW_true);
-if (lat_true < 0)
-    title_str = strcat([title_base_str, sprintf('Latitude %3.1fS',...
-        abs(lat_true))]);
-elseif (lat_true > 0)
-    title_str = strcat([title_base_str, sprintf('Latitude %3.1fN',...
-        abs(lat_true))]);
-elseif (trueLate == 0)
-    title_str = strcat([title_base_str, 'Equator']);
-end
+title_str = 'Hovmoller Diagram';
 title(title_str);
 
 % Axis limits
@@ -157,18 +187,8 @@ set(gcf,...
     'PaperSize', [figWidth, figHeight],...
     'PaperOrientation', 'portrait');
 
-% Save plot.
-if (lat_true < 0)
-    lat_str = sprintf(['%3.1fS'], abs(lat_true));
-elseif (lat_true > 0)
-    lat_str = sprintf(['%3.1fN'], abs(lat_true));
-else
-    lat_str = 'EQ';
-end
-alt_str = sprintf(['%3.1f'], abs(altW_true));
 
-file_name = strcat([params.component_name, '_hovmoller_', ...
-    alt_str, '_', lat_str, '.pdf']);
+file_name = strcat([params.component_name, '_hovmoller_' , q_mode, '.pdf']);
 plot_file = fullfile(plot_path, file_name);
 print(plot_file, '-dpdf', '-painters', '-fillpage');
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

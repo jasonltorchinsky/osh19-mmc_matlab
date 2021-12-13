@@ -46,9 +46,9 @@ truth_params.out_path = out_path;
 truth_params.exp_name = exp_name;
 truth_params.component_name = 'truth';
 
-truth_params.init_simulation = true;
-truth_params.run_simulation = true;
-truth_params.create_plots = true;
+truth_params.init_simulation = false;
+truth_params.run_simulation = false;
+truth_params.create_plots = false;
 
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 % Parameters for the Empirical Orthogonal Function calculation
@@ -61,8 +61,8 @@ eof_params.out_path = out_path;
 eof_params.exp_name = exp_name;
 eof_params.component_name = truth_params.component_name;
 
-eof_params.calc_eofs = true;
-eof_params.create_plots = true;
+eof_params.calc_eofs = false;
+eof_params.create_plots = false;
 
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 % Parameters for the deficient climate model (OSH19) [Case 5]
@@ -108,9 +108,9 @@ dcm_params.out_path = out_path;
 dcm_params.exp_name = exp_name;
 dcm_params.component_name = 'dcm';
 
-dcm_params.init_simulation = true;
-dcm_params.run_simulation = true;
-dcm_params.create_plots = true;
+dcm_params.init_simulation = false;
+dcm_params.run_simulation = false;
+dcm_params.create_plots = false;
 
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 % Parameters for the MJO-only model (OSH19) [Default]
@@ -118,19 +118,19 @@ dcm_params.create_plots = true;
 
 mjoo_params = struct();
 
-mjoo_params.d_u     = 0.45; % Damping for MJO modes (m^(-1))
+mjoo_params.d_u     = 0.27; % Damping for MJO modes (m^(-1))
 mjoo_params.d_v     = 1.8; % Damping for stochastic damping (m^(-1))
 mjoo_params.d_w     = 0.5; % Damping for stochastic phase (m^(-1))
-mjoo_params.gamma   = 0.3; % Strength of non-linear interaction (m^(-1))
+mjoo_params.gamma   = 0.15; % Strength of non-linear interaction (m^(-1))
 mjoo_params.a       = 1.5; % Background state phase of MJO modes (m^(-1))
 mjoo_params.w_u_hat = 0; % Background mean state of stochastic phase (m^(-1))
 
-mjoo_params.sigma_u = 0.3; % Strength of stochastic forcing for MJO modes (m^(-1/2))
-mjoo_params.sigma_v = 1; % Strength of stochastic forcing for stochastic damping (m^(-1/2))
+mjoo_params.sigma_u = 1.8; % Strength of stochastic forcing for MJO modes (m^(-1/2))
+mjoo_params.sigma_v = 5; % Strength of stochastic forcing for stochastic damping (m^(-1/2))
 mjoo_params.sigma_w = 1.1; % Strength of stochastic forcing for stochastic phase (m^(-1/2))
 
-mjoo_params.f_0     = 1; % Mean time-periodic damping
-mjoo_params.f_t     = 6.9; % Amplitude of time-periodic damping
+mjoo_params.f_0     = 3; % Mean time-periodic damping
+mjoo_params.f_t     = 10.1; % Amplitude of time-periodic damping
 mjoo_params.w_f     = 2 * pi / 12; % Frequency of time-periodic damping (m^(-1))
 mjoo_params.phi     = -1; % Phase-shift of time-periodic damping
 
@@ -149,9 +149,9 @@ mjoo_params.out_path = out_path;
 mjoo_params.exp_name = exp_name;
 mjoo_params.component_name = 'mjoo';
 
-mjoo_params.init_simulation = true;
-mjoo_params.run_simulation = true;
-mjoo_params.create_plots = true;
+mjoo_params.init_simulation = false;
+mjoo_params.run_simulation = false;
+mjoo_params.create_plots = false;
 
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 % Parameters for the Multi-Model Ensemble
@@ -231,6 +231,10 @@ if truth_params.create_plots
     
     clf('reset');
     
+    osh19_anim_evo(truth_params, 4.0, 0.0);
+    
+    clf('reset');
+    
     osh19_plot_hovmoller(truth_params, 10.0, 0.0);
     
     if truth_params.sim_days > 256
@@ -273,6 +277,10 @@ if dcm_params.create_plots
     
     clf('reset');
     
+    osh19_anim_evo(dcm_params, 4.0, 0.0);
+    
+    clf('reset');
+    
     osh19_plot_hovmoller(dcm_params, 10.0, 0.0);
     
     if dcm_params.sim_days > 256
@@ -308,11 +316,15 @@ end
 if ens_params.create_plots
     clf('reset');
     
-    %osh19_plot_growths_freqs(ens_params.dcm_params, 1);
+    osh19_plot_growths_freqs(ens_params.dcm_params, 1);
     
     clf('reset');
     
     osh19_plot_evo(ens_params.dcm_params, 10.0, 0.0);
+    
+    clf('reset');
+    
+    osh19_anim_evo(ens_params.dcm_params, 4.0, 0.0);
     
     clf('reset');
     
@@ -344,5 +356,9 @@ end
 if misc_params.create_plots
    clf('reset');
    
-   misc_plot_mjos(eof_params, mjoo_params, 10.0, 0.0)
+   misc_plot_mjos(eof_params, mjoo_params, 10.0, 0.0);
+   
+   clf('reset');
+   
+   misc_osh19_anim_evo(dcm_params, ens_params.dcm_params, 4.0, 0.0);
 end

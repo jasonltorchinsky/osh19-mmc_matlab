@@ -3,6 +3,8 @@
 *.nc
 *.mat
 *.pdf
+*.avi
+
 ## But not the VERIFIED_DATA subdirectory, the documentation, or colormap file
 !run/verified_data/*
 !doc/*

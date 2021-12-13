@@ -1,0 +1,69 @@
+In order for the OSH19 and CMG14 models to communicate, we must map both onto the same state space. In particular, we shall calculate the MJO indices of the OSH19 system at a given time-step, then apply the standard 3D-Var method.
+
+We begin by constructing a basis for $u$ and $q$ on the domain. In particular, we choose a vertical basis for each based on the baroclinic modes
+
+\begin{equation}
+	\func{C_{0}}{z} = 1,\qquad \func{C_{k}}{z} = \sqrt{2}\,\func{\cos}{k\,\gpr{\frac{\pi\,z}{H}}},\qquad \func{S_{k}}{z} = \sqrt{2}\,\func{\cos}{k\,\gpr{\frac{\pi\,z}{H}}},\qquad k = 1,\ 2,\ \dots,
+\end{equation}
+
+which form two orthnormal bases on the interval $\gbkt{0,\ H}$ with inner-product
+
+\begin{equation}
+	\gang{\func{f}{z},\ \func{g}{z}}_z = \frac{1}{H}\,\int_{0}^{H} \func{f}{z}\,\func{g}{z}\,dz.
+\end{equation}
+
+For an orthonormal basis in the meridional direction, we choose the parabolic cylinder functions
+
+\begin{equation}
+	\func{\phi_j}{y} = \frac{1}{\gpr{2\,\pi}^{\frac{1}{4}}\,\sqrt{2^j\,\gpr{j!}}}\,e^{-\frac{y^2}{4}}\,\func{H_j}{\frac{y}{\sqrt{2}}},\qquad j = 0,\ 1,\ \dots
+\end{equation}
+
+where $\func{H_j}{y}$ is the $j$\textsuperscript{th} Hermite polynomial, with inner-product
+
+\begin{equation}
+	\gang{\func{f}{y},\ \func{g}{y}}_y = \int_{-\infty}^{\infty} \func{f}{y}\,\func{g}{y}\,dy.
+\end{equation}
+
+For an orthonormal basis in the zonal direction, we perform an empirical orthgonal function (EOF) decomposition on the zonal wind velocity and moisture anomaly data for the ``truth'' simulation. In particular, if we write the decomposition for $u$ and $q$ using our previously chosen bases
+
+\begin{subequations}
+	\begin{equation}
+		\func{u}{t,\ x,\ y,\ z} = \sum_{k = 0}^{\infty} \sum_{j = 0}^{\infty} \func{u_{jk}}{t,\ x}\,\func{\phi_j}{y}\,\func{C_k}{z},
+	\end{equation}
+	\begin{equation}
+		\func{q}{t,\ x,\ y,\ z} = \sum_{k = 1}^{\infty} \sum_{j = 0}^{\infty} \func{q_{jk}}{t,\ x}\,\func{\phi_j}{y}\,\func{S_k}{z},
+	\end{equation}
+\end{subequations}
+
+we may calculate the MJO ``part'' by calculating the ``primary'' mode of zonal wind velocity $\func{u_{01}}{t,\ x}$ and the upper- or lower-mode of baroclinic moisture
+
+\begin{subequations}
+	\begin{equation}
+		\func{q_{\text{up}}}{t,\ x} = \frac{1}{\sqrt{2}}\,\gpr{\func{q_{01}}{t,\ x} - \func{q_{02}}{t,\ x}},
+	\end{equation}
+	\begin{equation}
+		\func{q_{\text{low}}}{t,\ x} = \frac{1}{\sqrt{2}}\,\gpr{\func{q_{01}}{t,\ x} + \func{q_{02}}{t,\ x}}.
+	\end{equation}
+\end{subequations}
+
+After non-dimensionalizing the zonal wind velocity and moisture anomalies by their respective standard deviations, which we shall denote $r_u$ and $r_q$, respectively, we may perform an EOF decomposition on the concatenated data to obtain a collection of $2\,n_x$ orthonormal vectors of length $2\, n_x$ which form a discrete basis on the zonal domain of the simulation (with standard vector inner-product). We shall denote these $\va{\mathcal{F}}_i = \mqty[\va{\mathcal{F}}^{u}_{i} & \va{\mathcal{F}}^{q}_{i}]$, where those with superscript $u$ correspond to the zonal wind velocity and those with superscript $q$ correspond to the moisture anomaly. The `leading' two EOFs indexed by $i = 1,\ 2$, i.e., those associated with the greatest variability in the EOF decomposition, correspond to the MJO. Note that although the $\va{\mathcal{F}}_i$ form an orthnormal basis on the concatenated zonal wind velocity-moisture anomaly data, the bases formed by the $\va{\mathcal{F}}^{u}_{i}$ and the $\va{\mathcal{F}}^{q}_{i}$ may not be orthonormal.
+
+With these, we may write $u$ and $q$ as
+
+\begin{subequations}
+	\begin{equation}
+		\func{u}{t,\ x,\ y,\ z} = r_u\,\sum_{k = 0}^{\infty} \sum_{j = 0}^{\infty} \sum_{i = 1}^{2\,n_x} \func{\widetilde{u}_{ijk}}{t}\,\va{\mathcal{F}}^{u}_{i}\,\func{\phi_j}{y}\,\func{C_k}{z},
+	\end{equation}
+	\begin{equation}
+		\func{q}{t,\ x,\ y,\ z} = r_q\,\sum_{k = 1}^{\infty} \sum_{j = 0}^{\infty} \sum_{i = 1}^{2\,n_x} \func{\widetilde{q}_{ijk}}{t}\,\va{\mathcal{F}}^{q}_{i}\,\func{\phi_j}{y}\,\func{S_k}{z},
+	\end{equation}
+\end{subequations}
+
+where we include the diacritic $\sim$ to denote that these values are now non-dimensional. 
+
+Using these EOFs and standard deviations from the `truth' data, we may then calculate the MJO indices of the state of the OSH19 by performing the following:
+\begin{enumerate}[(i)]
+	\item Calculate $\func{u_{01}}{x}$ and $\func{q_{\text{up}}}{x}$ (or equivalently $\func{q_{\text{low}}}{x}$) by projecting $\func{u}{x,\ y,\ z}$ and $\func{q}{x,\ y,\ z}$ onto the approporiate basis functions.
+	\item Non-dimensionalize $\func{u_{01}}{x}$ and $\func{q_{\text{up}}}{x}$ (or equivalently $\func{q_{\text{low}}}{x}$) by dividing by $r_u$ and $r_q$, respectively, obtained from the `truth' data.
+	\item Concatenate the data $\func{u_{01}}{x}$ and $\func{q_{\text{up}}}{x}$ (or equivalently $\func{q_{\text{low}}}{x}$) into a single vector $\va{\mathcal{A}}$ of length $2\,n_x$, and take the inner product of $\va{\mathcal{A}}$ with $\va{\mathcal{F}}_1$ and $\va{\mathcal{F}}_2$ to obtain the MJO indices $\mathcal{M}_1$ and $\mathcal{M}_2$, respectively.
+\end{enumerate}
