@@ -21,6 +21,8 @@ addpath(plot_path);
 % frequently output was created.
 params_file = fullfile(component_path, 'params.nc');
 
+d_u      = ncread(params_file, 'd_u');
+gamma    = ncread(params_file, 'gamma');
 sim_days = ncread(params_file, 'sim_days');
 out_freq = ncread(params_file, 'out_freq');
 
@@ -79,7 +81,7 @@ h(2) = nexttile(tlo, 2);
 
 hold on;
 plot(t, v, 'k-');
-plot(t, 0*t, 'k:');
+plot(t, 0*t+(d_u/gamma), 'k:');
 
 legend(h(2), 'v');
 

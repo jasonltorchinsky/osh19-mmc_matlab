@@ -1,10 +1,10 @@
 function [dcm_state_out, mjoo_state_out] = ens_comm(dcm_params, dcm_grid, ...
-    dcm_state, mjoo_state, ens_params, eofs)
+    dcm_bg_profs, dcm_state, mjoo_state, ens_params, eofs)
 
 % Unpack common parameters
 nx = dcm_params.nx;
+ny = dcm_params.ny;
 nz = dcm_params.nz;
-H  = dcm_params.H;
 
 dz = dcm_grid.dz;
 
@@ -21,10 +21,18 @@ u_proj_pri = ens_proj_u(dcm_params, dcm_grid, dcm_state.u, eofs);
 q_proj_pri = ens_proj_q(dcm_params, dcm_grid, dcm_state.q, eofs);
 a_proj_pri = [u_proj_pri q_proj_pri];
 
+% Get mean vertical moisture gradient.
+q_tot = dcm_state.q + dcm_bg_profs.q_bg_mat;
+ddz_q_tot = zeros([nx, ny, nz-1]);
+for kk = 2:nz
+    ddz_q_tot(:,:,kk-1) = (q_tot(:,:,kk+1) - q_tot(:,:,kk-1)) / (2 * dz);
+end
+mean_ddz_q_tot = mean(ddz_q_tot, 'all');
+
 % Get MJO indices, climate parameter from DCM
 u1_dcm_pri = a_proj_pri * eofs.eof1;
 u2_dcm_pri = a_proj_pri * eofs.eof2;
-v_dcm_pri  = dcm_params.B_vs;
+v_dcm_pri  = mean_ddz_q_tot/dcm_params.B_vs;
 
 dcm_pri = [u1_dcm_pri; u2_dcm_pri; v_dcm_pri];
 
@@ -48,11 +56,16 @@ mjoo_obs = H_mjoo * mjoo_ptruth ...
 % Communicate the MJO indices, climate parameter
 gain_dcm = B_dcm * transpose(H_dcm) / (Lambda_dcm + H_dcm * B_dcm * transpose(H_dcm));
 dcm_pst = dcm_pri - gain_dcm * (H_dcm * dcm_pri - dcm_obs);
-% Set MJO indices to MJOO model
-dcm_pst = mjoo_pri;
+% Manually set DCM parameters
+dcm_pst(1:2) = mjoo_pri(1:2);
+dcm_pst(3)   = dcm_pri(3);
+
 
 gain_mjoo = B_mjoo * transpose(H_mjoo) / (Lambda_mjoo + H_mjoo * B_mjoo * transpose(H_mjoo));
 mjoo_pst = mjoo_pri - gain_mjoo * (H_mjoo * mjoo_pri - mjoo_obs);
+% Manually set MJOO parameters
+mjoo_pst(1:2) = mjoo_pri(1:2);
+mjoo_pst(3)   = dcm_pri(3);
 
 % Update DCM state
 u1_dcm_pst = dcm_pst(1);
@@ -66,10 +79,6 @@ delta_q_mjo_proj = delta_mjo_proj(nx+1:end);
 delta_u_mjo = ens_unproj_u(dcm_params, dcm_grid, delta_u_mjo_proj, eofs);
 delta_q_mjo = ens_unproj_q(dcm_params, dcm_grid, delta_q_mjo_proj, eofs);
 
-% delta_u_mjo = (u1_dcm_pst - u1_dcm_pri) * eofs.u_mjo1 ...
-%     + (u2_dcm_pst - u2_dcm_pri) * eofs.u_mjo2;
-% delta_q_mjo = (u1_dcm_pst - u1_dcm_pri) * eofs.q_mjo1 ...
-%     + (u2_dcm_pst - u2_dcm_pri) * eofs.q_mjo2;
 
 dcm_state_out = dcm_state;
 dcm_state_out.u = dcm_state_out.u + delta_u_mjo;
@@ -90,9 +99,9 @@ end
 
 % Update MJOO state
 mjoo_state_out = mjoo_state;
-%mjoo_state_out.u_1 = mjoo_pst(1);
-%mjoo_state_out.u_2 = mjoo_pst(2);
-%mjoo_state_out.v   = mjoo_pst(3);
+mjoo_state_out.u_1 = mjoo_pst(1);
+mjoo_state_out.u_2 = mjoo_pst(2);
+mjoo_state_out.v   = mjoo_pst(3);
 
 
 % WARNING: BCS ARE NOT ENFORCED

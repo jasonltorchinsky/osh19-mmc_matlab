@@ -60,6 +60,8 @@ scatter(wavenums, growth_rates, ...
     'k', 'x', ...
     'LineWidth', 1);
 
+plot([-20,20], [0,0], 'k-');
+
 for per_idx = 1:size(pers,1)
     per = pers(per_idx, :);
     plot(ext_wavenums, per, ...
@@ -76,11 +78,9 @@ end
 plot([0,0], [0,10], 'k--');
 
 growth_max = 1.1*max(growth_rates, [], 'all');
-if growth_max > 0.0
-    ylim([0, growth_max]);
-else
-    ylim([growth_max, 0]);
-end
+growth_min = 1.1*min(growth_rates, [], 'all');
+ylim([min([0, growth_min], [], 'all'), ...
+    max([0, growth_max], [], 'all')]);
 
 hold off;
 
@@ -110,7 +110,10 @@ end
 % Vertical line at wavenumber 0
 plot([0,0], [0,10], 'k--');
 
-ylim([0, 0.05]);
+freq_max = 1.1*max(freqs, [], 'all');
+freq_min = 1.1*min(freqs, [], 'all');
+ylim([min([0, -freq_min], [], 'all'), ...
+    max([0, freq_max], [], 'all')]);
 
 hold off;
 

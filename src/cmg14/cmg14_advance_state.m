@@ -52,6 +52,7 @@ state_vec(4) = 0.0;
 state_out.u_1 = state_vec(1);
 state_out.u_2 = state_vec(2);
 state_out.v   = state_vec(3);
+%state_out.v   = 0.9;
 state_out.w_u = state_vec(4);
 
 end

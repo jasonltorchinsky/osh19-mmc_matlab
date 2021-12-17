@@ -61,8 +61,8 @@ vert_norm_2 = (1/(nz+1)) * (q_clin_mode_2.' * q_clin_mode_2);
 q     = zeros(floor(sim_days/out_freq) + 1, nx);
 t     = zeros(1, floor(sim_days/out_freq) + 1);
 
-n_outfiles = floor(sim_days/out_freq);
-out_idxs  = 0:n_outfiles;
+n_outfiles = floor(sim_days/out_freq)+1;
+out_idxs  = 0:n_outfiles-1;
 
 for out_idx = out_idxs
     state_file_name = strcat(['state_', num2str(out_idx,'%04u'), '.nc']);
@@ -70,7 +70,6 @@ for out_idx = out_idxs
     
     t(1, out_idx + 1) = ncread(state_file, 't');
     q_temp     = ncread(state_file, 'q');
-    theta_temp = ncread(state_file, 'theta');
     
     q1 = zeros([ny, nx]);
     q2 = zeros([ny, nx]);
