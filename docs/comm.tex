@@ -3,7 +3,7 @@ In order for the OSH19 and CMG14 models to communicate, we must map both onto th
 We begin by constructing a basis for $u$ and $q$ on the domain. In particular, we choose a vertical basis for each based on the baroclinic modes
 
 \begin{equation}
-	\func{C_{0}}{z} = 1,\qquad \func{C_{k}}{z} = \sqrt{2}\,\func{\cos}{k\,\gpr{\frac{\pi\,z}{H}}},\qquad \func{S_{k}}{z} = \sqrt{2}\,\func{\cos}{k\,\gpr{\frac{\pi\,z}{H}}},\qquad k = 1,\ 2,\ \dots,
+	\func{C_{0}}{z} = 1,\qquad \func{C_{k}}{z} = \sqrt{2}\,\func{\cos}{k\,\gpr{\frac{\pi\,z}{H}}},\qquad \func{S_{k}}{z} = \sqrt{2}\,\func{\sin}{k\,\gpr{\frac{\pi\,z}{H}}},\qquad k = 1,\ 2,\ \dots,
 \end{equation}
 
 which form two orthnormal bases on the interval $\gbkt{0,\ H}$ with inner-product
@@ -68,4 +68,12 @@ Using these EOFs and standard deviations from the `truth' data, we may then calc
 	\item Concatenate the data $\func{u_{01}}{x}$ and $\func{q_{\text{up}}}{x}$ (or equivalently $\func{q_{\text{low}}}{x}$) into a single vector $\va{\mathcal{A}}$ of length $2\,n_x$, and take the inner product of $\va{\mathcal{A}}$ with $\va{\mathcal{F}}_1$ and $\va{\mathcal{F}}_2$ to obtain the MJO indices $\mathcal{M}_1$ and $\mathcal{M}_2$, respectively.
 \end{enumerate}
 
-We've yet to determine how to map the state of the OSH19 system to the climate parameter $v$, but we suspect that it is related to $B_{vs}$. Regardless, we can use the standard 3D-Var algorithm on the MJO indices of the OSH19 and CMG14 systems to obtain a new $\va{\mathcal{A}}$ for the OSH19 system. Using this, we may reconstruct the new MJO part of the OSH19 state and add it into the the prior OSH19 system state.
+To map the state of the OSH19 system to the climate parameter $v$, we calculate the mean vertical gradient of the total moisture, i.e., the mean vertical gradient of 
+
+\begin{equation}
+	\func{q_{\text{tot}}}{t,\ x,\ y,\ z} = \func{q}{t,\ x,\ y,\ x} + \func{q_{\text{BG}}}{x,\ y,\ z}.
+\end{equation}
+
+We then divide this quantity by the mean vertical gradient of background moisture $B_{vs}$ to obtain the non-dimensional climate signal $v$.
+
+We may then use the standard 3D-Var algorithm on the MJO indices of the OSH19 and CMG14 systems to obtain a new $\va{\mathcal{A}}$ for the OSH19 system. Using this, we may reconstruct the new MJO part of the OSH19 state and add it into the the prior OSH19 system state.

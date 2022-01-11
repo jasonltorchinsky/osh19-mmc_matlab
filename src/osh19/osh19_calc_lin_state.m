@@ -1,4 +1,5 @@
-function [lin_state, growthrates, frequencies] = osh19_calc_lin_state(params, grid, bg_profs, mode, wavenum)
+function [lin_state, growthrates, frequencies] = osh19_calc_lin_state(params, ...
+    grid, bg_profs, mode, wavenum)
 
 lin_state = struct();
 

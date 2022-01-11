@@ -108,11 +108,17 @@ yticks(h(2),   0:4:16);
 
 yticklabels(h(1), {'30S', 'EQ', '30N'});
 
-% Get moisture limits by chekcing moisture at final day
+% Get moisture limits by chekcing moisture at first, final day
+state_file_name = strcat(['state_', num2str(0 ,'%04u'), '.nc']);
+state_file = fullfile(component_path, state_file_name);
+q_max_start = max(abs(ncread(state_file, 'q')), [], 'all');
+
 state_file_name = strcat(['state_', num2str(out_idxs(end) ,'%04u'), '.nc']);
 state_file = fullfile(component_path, state_file_name);
-q_max = max(abs(ncread(state_file, 'q')), [], 'all');
-    
+q_max_end = max(abs(ncread(state_file, 'q')), [], 'all');
+
+q_max = max([q_max_start, q_max_end]);
+
 % Colors
 cmap = load('rb.mat').rb;
 set(h, 'Colormap', cmap, ...

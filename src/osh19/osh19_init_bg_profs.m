@@ -12,6 +12,7 @@ dz = grid.dz;
 
 % vertical grid for background moisture profile
 zz = transpose(dz:dz:H-dz);
+zz_full = transpose(0:dz:H);
 
 % Unscaled baroclinic modes
 sinz     = transpose(sin(zz * pi / H));
@@ -56,7 +57,7 @@ D_v_vec = params.D_v + (params.D_v - params.D_v) ...
     * (zz - H) / H;
 
 % Background potential temperature profile
-theta_bg_vec = params.B * grid.zzW;
+theta_bg_vec = params.B * zz_full;
 [~, ~, theta_bg_mat] = meshgrid(grid.xx, grid.yy, theta_bg_vec);
 
 % Save background profiles to bg_profs

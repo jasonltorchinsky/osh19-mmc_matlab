@@ -75,7 +75,7 @@ for per_idx = 1:size(pers,1)
 end
 
 % Vertical line at wavenumber 0
-plot([0,0], [0,10], 'k--');
+plot([0,0], [-20,20], 'k--');
 
 growth_max = 1.1*max(growth_rates, [], 'all');
 growth_min = 1.1*min(growth_rates, [], 'all');
@@ -108,11 +108,11 @@ for per_idx = 1:size(pers,1)
 end
 
 % Vertical line at wavenumber 0
-plot([0,0], [0,10], 'k--');
+plot([0,0], [-20,20], 'k--');
 
-freq_max = 1.1*max(freqs, [], 'all');
+freq_max = 1.1*max(freqs(1:end-1), [], 'all');
 freq_min = 1.1*min(freqs, [], 'all');
-ylim([min([0, -freq_min], [], 'all'), ...
+ylim([min([0, freq_min], [], 'all'), ...
     max([0, freq_max], [], 'all')]);
 
 hold off;

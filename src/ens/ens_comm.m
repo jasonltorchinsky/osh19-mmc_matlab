@@ -48,7 +48,7 @@ dcm_ptruth = [u1_mjoo_pri; u2_mjoo_pri; v_dcm_pri];
 dcm_stoch = normrnd(0, 1, [2, 1]);
 dcm_obs = H_dcm * dcm_ptruth + Lambda_dcm * dcm_stoch;
 
-mjoo_ptruth = [u1_mjoo_pri; u2_mjoo_pri; v_mjoo_pri];
+mjoo_ptruth = [u1_mjoo_pri; u2_mjoo_pri; v_dcm_pri];
 mjoo_stoch = normrnd(0, 1, [1, 1]);
 mjoo_obs = H_mjoo * mjoo_ptruth ...
     + Lambda_mjoo * mjoo_stoch;
@@ -57,15 +57,15 @@ mjoo_obs = H_mjoo * mjoo_ptruth ...
 gain_dcm = B_dcm * transpose(H_dcm) / (Lambda_dcm + H_dcm * B_dcm * transpose(H_dcm));
 dcm_pst = dcm_pri - gain_dcm * (H_dcm * dcm_pri - dcm_obs);
 % Manually set DCM parameters
-dcm_pst(1:2) = mjoo_pri(1:2);
-dcm_pst(3)   = dcm_pri(3);
+%dcm_pst(1:2) = mjoo_pri(1:2);
+%dcm_pst(3)   = dcm_pri(3);
 
 
 gain_mjoo = B_mjoo * transpose(H_mjoo) / (Lambda_mjoo + H_mjoo * B_mjoo * transpose(H_mjoo));
 mjoo_pst = mjoo_pri - gain_mjoo * (H_mjoo * mjoo_pri - mjoo_obs);
 % Manually set MJOO parameters
-mjoo_pst(1:2) = mjoo_pri(1:2);
-mjoo_pst(3)   = dcm_pri(3);
+%mjoo_pst(1:2) = mjoo_pri(1:2);
+%mjoo_pst(3)   = dcm_pri(3);
 
 % Update DCM state
 u1_dcm_pst = dcm_pst(1);

@@ -1,10 +1,10 @@
 out_path = 'output';
-exp_name = 'long_test';
+exp_name = 'long_5_weak';
 
 sim_days = 400;
 
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-% Parameters for the truth (OSH19) [Default]
+% Parameters for the truth (OSH19) [Case 5]
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 truth_params = struct();
@@ -21,24 +21,24 @@ truth_params.c_p = 1000; % Specific heat of dry air at constant pressure (J kg^(
 truth_params.L_v = 2.5 * 10^(6); % Latent heat of vaporization (J kg^(-1))
 truth_params.B = 3; % Background potential temperature vertical gradient (K km^(-1))
 truth_params.theta_0 = 300; % Reference potential temperature (K)
-truth_params.tau_u = 25; % Wind damping time-scale (d)
-truth_params.tau_theta = 25; % Potential temperature damping time-scale (d)
+truth_params.tau_u = 16; % Wind damping time-scale (d)
+truth_params.tau_theta = 16; % Potential temperature damping time-scale (d)
 truth_params.tau_up = 1; % Moisture damping time-scale in upper-troposphere (d)
-truth_params.tau_mid = 2/24; % Moisture damping time-scale in mid-troposphere (d)
-truth_params.B_vs = -1.34 * 10^(-3); % Mean vertical q_bg gradient (kg kg^(-1) km^(-1))
-truth_params.a = 0.25; % 1--pole-to-equator q_bg ratio
-truth_params.L_tilde = 2000; % q_bg meridional decay length scale (km)
-truth_params.s_tilde = 12 * 10^(4); % q_bg vertical decay length scale (km)
+truth_params.tau_mid = 4/24; % Moisture damping time-scale in mid-troposphere (d)
+truth_params.B_vs = -1.2 * 10^(-3); % Mean vertical q_bg gradient (kg kg^(-1) km^(-1))
+truth_params.a = 0.2; % 1--pole-to-equator q_bg ratio
+truth_params.L_tilde = 3000; % q_bg meridional decay length scale (km)
+truth_params.s_tilde = 12; % q_bg vertical decay length scale (km)
 truth_params.D_hUp = 60.8; % Horizontal q diffusion in upper-troposphere (km^(2) s^(-1))
 truth_params.D_hMid = 7.6; % Horizontal q diffusion in mid-troposphere (km^(2) s^(-1))
-truth_params.D_v = 1 * 10^(-4); % Vertical q diffusion (km^(2) s^(-1))
+truth_params.D_v = 2 * 10^(-4); % Vertical q diffusion (km^(2) s^(-1))
 truth_params.IC_type = 1; % Initial condition type:
                           % 1 = get modes, wavenumbers from linear solution
                           % 2 = load state from file
 truth_params.IC_modes = [1]; % Modes to use for initial condition (IC)
 truth_params.IC_wavenums = 1:1:7; % Zonal wavenumber to use for IC
 truth_params.IC_amp = 1; % Amplification factor for IC
-truth_params.clin_conv_adj = 2; % Options for baroclinic modes in IC
+truth_params.clin_conv_adj = 1; % Options for baroclinic modes in IC
 truth_params.sim_days = sim_days; % Number of days to simulate (d)
 truth_params.out_freq = 1; % How often to output data (d)
 
@@ -46,7 +46,7 @@ truth_params.out_path = out_path;
 truth_params.exp_name = exp_name;
 truth_params.component_name = 'truth';
 
-truth_params.init_simulation = true;
+truth_params.init_simulation = false;
 truth_params.run_simulation = false;
 truth_params.create_plots = false;
 
@@ -65,7 +65,7 @@ eof_params.calc_eofs = false;
 eof_params.create_plots = false;
 
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-% Parameters for the deficient climate model (OSH19) [Case 5]
+% Parameters for the deficient climate model (OSH19) [Weak]
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 dcm_params = struct();
@@ -86,13 +86,13 @@ dcm_params.tau_u = 16; % Wind damping time-scale (d)
 dcm_params.tau_theta = 16; % Potential temperature damping time-scale (d)
 dcm_params.tau_up = 1; % Moisture damping time-scale in upper-troposphere (d)
 dcm_params.tau_mid = 4/24; % Moisture damping time-scale in mid-troposphere (d)
-dcm_params.B_vs = -1.2 * 10^(-3); % Mean vertical q_bg gradient (kg kg^(-1) km^(-1))
+dcm_params.B_vs = -1.1 * 10^(-3); % Mean vertical q_bg gradient (kg kg^(-1) km^(-1))
 dcm_params.a = 0.2; % 1--pole-to-equator q_bg ratio
 dcm_params.L_tilde = 3000; % q_bg meridional decay length scale (km)
 dcm_params.s_tilde = 12; % q_bg vertical decay length scale (km)
-dcm_params.D_hUp = 2*60.8; % Horizontal q diffusion in upper-troposphere (km^(2) s^(-1))
-dcm_params.D_hMid = 2*7.6; % Horizontal q diffusion in mid-troposphere (km^(2) s^(-1))
-dcm_params.D_v = 2 * 2 * 10^(-4); % Vertical q diffusion (km^(2) s^(-1))
+dcm_params.D_hUp = 0.3*60.8; % Horizontal q diffusion in upper-troposphere (km^(2) s^(-1))
+dcm_params.D_hMid = 0.3*7.6; % Horizontal q diffusion in mid-troposphere (km^(2) s^(-1))
+dcm_params.D_v = 1.27*2 * 10^(-4); % Vertical q diffusion (km^(2) s^(-1))
 dcm_params.IC_type = 1; % Initial condition type:
                           % 1 = get modes, wavenumbers from linear solution
                           % 2 = all zero
@@ -110,7 +110,7 @@ dcm_params.component_name = 'dcm';
 
 dcm_params.init_simulation = false;
 dcm_params.run_simulation = false;
-dcm_params.create_plots = false;
+dcm_params.create_plots = true;
 
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 % Parameters for the MJO-only model (OSH19) [Default]
@@ -122,10 +122,10 @@ mjoo_params.d_u     = 0.4; % Damping for MJO modes (m^(-1))
 mjoo_params.d_v     = 0.4; % Damping for stochastic damping (m^(-1))
 mjoo_params.d_w     = 0.5; % Damping for stochastic phase (m^(-1))
 mjoo_params.gamma   = 0.65; % Strength of non-linear interaction (m^(-1))
-mjoo_params.a       = 2.0; % Background state phase of MJO modes (m^(-1))
+mjoo_params.a       = -2.0; % Background state phase of MJO modes (m^(-1))
 mjoo_params.w_u_hat = 0; % Background mean state of stochastic phase (m^(-1))
 
-mjoo_params.sigma_u = 0.3; % Strength of stochastic forcing for MJO modes (m^(-1/2))
+mjoo_params.sigma_u = 1.2; % Strength of stochastic forcing for MJO modes (m^(-1/2))
 mjoo_params.sigma_v = 1; % Strength of stochastic forcing for stochastic damping (m^(-1/2))
 mjoo_params.sigma_w = 1.1; % Strength of stochastic forcing for stochastic phase (m^(-1/2))
 
@@ -163,14 +163,14 @@ ens_params = struct();
 ens_params.dcm_comm = struct();
 ens_params.dcm_comm.H = [[1 0 0]; [0 1 0]];
 ens_params.dcm_comm.B = [[3.0 0 0]; [0 3.0 0]; [0 0 0.1]];
-ens_params.dcm_comm.Lambda = 10^(-3) * [[1 0]; [0 1]];
+ens_params.dcm_comm.Lambda = 10^(-1) * [[1 0]; [0 1]];
 
 ens_params.mjoo_comm = struct();
 ens_params.mjoo_comm.H = [0 0 1];
 ens_params.mjoo_comm.B = [[0.1 0 0]; [0.1 0 0]; [0 0 3.0]];
 ens_params.mjoo_comm.Lambda = [0.1];
 
-ens_params.comm_freq = 1/2; % Frequency of communication (d)
+ens_params.comm_freq = 3; % Frequency of communication (d)
 
 ens_params.out_path = out_path;
 ens_params.exp_name = exp_name;
@@ -250,6 +250,10 @@ if truth_params.create_plots
     clf('reset');
     
     osh19_plot_energy_evo(truth_params, 12);
+    
+    clf('reset');
+    
+    osh19_plot_qtot_vert_grad(truth_params);
 end
 
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -355,6 +359,10 @@ if ens_params.create_plots
     clf('reset');
     
     osh19_plot_energy_evo(ens_params.dcm_params, 12);
+    
+    clf('reset');
+    
+    osh19_plot_qtot_vert_grad(ens_params.dcm_params);
     
     clf('reset');
     

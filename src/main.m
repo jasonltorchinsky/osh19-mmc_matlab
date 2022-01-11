@@ -468,16 +468,6 @@ if ens_params.init_simulation
 
             time = time + dt;
             
-            if abs(comm_time - time) < dt/2 % Closest time to desired 
-                % communication time
-                [ens_dcm_state, ens_mjoo_state] = ens_comm(dcm_params, ...
-                    ens_dcm_grid, ens_dcm_bg_profs, ens_dcm_state, ens_mjoo_state, ...
-                    ens_params, ens_eofs);
-                
-                comm_idx  = comm_idx + 1;
-                comm_time = comm_idx * comm_freq;
-            end
-            
             if abs(out_time - time) < dt/2 % Closest time to desired output time
                 % check state to ensure validity
                 if any(isnan(ens_dcm_state.u), 'all')
@@ -511,6 +501,16 @@ if ens_params.init_simulation
                 out_idx  = out_idx + 1;
                 out_time = out_idx * out_freq;
                 
+            end
+            
+            if abs(comm_time - time) < dt/2 % Closest time to desired 
+                % communication time
+                [ens_dcm_state, ens_mjoo_state] = ens_comm(dcm_params, ...
+                    ens_dcm_grid, ens_dcm_bg_profs, ens_dcm_state, ens_mjoo_state, ...
+                    ens_params, ens_eofs);
+                
+                comm_idx  = comm_idx + 1;
+                comm_time = comm_idx * comm_freq;
             end
             
         end

@@ -82,7 +82,7 @@ u2_gauss = 1/sqrt(2 * pi * u2_var) * exp(-1/2 * (x - u2_mean).^2 / u2_var);
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 % Create master tiled layout
-tlo = tiledlayout(3, 2);
+tlo = tiledlayout(2, 2);
 
 tlo_mjo = tiledlayout(tlo, 1, 2);
 tlo_mjo.Layout.Tile = 1;
@@ -92,9 +92,9 @@ tlo_v = tiledlayout(tlo, 1, 2);
 tlo_v.Layout.Tile = 3;
 tlo_v.Layout.TileSpan = [1, 2];
 
-tlo_wu = tiledlayout(tlo, 1, 2);
-tlo_wu.Layout.Tile = 5;
-tlo_wu.Layout.TileSpan = [1, 2];
+% tlo_wu = tiledlayout(tlo, 1, 2);
+% tlo_wu.Layout.Tile = 5;
+% tlo_wu.Layout.TileSpan = [1, 2];
 
 % First Row - MJO indices
 
@@ -162,27 +162,27 @@ hold off;
 
 % Third plot - stochastic phase
 
-h(3,1) = nexttile(tlo_wu, 1);
-
-plot(h(3,1), wu_bin_centers(1:end-1), wu_pdf, 'k-');
-hold on;
-
-ylabel(h(3,1), 'Probability')
-
-legend(h(3,1), '\omega_{u}');
-
-hold off;
-
-h(3,2) = nexttile(tlo_wu, 2);
-
-hold on;
-semilogy(h(3,2), wu_bin_centers(1:end-1), wu_pdf, 'k-');
-
-ylabel(h(3,2), 'log(Probability)')
-
-legend(h(3,2), '\omega_{u}');
-
-hold off;
+% h(3,1) = nexttile(tlo_wu, 1);
+% 
+% plot(h(3,1), wu_bin_centers(1:end-1), wu_pdf, 'k-');
+% hold on;
+% 
+% ylabel(h(3,1), 'Probability')
+% 
+% legend(h(3,1), '\omega_{u}');
+% 
+% hold off;
+% 
+% h(3,2) = nexttile(tlo_wu, 2);
+% 
+% hold on;
+% semilogy(h(3,2), wu_bin_centers(1:end-1), wu_pdf, 'k-');
+% 
+% ylabel(h(3,2), 'log(Probability)')
+% 
+% legend(h(3,2), '\omega_{u}');
+% 
+% hold off;
 
 
 % Common across all tiles

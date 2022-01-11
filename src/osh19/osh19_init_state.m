@@ -27,14 +27,14 @@ state.v        = zeros([ny, nx, nz + 1]);
 state.w        = zeros([ny, nx, nz + 1]);
 state.p        = zeros([ny, nx, nz + 1]);
 
-    % Set struct to save growthrates and frequencies
-    growths_freqs = struct();
-    growths_freqs.n_wavenums   = size(IC_wavenums, 2);
-    growths_freqs.n_modes      = size(IC_modes, 2);
-    growths_freqs.wavenums     = IC_wavenums;
-    growths_freqs.modes        = IC_modes;
-    growths_freqs.growth_rates = zeros([size(IC_wavenums, 2), size(IC_modes, 2)]);
-    growths_freqs.freqs        = zeros([size(IC_wavenums, 2), size(IC_modes, 2)]);
+% Set struct to save growthrates and frequencies
+growths_freqs = struct();
+growths_freqs.n_wavenums   = size(IC_wavenums, 2);
+growths_freqs.n_modes      = size(IC_modes, 2);
+growths_freqs.wavenums     = IC_wavenums;
+growths_freqs.modes        = IC_modes;
+growths_freqs.growth_rates = zeros([size(IC_wavenums, 2), size(IC_modes, 2)]);
+growths_freqs.freqs        = zeros([size(IC_wavenums, 2), size(IC_modes, 2)]);
 
 if IC_type == 1 % Get modes, wavenumbers from linear solution
     

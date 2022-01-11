@@ -60,7 +60,7 @@ w_u = w_u * days_to_secs;
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 % Create master tiled layout
-tlo = tiledlayout(3, 1);
+tlo = tiledlayout(2, 1);
 
 % First plot - MJO indices
 
@@ -89,17 +89,17 @@ hold off;
 
 % Third plot - stochastic phase
 
-h(3) = nexttile(tlo, 3);
-
-hold on;
-plot(t, w_u, 'k-');
-plot(t, 0*t, 'k:');
-
-ylabel(h(3), '(d^{-1})');
-
-legend(h(3), '\omega_{u}');
-
-hold off;
+% h(3) = nexttile(tlo, 3);
+% 
+% hold on;
+% plot(t, w_u, 'k-');
+% plot(t, 0*t, 'k:');
+% 
+% ylabel(h(3), '(d^{-1})');
+% 
+% legend(h(3), '\omega_{u}');
+% 
+% hold off;
 
 
 % Common across all tiles
