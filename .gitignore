@@ -4,6 +4,7 @@
 *.mat
 *.pdf
 *.avi
+*.zip
 
 ## But not the VERIFIED_DATA subdirectory, the documentation, or colormap file
 !run/verified_data/*

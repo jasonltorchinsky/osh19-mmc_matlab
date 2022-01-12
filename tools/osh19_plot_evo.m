@@ -46,6 +46,7 @@ altW_true = zzW(altW_idx);
 
 % Store maximal theta
 max_theta = 0;
+max_q = 0;
 
 % Calculate output indices for times
 % 0*sim_days, 1/3*sim_days, 2/3*sim_days, sim_days
@@ -80,6 +81,7 @@ for out_idx = out_idxs
     w = 150*ncread(state_file, 'w');
     theta = ncread(state_file, 'theta');
     q = ncread(state_file, 'q');
+    
     
     days_to_secs = 3600*24;
     t_str = sprintf(['Day %d'], round(t/days_to_secs, 0));
@@ -146,10 +148,14 @@ for out_idx = out_idxs
     max_theta_horz = max(abs(theta_horz), [], 'all');
     max_theta_vert = max(abs(theta_vert), [], 'all');
     max_theta = max([max_theta, max_theta_horz, max_theta_vert]);
+    
+    % Update maximum q
+    max_q_horz = max(abs(q_horz), [], 'all');
+    max_q_vert = max(abs(q_vert), [], 'all');
+    max_q = max([max_q, max_q_horz, max_q_vert]);
 end
 
 % Colorbar
-max_q = max(abs([q_horz, q_vert]), [], 'all'); % Assume maximum is in last time-step
 min_q = -max_q;
 cmap = load('rb.mat').rb;
 set(h(:,:), ...
