@@ -103,6 +103,11 @@ t = t / days_to_secs;
 
 % Create plot
 
+tlo = tiledlayout(1,1);
+tlo.TileSpacing = 'compact';
+tlo.Padding = 'compact';
+h(1) = nexttile(tlo, 1);
+
 hold on;
 [~, q_plt] = contourf(lons, t, q, ...
     'edgecolor', 'none');
@@ -157,8 +162,8 @@ hold off;
 
 %~ Figure size
 set(gcf, 'Units', 'inches');
-figWidth  = 4.5; % Figure width in inches.
-figHeight = 8; % Figure height in inches.
+figWidth  = 2.5; % Figure width in inches.
+figHeight = 4; % Figure height in inches.
 set(gcf,...
     'PaperPosition', [0, 0, figWidth, figHeight],...
     'PaperSize', [figWidth, figHeight],...

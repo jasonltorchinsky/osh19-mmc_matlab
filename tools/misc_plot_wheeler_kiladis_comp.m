@@ -183,6 +183,9 @@ qanom_1_sym_power = squeeze(mean(qanom_1_sym_windows_power, 1));
 qanom_1_asym_power = squeeze(mean(qanom_1_asym_windows_power, 1));
 
 % Get q power for 2
+qanom_2_sym   = detrend(qanom_2, 0);
+qanom_2_asym  = qanom_2_sym;
+
 for ii = 1:nx
     for day = days
         qanom_2_sym(:,ii,day+1)  = qanom_2(:,ii,day+1).*parab_cyl_0;
@@ -270,8 +273,8 @@ power_min_2 = min([qanom_2_sym_power, qanom_2_asym_power], [], 'all');
 power_max_1 = max([qanom_1_sym_power, qanom_1_asym_power], [], 'all');
 power_max_2 = max([qanom_2_sym_power, qanom_2_asym_power], [], 'all');
 
-power_min = mean([power_min_1]);%, power_min_2]);
-power_max = mean([power_max_1]);%, power_max_2]);
+power_min = power_min_1;
+power_max = power_max_1;
 
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 % Calculate the dispersion curves
@@ -586,6 +589,7 @@ ax = gca;
 set(ax, 'Layer', 'top');
 xticks(-max_wavenum+2:2:max_wavenum);
 xlabels = string(ax.XAxis.TickLabels);
+xlabels(2:2:end) = nan;
 ax.XAxis.TickLabels = xlabels; % set
 xtickangle(0)
 
@@ -752,6 +756,7 @@ ax = gca;
 set(ax, 'Layer', 'top');
 xticks(-max_wavenum+2:2:max_wavenum);
 xlabels = string(ax.XAxis.TickLabels);
+xlabels(2:2:end) = nan;
 ax.XAxis.TickLabels = xlabels; % set
 xtickangle(0)
 
@@ -922,6 +927,7 @@ ax = gca;
 set(ax, 'Layer', 'top');
 xticks(-max_wavenum+2:2:max_wavenum);
 xlabels = string(ax.XAxis.TickLabels);
+xlabels(2:2:end) = nan;
 ax.XAxis.TickLabels = xlabels; % set
 xtickangle(0)
 
@@ -1088,6 +1094,7 @@ ax = gca;
 set(ax, 'Layer', 'top');
 xticks(-max_wavenum+2:2:max_wavenum);
 xlabels = string(ax.XAxis.TickLabels);
+xlabels(2:2:end) = nan;
 ax.XAxis.TickLabels = xlabels; % set
 xtickangle(0)
 

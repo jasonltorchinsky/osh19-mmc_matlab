@@ -55,7 +55,7 @@ truth_params.create_plots = false;
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 eof_params = struct();
 
-eof_params.Q_mode = 'up'; % Use Q_mid ('mid') or Q_up ('up')
+eof_params.Q_mode = 'mid'; % Use Q_mid ('mid') or Q_up ('up')
 
 eof_params.out_path = out_path;
 eof_params.exp_name = exp_name;
@@ -149,9 +149,9 @@ mjoo_params.out_path = out_path;
 mjoo_params.exp_name = exp_name;
 mjoo_params.component_name = 'mjoo';
 
-mjoo_params.init_simulation = false;
-mjoo_params.run_simulation = false;
-mjoo_params.create_plots = false;
+mjoo_params.init_simulation = true;
+mjoo_params.run_simulation = true;
+mjoo_params.create_plots = true;
 
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 % Parameters for the Multi-Model Ensemble
@@ -208,7 +208,7 @@ ens_params.eof_params = eof_params;
 
 misc_params = struct();
 
-misc_params.create_plots = false;
+misc_params.create_plots = true;
 
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 % Run the simulation
@@ -244,7 +244,7 @@ if truth_params.create_plots
     if truth_params.sim_days > 256
         clf('reset');
     
-        osh19_plot_wheeler_kiladis(truth_params, 128, 38, 0.1, 12);
+        osh19_plot_wheeler_kiladis(truth_params, 128, 38, 0.1, 6);
     end
     
     clf('reset');
@@ -298,7 +298,7 @@ if dcm_params.create_plots
     if dcm_params.sim_days > 256
         clf('reset');
     
-        osh19_plot_wheeler_kiladis(dcm_params, 128, 38, 0.1, 12);
+        osh19_plot_wheeler_kiladis(dcm_params, 128, 38, 0.1, 6);
     end
     
     clf('reset');
@@ -353,7 +353,7 @@ if ens_params.create_plots
     if ens_params.dcm_params.sim_days > 256
         clf('reset');
     
-        osh19_plot_wheeler_kiladis(ens_params.dcm_params, 128, 38, 0.1, 12);
+        osh19_plot_wheeler_kiladis(ens_params.dcm_params, 128, 38, 0.1, 6);
     end
     
     clf('reset');
@@ -380,9 +380,29 @@ end
 if misc_params.create_plots
    clf('reset');
    
-   misc_plot_mjos(eof_params, mjoo_params, 10.0, 0.0);
+   misc_plot_mjos(eof_params, mjoo_params, 4.0, 0.0);
    
 %    clf('reset');
 %    
 %    misc_osh19_anim_evo(dcm_params, ens_params.dcm_params, 4.0, 0.0);
+% 
+%    clf('reset');
+%    
+%    misc_plot_wheeler_kiladis_comp(truth_params, dcm_params, 128, 38, 0.1, 12);
+%    
+%    clf('reset');
+% 
+%    misc_plot_wheeler_kiladis_comp(truth_params, ens_params.dcm_params, 128, 38, 0.1, 12);
+%    
+%    clf('reset');
+% 
+%    misc_plot_wheeler_kiladis_comp(ens_params.dcm_params, dcm_params, 128, 38, 0.1, 12);
+%    
+   clf('reset');
+   
+   misc_cmg14_eof_plot_wheeler_kiladis(truth_params, mjoo_params, 128, 38, 0.1, 12);
+   
+   clf('reset');
+   
+   misc_cmg14_anim_evo(truth_params, ens_params.mjoo_params, 4.0, 0.0);
 end

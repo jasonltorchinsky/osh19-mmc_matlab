@@ -98,47 +98,51 @@ end
 q_mjo_mjoo = zeros(nx, floor(sim_days/out_freq) + 1);
 
 for out_idx = out_idxs
-    q_mjo_mjoo(:, out_idx + 1) = u_1(out_idx + 1) * q_mjo1 ...
-        + u_2(out_idx + 1) * q_mjo2;
+    q_mjo_mjoo(:, out_idx + 1) = 2*(u_1(out_idx + 1) * q_mjo1 ...
+        + u_2(out_idx + 1) * q_mjo2);
 end
 
+% Colorbar limits
+max_q = max(abs([q_mjo_eof q_mjo_mjoo]), [], 'all');
+min_q = -max_q;
+cmap = load('rb.mat').rb;
+
 % Create the three Hovmoller plots
-tlo = tiledlayout(1,3);
+tlo = tiledlayout(1,2);
 
-% First plot - true moisture
-h(1,1) = nexttile(tlo,1);
-
-hold on;
-contourf(lons, t, q.', ...
-    'edgecolor', 'none');
-
-title('Raw');
-hold off;
+% % First plot - true moisture
+% h(1,1) = nexttile(tlo,1);
+% 
+% hold on;
+% contourf(lons, t, q.', ...
+%     'edgecolor', 'none');
+% colormap(cmap);
+% caxis([min_q, max_q]);
+% title('Raw');
+% hold off;
 
 % Second plot - MJO moisture, expansion coefficients from EOF decomp.
-h(1,2) = nexttile(tlo,2);
+h(1,1) = nexttile(tlo,1);
 
 hold on;
 contourf(lons, t, q_mjo_eof.', ...
     'edgecolor', 'none');
+colormap(cmap);
+caxis([min_q, max_q]);
 title('MJO (EOF)');
 hold off;
 
 % Third plot - MJO moisture, expansion coefficients from MJOO model
-h(1,3) = nexttile(tlo,3);
+h(1,2) = nexttile(tlo,2);
 
 hold on;
 contourf(lons, t, q_mjo_mjoo.', ...
     'edgecolor', 'none');
+colormap(cmap);
+caxis([min_q, max_q]);
 title('MJO (MJOO)');
 hold off;
 
-% Colorbar
-max_q = max(abs([q q_mjo_eof q_mjo_mjoo]), [], 'all');
-min_q = -max_q;
-cmap = load('rb.mat').rb;
-colormap(cmap);
-caxis([min_q, max_q]);
 
 cb = colorbar();
 cb.Label.String = 'Moisture Anomaly (kg kg^{-1})';
@@ -155,6 +159,8 @@ elseif (lat_true > 0)
 elseif (trueLate == 0)
     title_str = strcat([title_base_str, 'Equator']);
 end
+    
+title_str = "Hovmoller Diagram";
 title(tlo, title_str);
 
 % Axis limits
@@ -170,7 +176,7 @@ xticks(h, 0:90:360);
 xticklabels(h, {'180', '90W', '0', '90E', '180'});
 
 % Example zonal windspeeds
-for ii = 1:3
+for ii = 1:2
     hold(h(1,ii), 'on');
     speed_3 = 3.1 * (1 / 1000) * (360 / (2 * pi * P_E)) * days_to_secs;
     plot(h(1,ii), lons, (1./speed_3).*lons, 'k-.');

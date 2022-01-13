@@ -1,14 +1,18 @@
-function osh19_plot_wheeler_kiladis(params, window_ndays, ...
-    ovlp_ndays, percent_remove, alt)
+function misc_cmg14_eof_plot_wheeler_kiladis(truth_params, ...
+    mjoo_params, window_ndays, ovlp_ndays, percent_remove, alt)
 
 % Get path to output data.
-out_path       = params.out_path;
-exp_path       = fullfile(out_path, params.exp_name);
-component_path = fullfile(exp_path, params.component_name);
+out_path       = truth_params.out_path;
+exp_path       = fullfile(out_path, truth_params.exp_name);
+truth_path     = fullfile(exp_path, truth_params.component_name);
+mjoo_path      = fullfile(exp_path, mjoo_params.component_name);
+eof_path       = fullfile(exp_path, 'eofs');
 
 addpath(out_path);
 addpath(exp_path);
-addpath(component_path);
+addpath(truth_path);
+addpath(mjoo_path);
+addpath(eof_path);
 
 % Create directory to hold plots
 plot_path = fullfile(exp_path, 'plots');
@@ -20,7 +24,7 @@ addpath(plot_path);
 
 % Read the input parameters to find out how long the run is and how
 % frequently output was created.
-params_file = fullfile(component_path, 'params.nc');
+params_file = fullfile(truth_path, 'params.nc');
 
 nx       = ncread(params_file, 'nx');
 P_Y      = ncread(params_file, 'P_Y');
@@ -40,7 +44,7 @@ max_wavenum = 10;
 max_freq    = 0.5;
 
 % Read in grids
-grid_file = fullfile(component_path, 'grid.nc');
+grid_file = fullfile(truth_path, 'grid.nc');
 
 yy  = ncread(grid_file, 'yy');
 zzW = ncread(grid_file, 'zzW');
@@ -61,6 +65,13 @@ yy      = yy(min_yy_idx:max_yy_idx);
 yy_norm = yy/L;
 ny      = size(yy, 1);
 
+% Read in EOFs, reconstructed MJOs
+eof_file_name = 'eofs.nc';
+eof_file = fullfile(eof_path, eof_file_name);
+
+q_mjo1 = ncread(eof_file, 'q_mjo1');
+q_mjo2 = ncread(eof_file, 'q_mjo2');
+
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 % Create power spectra for symmetric and anti-symmetric parts
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -71,8 +82,10 @@ half = ceil(nx/2);
 
 for day = days
     state_file_name = strcat(['state_', num2str(day,'%04u'),'.nc']);
-    state_file = fullfile(component_path, state_file_name);
-    q_day = ncread(state_file, 'q');
+    state_file = fullfile(mjoo_path, state_file_name);
+    u_1 = ncread(state_file, 'u_1');
+    u_2 = ncread(state_file, 'u_2');
+    q_day = u_1 * q_mjo1 + u_2 * q_mjo2;
     qanom(:, :, day + 1) = q_day(min_yy_idx:max_yy_idx, :, altW_idx)/1000;
     % Units? Want g kg^(-1).
 end
@@ -308,8 +321,6 @@ per30 = 1/30 * ones(size(wavenums));
 
 % Create master tiled layout
 tlo = tiledlayout(1, 2);
-tlo.TileSpacing = 'compact';
-tlo.Padding = 'compact';
 
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 % Left tile - Wheeler-Kiladis Diagram of symmetric part.
@@ -657,8 +668,8 @@ hold off;
 
 % Page and figure size
 set(gcf, 'PaperUnits', 'inches');
-figWidth  = 5; % Figure width in inches.
-figHeight = 4; % Figure height in inches.
+figWidth  = 7.5; % Figure width in inches.
+figHeight = 6; % Figure height in inches.
 set(gcf,...
     'PaperPosition', [0, 0, figWidth, figHeight],...
     'PaperSize', [figWidth, figHeight])
@@ -694,7 +705,7 @@ ylabel(tlo, 'Frequency (d^{-1})', ...
 % Save plot.
 alt_str = sprintf(['%3.1f'], abs(altW_true));
 
-file_name = strcat([params.component_name, '_wheeler_kiladis_', ...
+file_name = strcat(['misc_', mjoo_params.component_name, '_wheeler_kiladis_', ...
     alt_str, '.pdf']);
 plot_file = fullfile(plot_path, file_name);
 print(plot_file, '-dpdf', '-painters');
